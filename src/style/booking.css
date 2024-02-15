@@ -1,0 +1,32 @@
+.bookingPage {
+  background-color: #6770d22e;
+  height: 100%;
+  padding: 115px 25px 30px 225px;
+}
+.bookingTable {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.bookingPage #myTable {
+  width: 100% !important;
+}
+
+.paginate_button {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.bookingPage label {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .bookingPage {
+    padding: 115px 25px 30px 25px;
+  }
+}

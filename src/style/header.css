@@ -1,0 +1,168 @@
+header {
+  border: 1px solid black;
+  background-color: #384c60;
+  height: 80px;
+  position: fixed;
+  width: 100%;
+  z-index: 5;
+  top: 0;
+}
+
+header a img {
+  width: 100%;
+}
+
+header a {
+  display: block;
+  width: 180px !important;
+}
+
+.Navheader ul {
+  /* display: none; */
+  position: absolute;
+  top: 65px;
+  right: 45px;
+  background-color: #fff;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3);
+  padding: 0;
+  list-style-type: none;
+  border-radius: 5px;
+  padding: 10px 0 10px 0;
+  z-index: 100;
+}
+
+.Navheader ul.show {
+  transform: translateY(40px);
+  transition: ease-in-out 300ms;
+  opacity: 1;
+  visibility: visible;
+}
+
+.Navheader ul.hide {
+  transform: translateY(0);
+  transition: ease-in-out 300ms;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.Navheader ul::before {
+  content: "";
+  border: 10px solid transparent;
+  border-left-color: #fff;
+  border-top-color: #fff;
+  position: absolute;
+  border-radius: 3px;
+  top: -8px;
+  right: 15px;
+  -webkit-box-shadow: -5px -5px 12px -2px rgba(0, 0, 0, 0.3);
+  box-shadow: -5px -5px 12px -2px rgba(0, 0, 0, 0.3);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  z-index: 1002;
+}
+
+.Navheader ul li {
+  list-style: none;
+  width: 190px;
+  padding: 10px 20px;
+}
+.Navheader ul li:hover {
+  background-color: #e6f7ff;
+  transition: ease-in 200ms;
+  cursor: pointer;
+}
+.Navheader .me-5 p {
+  margin: 0;
+}
+
+.Navheader p {
+  color: #b7c0cd;
+}
+.profileName {
+  cursor: pointer;
+}
+
+/* 
+Button insperation by @ke1221
+Menu icon transofmation insperation by @Ali-Tahmazi99
+*/
+
+.menuButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 6%;
+  color: #090909;
+  width: 3.5em;
+  height: 3.5em;
+  border-radius: 0.5em;
+  background: #384c60;
+  /* border: 1px solid #e8e8e8; */
+  transition: all 0.3s;
+  /* box-shadow: 6px 6px 12px #c5c5c5,
+               -6px -6px 12px #ffffff; */
+  margin: 10px;
+  display: none;
+}
+
+input[type="checkbox"] {
+  /* -webkit-appearance: none; */
+  display: none;
+  visibility: hidden;
+}
+
+.menuButton span {
+  width: 20px;
+  height: 3px;
+  background: #fff;
+  border-radius: 100px;
+  transition: 0.3s ease;
+}
+
+input[type]:checked ~ span.top {
+  transform: translateY(230%) rotate(45deg);
+  width: 20px;
+}
+
+input[type]:checked ~ span.bot {
+  transform: translateY(-200%) rotate(-45deg);
+  width: 20px;
+  box-shadow: 0 0 10px #495057;
+}
+
+input[type]:checked ~ span.mid {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+/* ************************************OVERLAY*************************************** */
+.overlay {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #000000a1;
+  z-index: 4;
+  transition: opacity 0.3s linear 100ms;
+}
+
+@media (max-width: 768px) {
+  .menuButton {
+    display: flex;
+  }
+}
+
+@media (max-width: 576px) {
+  .Navheader img {
+    width: 70%;
+  }
+
+  .Navheader span:nth-child(1) {
+    display: none;
+  }
+  .Navheader .col-md-5 {
+    margin-right: 1rem !important;
+  }
+}
