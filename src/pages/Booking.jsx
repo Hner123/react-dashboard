@@ -35,7 +35,6 @@ export default function Booking() {
       );
       console.log("Accept data successfully: ", response.data);
       handleClose();
-      fetchBookingData();
     } catch (error) {
       console.log("error fetching from accept booking: ", error);
     }
