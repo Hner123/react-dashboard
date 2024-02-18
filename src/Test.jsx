@@ -72,3 +72,15 @@ I want the output to look like this
   title: "HEINER ABORKA",
   start: "2024-1-31 11:30:00"
 }
+
+
+
+const fetchBookingData = async () => {
+  try {
+    const response = await axios.post(process.env.REACT_APP_BOOKINGLIST);
+    console.log("Post successful:", response.data);
+
+  } catch (error) {
+    console.error("Error posting data:", error);
+  }
+};

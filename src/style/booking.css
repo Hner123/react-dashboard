@@ -24,16 +24,27 @@
 .bookingPage label {
   display: flex;
 }
-tbody tr td:nth-child(1) {
-  width: 150px;
+/* .bookingTable tbody tr td:nth-child(3) {
+  width: 10px !important;
 }
+.bookingTable tbody tr td:nth-child(4) {
+  width: 10px !important;
+} */
 
-tbody tr td:nth-child(2) {
+/* .bookingTable tbody tr td:nth-child(2) {
   width: 100%;
 }
 
-tbody tr td:nth-child(3) {
+.bookingTable tbody tr td:nth-child(3) {
   width: 50px;
+} */
+.bookingTable tbody tr td,
+.bookingTable th {
+  text-align: start !important;
+}
+
+colgroup {
+  display: none;
 }
 
 @media (max-width: 768px) {
