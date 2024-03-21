@@ -149,6 +149,7 @@ foreach ($lastWeekSales as $date2 => $LastWeektotalSales) {
 $result7 = $connection->query($last30daysDate);
 $last30daysRange = array();
 $amcharMonthSales = array();
+$last30daySales = array();
 while ($row = $result7->fetch_assoc()) {
     $Last30daysValue = date('Y-m-d', strtotime($row['timestamp']));
     $last30daySales2 = $row['Payment_Cost'];

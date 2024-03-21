@@ -2,8 +2,7 @@
 
 
 
-$sql = "SELECT * FROM booking_table";
-
+$sql = "SELECT * FROM confirmed_booking";
 $result = $connection->query($sql);
 
 $DateAndName = array();
@@ -12,7 +11,7 @@ while ($row = $result->fetch_assoc()) {
     $bookingName = $row['First_Name'] . " " . $row['Last_Name'];
     $bookTime =  $row['book_Time'];
     
-
+    
     $twelveHourTime = date("h:i A", strtotime($bookTime));
 
     $data = array(
@@ -26,6 +25,7 @@ while ($row = $result->fetch_assoc()) {
         $row['location'],
         $row['Patient_Note'],
         $row['Patient_Note']
+
         
     );
 
@@ -33,16 +33,15 @@ while ($row = $result->fetch_assoc()) {
     $DateAndName[] = $data;
 
 }
+    $responseData = array(
+        'DateAndName' => $DateAndName,
+    
+    );
+    
+        // Send the data as JSON
+        header('Content-Type: application/json');
+        echo json_encode($responseData);
 
-$responseData = array(
-    'DateAndName' => $DateAndName,
-
-);
-
-    // Send the data as JSON
-    header('Content-Type: application/json');
-    echo json_encode($responseData);
-
-    $connection->close();
+        $connection->close();
 
 ?>

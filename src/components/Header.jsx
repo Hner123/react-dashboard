@@ -77,7 +77,7 @@ export default function Header({ togglePanel, hamburgerClose }) {
         <div className="col-md-6 d-flex align-items-center ms-5">
           <a href="/">
             <img
-              src="http://avenuedentalph.com/Image/AV-Logo.png"
+              src="https://res.cloudinary.com/djyf3qi4d/image/upload/v1709660941/Avenue-Dental-Logo_pkztgi.png"
               alt="avenue-dental-logo"
             />
           </a>

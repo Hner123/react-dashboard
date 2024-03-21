@@ -6,7 +6,7 @@ header("Content-Type: application/json");
 
 
 $servername = "localhost";
-$username = "sqluser";
+$username = "root";
 $password = "password";
 $database = "nerdb";
 

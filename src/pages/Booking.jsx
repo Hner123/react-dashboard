@@ -9,6 +9,8 @@ import $ from "jquery";
 
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import FloatingLabel from "react-bootstrap/FloatingLabel";
+import Form from "react-bootstrap/Form";
 
 import "datatables.net-responsive-bs5/js/responsive.bootstrap5.js";
 import "datatables.net-buttons/js/buttons.colVis.mjs";
@@ -17,13 +19,18 @@ export default function Booking() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
   const [events, setEvents] = useState([]);
   const [show, setShow] = useState(false);
+  const [showCancel, setShowCancel] = useState(false);
   const [firstRowData, setFirstRowData] = useState(0);
+  const [reasons, setReasons] = useState("");
 
   const handleClose = () => {
     fetchBookingData();
     setShow(false);
+    setShowCancel(false);
   };
   const handleShow = () => setShow(true);
+
+  const cancelModal = () => setShowCancel(true);
 
   const acceptBooking = async () => {
     try {
@@ -38,6 +45,25 @@ export default function Booking() {
     } catch (error) {
       console.log("error fetching from accept booking: ", error);
     }
+  };
+
+  const cancelBooking = async () => {
+    try {
+      const dataAccept = { firstRowData, reasons };
+
+      const response = await axios.post(
+        process.env.REACT_APP_SENDCANCELDATA,
+        dataAccept
+      );
+      console.log("Cancel Data successfully: ", response.data);
+      handleClose();
+    } catch (error) {
+      console.log("error fetching from accept booking: ", error);
+    }
+  };
+
+  const reasonsValue = (event) => {
+    setReasons(event.target.value);
   };
 
   const togglePanel = () => {
@@ -71,8 +97,8 @@ export default function Booking() {
               if (type === "display") {
                 return `
                             <div class='d-flex' style='gap:.3rem;'>
-                                <button class='btn btn-success btn-sm acceptBtn' data-bs-toggle='modal' data-bs-target='#confirm_modal'>Accept</button>
-                                <button class='btn btn-primary btn-sm cancelBtn' data-bs-toggle='modal' data-bs-target='#cancel_modal'>Cancel</button>
+                                <button class='btn btn-success btn-sm acceptBtn'>Accept</button>
+                                <button class='btn btn-primary btn-sm cancelBtn'>Cancel</button>
                             </div>
                         `;
               }
@@ -95,8 +121,10 @@ export default function Booking() {
             .find(".cancelBtn")
             .on("click", function () {
               // Retrieve data from the current row
-              const rowData = table.row($(this).closest("tr")).data();
+              const rowData = table.row($(this).closest("tr")).data()[0];
               console.log("Data from current row:", rowData);
+              cancelModal();
+              setFirstRowData(rowData);
             });
         },
 
@@ -134,17 +162,24 @@ export default function Booking() {
     // console.log("dataSet daya " + data);
     console.log("events to" + events);
   }, []);
+
   return (
     <>
       <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
       <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
+
       <div className="bookingPage">
-        <h5>Booking</h5>
+        <h1>Booking</h1>
         <div className="bookingTable">
           <table id="myTable" className="row-border"></table>
         </div>
-
-        <Modal show={show} onHide={handleClose}>
+        {/* **********************Accept Modal********************** */}
+        <Modal
+          show={show}
+          onHide={handleClose}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
           <Modal.Header closeButton>
             {/* <Modal.Title>Modal heading</Modal.Title> */}
           </Modal.Header>
@@ -156,7 +191,40 @@ export default function Booking() {
               Yes
             </Button>
             <Button variant="primary" onClick={handleClose}>
-              Save Changes
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        {/* **********************Cancel Modal********************** */}
+        <Modal
+          show={showCancel}
+          onHide={handleClose}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton>
+            {/* <Modal.Title>Modal heading</Modal.Title> */}
+          </Modal.Header>
+          <Modal.Body>
+            <FloatingLabel
+              controlId="floatingTextarea"
+              label="Reasons for Cancelling"
+              className="mb-3"
+            >
+              <Form.Control
+                as="textarea"
+                placeholder="Leave a comment here"
+                style={{ height: "80px" }}
+                onChange={reasonsValue}
+              />
+            </FloatingLabel>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={cancelBooking}>
+              Confirm
+            </Button>
+            <Button variant="primary" onClick={handleClose}>
+              Cancel
             </Button>
           </Modal.Footer>
         </Modal>

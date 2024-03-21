@@ -1,0 +1,29 @@
+.confirmPage {
+  background-color: #6770d22e;
+  height: 100%;
+  padding: 115px 25px 30px 225px;
+}
+.confirmPage h1 {
+  font-size: 1.25rem;
+}
+
+.confirmTable {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+
+  margin-top: 20px;
+  padding: 20px;
+}
+.confirmTable tbody tr td,
+.confirmTable th {
+  text-align: start !important;
+}
+
+.confirmTable #myTable {
+  width: 100% !important;
+}
+
+colgroup {
+  display: none;
+}

@@ -37,20 +37,28 @@ export default function SidePanel({ isOpen, togglePanel }) {
               </Link>
             </li>
             <li>
-              <PlaylistAddCheckCircleOutlinedIcon fontSize="small" />
-              <span className="ms-2">Confirm</span>
+              <Link to="/pages/confirm">
+                <PlaylistAddCheckCircleOutlinedIcon fontSize="small" />
+                <span className="ms-2">Confirm</span>
+              </Link>
             </li>
             <li>
-              <EventBusyOutlinedIcon fontSize="small" />
-              <span className="ms-2">Cancelled</span>
+              <Link to="/pages/cancelled">
+                <EventBusyOutlinedIcon fontSize="small" />
+                <span className="ms-2">Cancelled</span>
+              </Link>
             </li>
             <li>
-              <PeopleOutlinedIcon fontSize="small" />
-              <span className="ms-2">My Patients</span>
+              <Link to="/pages/patients">
+                <PeopleOutlinedIcon fontSize="small" />
+                <span className="ms-2">My Patients</span>
+              </Link>
             </li>
             <li>
-              <UpdateOutlinedIcon fontSize="small" />
-              <span className="ms-2">History</span>
+              <Link to="/pages/history">
+                <UpdateOutlinedIcon fontSize="small" />
+                <span className="ms-2">History</span>
+              </Link>
             </li>
           </ul>
         </div>
