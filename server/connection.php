@@ -7,7 +7,7 @@ header("Content-Type: application/json");
 
 $servername = "localhost";
 $username = "root";
-$password = "password";
+$password = "";
 $database = "nerdb";
 
 // $servername = "sql312.infinityfree.com";

@@ -1,3 +1,20 @@
+@font-face {
+  font-family: "Carmen Sans Regular";
+  src: url("carmen-sans/Carmen Sans Regular.otf") format("truetype");
+}
+@font-face {
+  font-family: "Carmen Sans Bold";
+  src: url("carmen-sans/Carmen Sans Bold.otf") format("truetype");
+}
+@font-face {
+  font-family: "Carmen Sans Heavy";
+  src: url("carmen-sans/Carmen Sans Heavy.otf") format("truetype");
+}
+
+body {
+  color: #333;
+}
+
 .patientDetailsPage {
   background-color: #6770d22e;
   min-height: 100vh;
@@ -6,10 +23,11 @@
 }
 .patientDetailsPage h1 {
   font-size: 1.25rem;
+  /* font-family: "Carmen Sans Bold", sans-serif; */
 }
 
 .patientDetailsPage h1 a {
-  color: #0053cd;
+  color: #2266d7;
   text-decoration: none;
 }
 
@@ -21,9 +39,7 @@
 .patientInfo {
   background-color: initial;
   border-radius: 5px;
-  /* box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1); */
-  margin-top: 20px;
-  /* padding: 20px; */
+  margin-top: 10px;
 }
 
 .patientInfo .col-md-3,
@@ -36,7 +52,7 @@
 .notes {
   background-color: #fff;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 20px 20px 10px 20px;
   width: calc(33.33333333% - 40px);
   border-radius: 5px;
 }
@@ -44,18 +60,40 @@
   width: calc(66.66666667% + 10px);
   border-radius: 5px;
 }
-.notes p,
-.patient-history p {
-  font-size: 1.1rem !important;
+
+.txtArea {
+  background-color: #bdd8f6a8;
+  border: none;
+  font-size: 12px;
+  border-radius: 0;
+  resize: none;
+}
+.btn {
+  font-size: 10px;
 }
 .bg-history {
-  background-color: #6770d25b;
+  background-color: #6770d22e;
   padding: 20px 60px;
   border-radius: 5px;
+  height: 370px;
+  overflow-y: scroll;
+  border: 1px solid #6770d21b;
 }
+.hs > :first-child {
+  box-shadow: 0 1px 4px 0 rgb(0 255 0 / 50%);
+}
+.hs > :first-child::before {
+  border: 3px solid rgb(0 255 0 / 100%);
+}
+
 .history {
   background-color: #fff;
   padding: 10px;
+  box-shadow: 0 1px 4px 0 #0d6efd54;
+  position: relative;
+}
+.history .col-md {
+  border-right: 2px solid #6c757d0f;
 }
 .patientInfo .col-md-5 {
   border-radius: 0 5px 5px 0;
@@ -88,11 +126,26 @@
   border-radius: 50%;
   overflow: hidden;
   background-color: #6770d25b;
+  position: relative;
+  cursor: pointer;
 }
+
+.cameraIcon {
+  position: absolute !important;
+  top: 70%;
+  left: 35%;
+  background-color: #11111182 !important;
+  border-radius: 50%;
+  visibility: hidden;
+}
+
 .patientImage img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.Edit-profile-pic {
+  color: #fff !important;
 }
 .patientInfo .col-md-3 h1 {
   font-weight: bolder;
@@ -100,11 +153,124 @@
 }
 .patientInfo .col-md-3 span {
   color: #6c757d;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .patientInfo .col-md span {
   font-weight: 500;
   color: #6c757d;
+  font-size: 11px;
+}
+
+.history::before {
+  content: "";
+  display: flex;
+  height: 20px;
+  width: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 3px solid #4096fa;
+  position: absolute;
+  top: 50%;
+  left: -4%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+.history::after {
+  content: "";
+  display: flex;
+  height: 100px;
+  border: 2px solid #4096fa;
+  position: absolute;
+  top: 0;
+  left: -4%;
+  transform: translate(-50%, -50%);
+}
+
+.attachment {
+  background-color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-left: 20px;
+  border-radius: 5px;
+}
+.attachment .row .col-md p {
+  font-weight: 500;
+  font-size: 1.1rem !important;
+}
+.documents span {
+  font-size: 11px !important;
+  color: #6c757d !important;
+}
+.documents {
+  border: 1px solid #6c757d14;
+  padding: 5px;
+  margin: 1px;
+  border-radius: 3px;
+}
+.kb {
+  font-size: 10px;
+}
+#addFilesBtn {
+  border: none;
+  background-color: initial;
+  /* height: 0; */
+  font-size: 12px;
+  font-weight: bold;
+  color: #2266d7;
+}
+
+.MuiSnackbar-root {
+  top: 100px !important;
+}
+.editPatientBtn {
+  border: 1px solid rgba(0, 0, 0, 0.168);
+  color: #6c757d;
+  background-color: #fff;
+  font-weight: bold;
+  border-radius: 3px;
+}
+.editPatientBtn svg {
+  width: 12px;
+}
+/* ************************************CUSTOME SCROLL********************************************** */
+/* width */
+.bg-history::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.bg-history::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+.bg-history::-webkit-scrollbar-thumb {
+  background: #4097fa89;
+}
+
+/* Handle on hover */
+.bg-history::-webkit-scrollbar-thumb:hover {
+  background: #4096fa;
+}
+
+/* width */
+.txtArea::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.txtArea::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+.txtArea::-webkit-scrollbar-thumb {
+  background: #4097fa89;
+}
+
+/* Handle on hover */
+.txtArea::-webkit-scrollbar-thumb:hover {
+  background: #4096fa;
 }
