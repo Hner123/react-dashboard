@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../style/patients.css";
 import axios from "axios";
-import DataTable from "datatables.net-bs5";
+
 import $ from "jquery";
+import DataTable from "datatables.net-bs5";
 
 export default function Patients() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -28,8 +29,7 @@ export default function Patients() {
 
       const table = new DataTable("#myTable", {
         data: response.data.myPatients,
-        dom: "Bfrtip",
-        // buttons: ["colvis"],
+
         columns: [
           { title: "ID" },
           { title: "Name" },
@@ -66,7 +66,6 @@ export default function Patients() {
 
         destroy: true, // I think some clean up is happening here
         responsive: true,
-        deferRender: true,
         columnDefs: [
           {
             target: 0,
@@ -74,7 +73,7 @@ export default function Patients() {
             searchable: false,
           },
           { responsivePriority: 1, targets: -1 },
-          { responsivePriority: 2, targets: 2 },
+          { responsivePriority: 2, targets: 1 },
         ],
       });
       // Extra step to do extra clean-up.
@@ -96,11 +95,12 @@ export default function Patients() {
     <>
       <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
       <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
-
       <div className="patientsPage">
         <h1>My Patients</h1>
-        <div className="patientsTable">
-          <table id="myTable" className="row-border"></table>
+        <div className="">
+          <div className="patientsTable">
+            <table id="myTable" className="row-border" width="100%"></table>
+          </div>
         </div>
       </div>
     </>

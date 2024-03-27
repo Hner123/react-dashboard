@@ -3,6 +3,7 @@ import SidePanel from "../components/SidePanel";
 import "../style/booking.css";
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
+
 import DataTable from "datatables.net-bs5";
 import $ from "jquery";
 // import "datatables.net-responsive-dt";
@@ -36,10 +37,7 @@ export default function Booking() {
     try {
       const dataAccept = { firstRowData };
 
-      const response = await axios.post(
-        process.env.REACT_APP_SENDACCEPTDATA,
-        dataAccept
-      );
+      const response = await axios.post(process.env.REACT_APP_SENDACCEPTDATA, dataAccept);
       console.log("Accept data successfully: ", response.data);
       handleClose();
     } catch (error) {
@@ -51,10 +49,7 @@ export default function Booking() {
     try {
       const dataAccept = { firstRowData, reasons };
 
-      const response = await axios.post(
-        process.env.REACT_APP_SENDCANCELDATA,
-        dataAccept
-      );
+      const response = await axios.post(process.env.REACT_APP_SENDCANCELDATA, dataAccept);
       console.log("Cancel Data successfully: ", response.data);
       handleClose();
     } catch (error) {
@@ -171,21 +166,12 @@ export default function Booking() {
       <div className="bookingPage">
         <h1>Booking</h1>
         <div className="bookingTable">
-          <table id="myTable" className="row-border"></table>
+          <table id="myTable" className="row-border" width="100%"></table>
         </div>
         {/* **********************Accept Modal********************** */}
-        <Modal
-          show={show}
-          onHide={handleClose}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header closeButton>
-            {/* <Modal.Title>Modal heading</Modal.Title> */}
-          </Modal.Header>
-          <Modal.Body>
-            Do you want to accept the booking? {firstRowData}
-          </Modal.Body>
+        <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
+          <Modal.Header closeButton>{/* <Modal.Title>Modal heading</Modal.Title> */}</Modal.Header>
+          <Modal.Body>Do you want to accept the booking? {firstRowData}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={acceptBooking}>
               Yes
@@ -202,15 +188,9 @@ export default function Booking() {
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
-          <Modal.Header closeButton>
-            {/* <Modal.Title>Modal heading</Modal.Title> */}
-          </Modal.Header>
+          <Modal.Header closeButton>{/* <Modal.Title>Modal heading</Modal.Title> */}</Modal.Header>
           <Modal.Body>
-            <FloatingLabel
-              controlId="floatingTextarea"
-              label="Reasons for Cancelling"
-              className="mb-3"
-            >
+            <FloatingLabel controlId="floatingTextarea" label="Reasons for Cancelling" className="mb-3">
               <Form.Control
                 as="textarea"
                 placeholder="Leave a comment here"

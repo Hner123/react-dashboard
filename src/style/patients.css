@@ -12,13 +12,23 @@
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
-
+  max-width: 1100px;
   margin-top: 20px;
   padding: 20px;
+  margin: auto;
 }
 .patientsTable tbody tr td,
 .patientsTable th {
   text-align: start !important;
+  /* font-size: 14px; */
+  color: #6c757d;
+}
+.patientsTable tbody tr td:first-child {
+  font-weight: 500;
+  color: #333;
+}
+.patientsTable th span {
+  font-size: 12px;
 }
 
 .patientsTable #myTable {
@@ -27,4 +37,13 @@
 
 colgroup {
   display: none;
+}
+.dt-column-title {
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .patientsPage {
+    padding: 115px 25px 30px 25px;
+  }
 }

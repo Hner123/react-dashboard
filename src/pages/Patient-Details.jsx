@@ -19,9 +19,9 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 export default function PatientDetails() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -52,6 +52,7 @@ export default function PatientDetails() {
   const [snackSeverity, setSnackSeverity] = useState("");
   const [editPatient, setEditPatient] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [validated, setValidated] = useState(false);
 
   const [patientName, setPatientName] = useState("");
   const [patientLastname, setPatientLastname] = useState("");
@@ -79,6 +80,7 @@ export default function PatientDetails() {
     setShowModalDelete(false);
     setNotesHistoryModal(false);
     setEditPatient(false);
+    setValidated(false);
   };
 
   const fetchPatientData = async () => {
@@ -225,8 +227,59 @@ export default function PatientDetails() {
     setOPenS(false);
   };
 
-  const editName = (event) => {
-    setName(event.target.value);
+  const handleSubmit = async (event) => {
+    console.log("this button was click");
+    event.preventDefault();
+    event.stopPropagation();
+    setValidated(true);
+
+    if (
+      patientName != "" &&
+      patientLastname != "" &&
+      patientGender != "" &&
+      patientAddress != "" &&
+      patientPhone != "" &&
+      patientEmail != "" &&
+      patientDOB != ""
+    ) {
+      try {
+        const data = {
+          id,
+          patientName,
+          patientLastname,
+          patientGender,
+          patientAddress,
+          patientPhone,
+          patientEmail,
+          patientDOB,
+        };
+        const data2 = { id };
+
+        const response = await axios.post(process.env.REACT_APP_EDITPATIENTDETAILS, data);
+        console.log("Saving edited details :" + response.data);
+
+        const response2 = await axios.post(process.env.REACT_APP_PATIENTDATA, data2);
+        setName(response2.data.patientData[0][1]);
+        setLastName(response2.data.patientData[0][2]);
+        setEmail(response2.data.patientData[0][5]);
+        setGender(response2.data.patientData[0][7]);
+        setBirth(response2.data.patientData[0][3]);
+        setPhoneNum(response2.data.patientData[0][6]);
+        setAddress(response2.data.patientData[0][4]);
+
+        handleClose();
+        setOPenS(true);
+        setSnackSeverity("success");
+        setSnackMessage("Patient details updated!");
+      } catch (error) {
+        setOPenS(true);
+        setSnackSeverity("error");
+        setSnackMessage("Error updating patient details!");
+        console.log("Error saving edited patient details :", error);
+      }
+    } else {
+      console.log("You need to fill out all the fields first.");
+    }
   };
 
   useEffect(() => {
@@ -263,11 +316,16 @@ export default function PatientDetails() {
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                 >
-                  <img
-                    src={`http://localhost/react-dashboard/server/image/${pic}`}
-                    alt=""
-                    style={{ opacity: isHovered ? 0.5 : 1 }}
-                  />
+                  {pic == "" || pic == null ? (
+                    <img src={process.env.REACT_APP_BLANKPROFILE} />
+                  ) : (
+                    <img
+                      src={`http://localhost/react-dashboard/server/image/${pic}`}
+                      alt=""
+                      style={{ opacity: isHovered ? 0.5 : 1 }}
+                    />
+                  )}
+
                   <div className="cameraIcon" style={{ visibility: isHovered ? "visible" : "hidden" }}>
                     <IconButton className="Edit-profile-pic" onClick={showModalFunction}>
                       <PhotoCameraIcon />
@@ -363,15 +421,21 @@ export default function PatientDetails() {
                             <p>&#8369;{histor[2]}</p>
                           </div>
                           <div className="col-md d-flex align-items-center">
-                            <span
-                              onClick={() => {
-                                setNotesHistoryModal(true);
-                                setNoteInsideModal(histor[4]);
-                              }}
-                              style={{ color: "#2266D7", cursor: "pointer" }}
-                            >
-                              <SpeakerNotesIcon fontSize="small" /> Notes
-                            </span>
+                            {histor[4] == "" ? (
+                              <span style={{ color: "#6c757d7a" }}>
+                                <SpeakerNotesIcon fontSize="small" /> Notes
+                              </span>
+                            ) : (
+                              <span
+                                onClick={() => {
+                                  setNotesHistoryModal(true);
+                                  setNoteInsideModal(histor[4]);
+                                }}
+                                style={{ color: "#2266D7", cursor: "pointer" }}
+                              >
+                                <SpeakerNotesIcon fontSize="small" /> Notes
+                              </span>
+                            )}
                           </div>
                         </div>
                         <span className="history_timeline"></span>
@@ -379,7 +443,11 @@ export default function PatientDetails() {
                     ))}
                   </div>
                 ) : (
-                  <div className="history mb-3">No found.</div>
+                  <div className="mb-3">
+                    <h4 className="text-center mt-5" style={{ color: "#6c757d7a" }}>
+                      No history data
+                    </h4>
+                  </div>
                 )}
               </div>
             </div>
@@ -457,7 +525,9 @@ export default function PatientDetails() {
                   </div>
                 ) : (
                   <div>
-                    <p>No documents</p>
+                    <p className="text-center mt-5" style={{ color: "#6c757d7a" }}>
+                      No documents
+                    </p>
                   </div>
                 )}
               </div>
@@ -580,9 +650,9 @@ export default function PatientDetails() {
           </Button>
         </Modal.Footer>
       </Modal>
-
+      {/* **********************************Modal for EDIT PATIENT DETAILS************************************** */}
       <Modal
-        size="md"
+        size="lg"
         show={editPatient}
         onHide={handleClose}
         aria-labelledby="contained-modal-title-vcenter"
@@ -594,93 +664,110 @@ export default function PatientDetails() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="row">
-            <div className="col-md">
-              <FloatingLabel controlId="floatingInput" label="Name" className="mb-3">
+          {/* <EditPatientDetails /> */}
+
+          <Form id="EditPatientForm" noValidate validated={validated} onSubmit={handleSubmit}>
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="validationCustom01">
+                <Form.Label>First name</Form.Label>
                 <Form.Control
+                  required
                   type="text"
-                  placeholder=""
+                  placeholder="First name"
                   value={patientName}
                   onChange={(e) => setPatientName(e.target.value)}
                 />
-              </FloatingLabel>
-            </div>
-            <div className="col-md">
-              <FloatingLabel controlId="floatingInput" label="Last Name" className="mb-3">
+                <Form.Control.Feedback type="invalid">Please enter a name.</Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="validationCustom02">
+                <Form.Label>Last name</Form.Label>
                 <Form.Control
+                  required
                   type="text"
-                  placeholder=""
+                  placeholder="Last name"
                   value={patientLastname}
                   onChange={(e) => setPatientLastname(e.target.value)}
                 />
-              </FloatingLabel>
-            </div>
-            <div className="col-md">
-              <FloatingLabel controlId="floatingInput" label="Gender" className="mb-3">
-                <Form.Select
-                  aria-label="Default select example"
-                  value={patientGender}
-                  onChange={(e) => setPatientGender(e.target.value)}
-                >
-                  <option>Select --- </option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </Form.Select>
-              </FloatingLabel>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md">
-              <FloatingLabel controlId="floatingInput" label="Address" className="mb-3">
+                <Form.Control.Feedback type="invalid">Please enter a last name.</Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="validationCustom03">
+                <Form.Label>Address</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder=""
+                  placeholder="Address"
+                  required
                   value={patientAddress}
                   onChange={(e) => setPatientAddress(e.target.value)}
                 />
-              </FloatingLabel>
-            </div>
-            <div className="col-md">
-              <FloatingLabel controlId="floatingInput" label="Phone" className="mb-3">
-                <Form.Control
-                  type="text"
-                  placeholder=""
-                  value={patientPhone}
-                  onChange={(e) => {
-                    const input = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-                    setPatientPhone(input);
-                  }}
-                  pattern="[0-9]*" // Only allow numbers
-                />
-              </FloatingLabel>
-            </div>
-          </div>
+                <Form.Control.Feedback type="invalid">Please provide a valid address.</Form.Control.Feedback>
+              </Form.Group>
 
-          <div className="row">
-            <div className="col-md">
-              <FloatingLabel controlId="floatingInput" label="Email Address" className="mb-3">
+              <Form.Group as={Col} controlId="validationCustom04">
+                <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder=""
+                  placeholder="Email"
+                  required
                   value={patientEmail}
                   onChange={(e) => setPatientEmail(e.target.value)}
                 />
-              </FloatingLabel>
-            </div>
-            <div className="col-md">
-              <FloatingLabel controlId="floatingInput" label="Date of Birth" className="mb-3">
+                <Form.Control.Feedback type="invalid">Please provide an email.</Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col} md="3" controlId="validationCustom05">
+                <Form.Label>Gender</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  required
+                  value={patientGender}
+                  onChange={(e) => setPatientGender(e.target.value)}
+                >
+                  <option disabled>Select ---</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">Please select a gender.</Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="validationCustom06">
+                <Form.Label>Phone Number</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Phone number"
+                  required
+                  value={patientPhone}
+                  onChange={(e) => {
+                    setPatientPhone(e.target.value);
+                  }}
+                />
+                <Form.Control.Feedback type="invalid">Please provide a phone number.</Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="validationCustom07">
+                <Form.Label>Date of Birth</Form.Label>
                 <Form.Control
                   type="date"
                   placeholder=""
+                  required
                   value={patientDOB}
                   onChange={(e) => setPatientDOB(e.target.value)}
                 />
-              </FloatingLabel>
-            </div>
-          </div>
+                <Form.Control.Feedback type="invalid">Please select your birth date.</Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+          </Form>
+          {/* ********************************* */}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary">Save changes</Button>
+          <Button type="submit" form="EditPatientForm">
+            Save changes
+          </Button>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>

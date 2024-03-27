@@ -9,6 +9,7 @@ import Cancelled from "./pages/Cancelled";
 import History from "./pages/History";
 import Patients from "./pages/Patients";
 import PatientDetails from "./pages/Patient-Details";
+import Test from "./pages/Test";
 
 const App = () => {
   return (
@@ -23,10 +24,8 @@ const App = () => {
         <Route path="/pages/cancelled" element={<Cancelled />} />
         <Route path="/pages/history" element={<History />} />
         <Route path="/pages/patients" element={<Patients />} />
-        <Route
-          path="/pages/patients/patient-details"
-          element={<PatientDetails />}
-        />
+        <Route path="/pages/patients/patient-details" element={<PatientDetails />} />
+        <Route path="/pages/test" element={<Test />} />
       </Routes>
     </Router>
   );

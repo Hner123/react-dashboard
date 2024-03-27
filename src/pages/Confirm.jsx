@@ -157,10 +157,7 @@ export default function Confirm() {
     try {
       const data = { userID, procedure, paymentCost, firstRowData };
 
-      const response = await axios.post(
-        process.env.REACT_APP_PROCESSPAYMENT,
-        data
-      );
+      const response = await axios.post(process.env.REACT_APP_PROCESSPAYMENT, data);
       console.log("processpayment data successfully: ", response.data);
       fetchConfirmData();
       handleClose();
@@ -186,10 +183,7 @@ export default function Confirm() {
     try {
       const dataAccept = { firstRowData, reasons };
 
-      const response = await axios.post(
-        process.env.REACT_APP_SENDCANCELCONFIRMEDATA,
-        dataAccept
-      );
+      const response = await axios.post(process.env.REACT_APP_SENDCANCELCONFIRMEDATA, dataAccept);
       console.log("Cancel Data successfully: ", response.data);
       fetchConfirmData();
       handleClose();
@@ -202,10 +196,7 @@ export default function Confirm() {
     try {
       const data2 = { firstRowData, name, lastname };
 
-      const response2 = await axios.post(
-        process.env.REACT_APP_EDITNAMEANDLASTNAME,
-        data2
-      );
+      const response2 = await axios.post(process.env.REACT_APP_EDITNAMEANDLASTNAME, data2);
       console.log("update name and lastname :", response2.data);
       fetchConfirmData();
       handleClose();
@@ -265,23 +256,11 @@ export default function Confirm() {
         <Modal.Body>
           {userFound === "User found!" ? (
             <div>
-              <FloatingLabel
-                controlId="floatingInput"
-                label="Procedure:"
-                className="mb-3"
-              >
-                <Form.Control
-                  type="text"
-                  onChange={procedures}
-                  placeholder=""
-                />
+              <FloatingLabel controlId="floatingInput" label="Procedure:" className="mb-3">
+                <Form.Control type="text" onChange={procedures} placeholder="" />
               </FloatingLabel>
 
-              <FloatingLabel
-                controlId="floatingInput"
-                label="Cost:"
-                className="mb-3"
-              >
+              <FloatingLabel controlId="floatingInput" label="Cost:" className="mb-3">
                 <Form.Control type="text" onChange={cost} placeholder="" />
               </FloatingLabel>
             </div>
@@ -311,30 +290,12 @@ export default function Confirm() {
           <Modal.Title>Edit {firstRowData}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FloatingLabel
-            controlId="floatingInput"
-            label="Name"
-            className="mb-3"
-          >
-            <Form.Control
-              type="text"
-              placeholder=""
-              value={name}
-              onChange={editName}
-            />
+          <FloatingLabel controlId="floatingInput" label="Name" className="mb-3">
+            <Form.Control type="text" placeholder="" value={name} onChange={editName} />
           </FloatingLabel>
 
-          <FloatingLabel
-            controlId="floatingInput"
-            label="Lastname"
-            className="mb-3"
-          >
-            <Form.Control
-              type="text"
-              placeholder=""
-              value={lastname}
-              onChange={editLastName}
-            />
+          <FloatingLabel controlId="floatingInput" label="Lastname" className="mb-3">
+            <Form.Control type="text" placeholder="" value={lastname} onChange={editLastName} />
           </FloatingLabel>
         </Modal.Body>
         <Modal.Footer>
@@ -348,21 +309,10 @@ export default function Confirm() {
       </Modal>
 
       {/* **********************Cancel Modal********************** */}
-      <Modal
-        show={showCancel}
-        onHide={handleClose}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header closeButton>
-          {/* <Modal.Title>Modal heading</Modal.Title> */}
-        </Modal.Header>
+      <Modal show={showCancel} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
+        <Modal.Header closeButton>{/* <Modal.Title>Modal heading</Modal.Title> */}</Modal.Header>
         <Modal.Body>
-          <FloatingLabel
-            controlId="floatingTextarea"
-            label="Reasons for Cancelling"
-            className="mb-3"
-          >
+          <FloatingLabel controlId="floatingTextarea" label="Reasons for Cancelling" className="mb-3">
             <Form.Control
               as="textarea"
               placeholder="Leave a comment here"
