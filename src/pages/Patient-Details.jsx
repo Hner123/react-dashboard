@@ -445,7 +445,7 @@ export default function PatientDetails() {
                 ) : (
                   <div className="mb-3">
                     <h4 className="text-center mt-5" style={{ color: "#6c757d7a" }}>
-                      No history data
+                      <img style={{ width: "37%" }} src={process.env.REACT_APP_NODATAIMAGE} alt="" />
                     </h4>
                   </div>
                 )}
@@ -506,10 +506,7 @@ export default function PatientDetails() {
                                   sx={{ fontSize: 12, marginRight: "7px" }}
                                 />
 
-                                <a
-                                  href={`http://localhost/react-dashboard/server/image/${document[2]}`}
-                                  target="_blank"
-                                >
+                                <a href={process.env.REACT_APP_LINKPROFILE + document[2]} target="_blank">
                                   <GetAppIcon
                                     style={{ cursor: "pointer" }}
                                     className="mt-1"

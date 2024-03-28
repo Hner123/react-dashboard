@@ -7,7 +7,7 @@ if(!$result)
     die("Invalid query: ".$connection->error);
 }  
 
-
+$count=0;
 $myPatients = array();
 while($row = $result->fetch_assoc()){
 
@@ -20,12 +20,13 @@ while($row = $result->fetch_assoc()){
         $row['TimeStamp'],
         $row['TimeStamp']
     );
-
+    $count += 1;
     $myPatients[] = $data;
 }
 
 $response = array(
     'myPatients' => $myPatients,
+    'count' => $count,
 );
 
 header('Content-Type: application/json');

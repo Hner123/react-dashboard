@@ -13,13 +13,7 @@ $database = "nerdb";
 // $servername = "sql312.infinityfree.com";
 // $username = "epiz_34199524";
 // $password = "EgnZzU8tEcC";
-// $database = "epiz_34199524_Booking_ner";`
-
-
-// $servername = "sql201.infinityfree.com";
-// $username = "epiz_34192418";
-// $password = "YNK8kplZuA";
-// $database = "epiz_34192418_DBner";
+// $database = "epiz_34199524_admin";
 
 
 // Create a database connection

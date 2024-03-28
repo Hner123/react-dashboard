@@ -274,3 +274,20 @@ body {
 .txtArea::-webkit-scrollbar-thumb:hover {
   background: #4096fa;
 }
+
+@media (max-width: 768px) {
+  .patientDetailsPage {
+    padding: 115px 25px 30px 25px;
+  }
+  .notes {
+    width: 100%;
+    margin-top: 15px;
+  }
+  .patient-history {
+    width: 100%;
+  }
+  .attachment {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+}

@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../style/patients.css";
 import axios from "axios";
+import AddPatient from "../components/AddPatient";
+
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import Button from "@mui/material/Button";
 
 import $ from "jquery";
 import DataTable from "datatables.net-bs5";
@@ -11,6 +15,13 @@ import DataTable from "datatables.net-bs5";
 export default function Patients() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
   const navigate = useNavigate();
+
+  const [addPatientModal, setAddPatientModal] = useState(false);
+  const [totalPatient, setTotalPatient] = useState(0);
+
+  const handleClose = () => {
+    setAddPatientModal(false);
+  };
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
@@ -26,7 +37,7 @@ export default function Patients() {
     try {
       const response = await axios.post(process.env.REACT_APP_MYPATIENTS);
       console.log("Post successful:", response.data);
-
+      setTotalPatient(response.data.count);
       const table = new DataTable("#myTable", {
         data: response.data.myPatients,
 
@@ -44,7 +55,10 @@ export default function Patients() {
               if (type === "display") {
                 return `
                             <div class='d-flex' style='gap:.3rem;'>
-                                <button class='btn btn-primary btn-sm viewBtn'>View</button>
+                           
+                                <button class='viewBtn d-flex justify-content-center align-items-center'>
+                                  <span class="material-icons">visibility</span> View
+                                  </button>
                             </div>
                         `;
               }
@@ -87,6 +101,8 @@ export default function Patients() {
     }
   };
 
+  const test = () => console.log("HEINER KYOT");
+
   useEffect(() => {
     fetchPatientsData();
   }, []);
@@ -97,12 +113,43 @@ export default function Patients() {
       <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
       <div className="patientsPage">
         <h1>My Patients</h1>
+
+        <div className="">
+          <div className="row" style={{ maxWidth: "1100px", margin: "auto" }}>
+            <div className="col">
+              <div>
+                <span style={{ fontSize: "32px", fontWeight: "500", marginRight: "10px", color: "#2266D7" }}>
+                  {totalPatient}
+                </span>
+                <span style={{ color: "#6C757D" }}>Total Patients</span>
+              </div>
+            </div>
+            <div className="col d-flex justify-content-end mb-3">
+              <Button
+                onClick={() => setAddPatientModal(true)}
+                size="small"
+                variant="contained"
+                color="primary"
+                startIcon={<PersonAddIcon />}
+              >
+                Add Patient
+              </Button>
+            </div>
+          </div>
+        </div>
         <div className="">
           <div className="patientsTable">
             <table id="myTable" className="row-border" width="100%"></table>
           </div>
         </div>
       </div>
+
+      {/* ***************************ADD PATIENT MODAL*********************** */}
+      <AddPatient
+        patientModalOpen={addPatientModal}
+        patientModalClose={handleClose}
+        refetchData={fetchPatientsData}
+      />
     </>
   );
 }
