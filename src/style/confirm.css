@@ -1,5 +1,6 @@
 .confirmPage {
   background-color: #6770d22e;
+  min-height: 100dvh;
   height: 100%;
   padding: 115px 25px 30px 225px;
 }
@@ -26,4 +27,41 @@
 
 colgroup {
   display: none;
+}
+.confirmTable th span {
+  font-size: 12px;
+}
+.confirmTable tbody tr td:first-child {
+  font-size: 12px !important;
+}
+.confirmTable tbody tr td:nth-child(2) {
+  color: #333;
+  font-weight: 500;
+}
+.confirmTable tbody tr td,
+.confirmTable th {
+  text-align: start !important;
+  /* font-size: 14px; */
+  color: #6c757d;
+}
+
+.manageBtn,
+.editBtn,
+.cancelBtn {
+  border: none;
+  background-color: initial;
+  color: #2266d7;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .confirmPage {
+    padding: 115px 25px 30px 25px;
+  }
+}
+@media (max-width: 576px) {
+  .confirmBtn {
+    flex-direction: column;
+  }
 }

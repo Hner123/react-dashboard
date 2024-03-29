@@ -320,7 +320,7 @@ export default function PatientDetails() {
                     <img src={process.env.REACT_APP_BLANKPROFILE} />
                   ) : (
                     <img
-                      src={`http://localhost/react-dashboard/server/image/${pic}`}
+                      src={process.env.REACT_APP_LINKPROFILE + pic}
                       alt=""
                       style={{ opacity: isHovered ? 0.5 : 1 }}
                     />

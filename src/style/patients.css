@@ -46,6 +46,14 @@ colgroup {
   background-color: initial;
   color: #2266d7;
   font-size: 12px;
+  text-decoration: underline;
+}
+.deleteBtn {
+  border: none;
+  background-color: initial;
+  color: #d72222c6;
+  font-size: 12px;
+  text-decoration: underline;
 }
 .viewBtn .material-icons {
   font-size: 17px;
@@ -67,6 +75,9 @@ table.dataTable td.dt-empty {
 }
 .addPatientBtn {
   border: none;
+}
+tbody tr:hover {
+  background-color: #e6f7ff !important;
 }
 
 @media (max-width: 768px) {

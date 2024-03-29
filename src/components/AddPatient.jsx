@@ -191,7 +191,7 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
             Add Patient
           </Button>
           <Button variant="secondary" onClick={closeModal}>
-            Close
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>

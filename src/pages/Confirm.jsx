@@ -9,6 +9,8 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 export default function Confirm() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -20,14 +22,27 @@ export default function Confirm() {
   const [userFound, setUserFound] = useState("");
   const [procedure, setProcedure] = useState("");
   const [paymentCost, setPaymentCost] = useState("");
+  const [notes, setNotes] = useState("");
   const [userID, setUserID] = useState();
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
   const [reasons, setReasons] = useState("");
 
+  const [openS, setOPenS] = useState(false);
+  const [snackSeverity, setSnackSeverity] = useState("");
+  const [snackMessage, setSnackMessage] = useState("");
+
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
     console.log("dashboard " + sidePanelOPen);
+  };
+
+  const handleCloseSnack = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOPenS(false);
   };
 
   const fetchConfirmData = async () => {
@@ -55,10 +70,10 @@ export default function Confirm() {
               // Assuming you have access to row data, you can create buttons dynamically
               if (type === "display") {
                 return `
-                            <div class='d-flex' style='gap:.3rem;'>
-                                <button class='btn btn-success btn-sm manageBtn'>Manage</button>
-                                <button class='btn btn-primary btn-sm editBtn'>Edit</button>
-                                <button class='btn btn-primary btn-sm cancelBtn'>Cancel</button>
+                            <div class='d-flex confirmBtn'>
+                                <button class='manageBtn'>Manage</button>
+                                <button class='editBtn'>Edit</button>
+                                <button class='cancelBtn'>Cancel</button>
                             </div>
                         `;
               }
@@ -155,14 +170,21 @@ export default function Confirm() {
 
   const Proccessing = async () => {
     try {
-      const data = { userID, procedure, paymentCost, firstRowData };
+      const data = { userID, procedure, paymentCost, firstRowData, notes };
 
       const response = await axios.post(process.env.REACT_APP_PROCESSPAYMENT, data);
       console.log("processpayment data successfully: ", response.data);
       fetchConfirmData();
+
+      setOPenS(true);
+      setSnackMessage("Transaction Completed!");
+      setSnackSeverity("success");
       handleClose();
     } catch (error) {
       console.log("error fetching from Manage: ", error);
+      setOPenS(true);
+      setSnackMessage("Transaction Failed!");
+      setSnackSeverity("error");
     }
   };
 
@@ -187,8 +209,15 @@ export default function Confirm() {
       console.log("Cancel Data successfully: ", response.data);
       fetchConfirmData();
       handleClose();
+
+      setOPenS(true);
+      setSnackMessage("Cancelled!");
+      setSnackSeverity("success");
     } catch (error) {
       console.log("error fetching from accept confirm page: ", error);
+      setOPenS(true);
+      setSnackMessage("Error Cancelling!");
+      setSnackSeverity("error");
     }
   };
 
@@ -200,8 +229,15 @@ export default function Confirm() {
       console.log("update name and lastname :", response2.data);
       fetchConfirmData();
       handleClose();
+
+      setOPenS(true);
+      setSnackMessage("Edited Success!");
+      setSnackSeverity("success");
     } catch (error) {
       console.log("Update edit and name got an error: ", error);
+      setOPenS(true);
+      setSnackMessage("Error editing!");
+      setSnackSeverity("error");
     }
   };
 
@@ -236,36 +272,50 @@ export default function Confirm() {
       <div className="confirmPage">
         <h1>Confirm</h1>
         <div className="confirmTable">
-          <table id="myTable" className="row-border"></table>
+          <table id="myTable" className="row-border" width="100%"></table>
         </div>
       </div>
 
       {/* **********************Manage Modal********************** */}
       <Modal
-        size="sm"
+        size="md"
         show={show}
         onHide={handleClose}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Modal.Header>
-          <Modal.Title>
-            <p>Manage</p>
+          <Modal.Title style={{ fontSize: "20px" }}>
+            <p className="mb-0">Manage</p>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {userFound === "User found!" ? (
             <div>
-              <FloatingLabel controlId="floatingInput" label="Procedure:" className="mb-3">
-                <Form.Control type="text" onChange={procedures} placeholder="" />
-              </FloatingLabel>
-
-              <FloatingLabel controlId="floatingInput" label="Cost:" className="mb-3">
-                <Form.Control type="text" onChange={cost} placeholder="" />
+              <div className="row">
+                <div className="col-md">
+                  <FloatingLabel controlId="floatingInput" label="Procedure:" className="mb-3">
+                    <Form.Control type="text" onChange={procedures} placeholder="" />
+                  </FloatingLabel>
+                </div>
+                <div className="col-md">
+                  <FloatingLabel controlId="floatingInput" label="Cost:" className="mb-3">
+                    <Form.Control type="text" onChange={cost} placeholder="" />
+                  </FloatingLabel>
+                </div>
+              </div>
+              <FloatingLabel controlId="floatingInput" label="Note:" className="mb-3">
+                <Form.Control
+                  type="text"
+                  onChange={(e) => {
+                    setNotes(e.target.value);
+                  }}
+                  placeholder=""
+                />
               </FloatingLabel>
             </div>
           ) : (
-            <h5>No client found.</h5>
+            <span style={{ fontSize: "18px" }}>Patient doesn't exist.</span>
           )}
         </Modal.Body>
         <Modal.Footer>
@@ -287,7 +337,9 @@ export default function Confirm() {
         centered
       >
         <Modal.Header>
-          <Modal.Title>Edit {firstRowData}</Modal.Title>
+          <Modal.Title style={{ fontSize: "20px" }}>
+            <p className="mb-0">Edit</p>
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <FloatingLabel controlId="floatingInput" label="Name" className="mb-3">
@@ -300,7 +352,7 @@ export default function Confirm() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={updateNameAndLastname}>
-            Update seet
+            Update
           </Button>
           <Button variant="secondary" onClick={handleClose}>
             Cancel
@@ -310,7 +362,11 @@ export default function Confirm() {
 
       {/* **********************Cancel Modal********************** */}
       <Modal show={showCancel} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
-        <Modal.Header closeButton>{/* <Modal.Title>Modal heading</Modal.Title> */}</Modal.Header>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ fontSize: "20px" }}>
+            <p className="mb-0">Cancel </p>
+          </Modal.Title>
+        </Modal.Header>
         <Modal.Body>
           <FloatingLabel controlId="floatingTextarea" label="Reasons for Cancelling" className="mb-3">
             <Form.Control
@@ -330,6 +386,17 @@ export default function Confirm() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Snackbar
+        open={openS}
+        autoHideDuration={2000}
+        onClose={handleCloseSnack}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: "100%" }}>
+          {snackMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

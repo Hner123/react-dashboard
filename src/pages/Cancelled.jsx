@@ -8,14 +8,29 @@ import $ from "jquery";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
 
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+
 export default function Cancelled() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [firstRowData, setFirstRowData] = useState(0);
 
+  const [openS, setOPenS] = useState(false);
+  const [snackSeverity, setSnackSeverity] = useState("");
+  const [snackMessage, setSnackMessage] = useState("");
+
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
     console.log("dashboard " + sidePanelOPen);
+  };
+
+  const handleCloseSnack = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOPenS(false);
   };
 
   const showModalFunction = () => setShowModal(true);
@@ -51,7 +66,7 @@ export default function Cancelled() {
               if (type === "display") {
                 return `
                             <div class='d-flex' style='gap:.3rem;'>
-                                <button class='btn btn-danger btn-sm deleteBtn'>Delete</button>
+                                <button class='deleteBtn'>Delete</button>
                             </div>
                         `;
               }
@@ -120,15 +135,19 @@ export default function Cancelled() {
     const data = { firstRowData };
 
     try {
-      const response = await axios.post(
-        process.env.REACT_APP_DELETETOHISTORY,
-        data
-      );
+      const response = await axios.post(process.env.REACT_APP_DELETETOHISTORY, data);
       console.log("Fetch status response :", response.data);
       fetchCancelData();
       handleClose();
+
+      setOPenS(true);
+      setSnackMessage("Succesfully deleted!");
+      setSnackSeverity("success");
     } catch (error) {
       console.log("error from deleteToHistry :", error);
+      setOPenS(true);
+      setSnackMessage("Error deleting!");
+      setSnackSeverity("error");
     }
   };
 
@@ -144,7 +163,7 @@ export default function Cancelled() {
       <div className="cancelPage">
         <h1>Cancelled</h1>
         <div className="cancelTable">
-          <table id="myTable" className="row-border"></table>
+          <table id="myTable" className="row-border" width="100%"></table>
         </div>
       </div>
 
@@ -156,9 +175,11 @@ export default function Cancelled() {
         centered
       >
         <Modal.Header>
-          <Modal.Title>Delete</Modal.Title>
+          <Modal.Title style={{ fontSize: "20px" }}>
+            <p className="mb-0">Delete </p>
+          </Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to delete? {firstRowData}</Modal.Body>
+        <Modal.Body>Are you sure you want to delete?</Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={deleteToHistory}>
             Yes
@@ -168,6 +189,18 @@ export default function Cancelled() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* **********************SNACK BAR POP UP***************************** */}
+      <Snackbar
+        open={openS}
+        autoHideDuration={2000}
+        onClose={handleCloseSnack}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: "100%" }}>
+          {snackMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

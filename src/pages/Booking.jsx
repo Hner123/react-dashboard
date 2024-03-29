@@ -13,8 +13,8 @@ import Modal from "react-bootstrap/Modal";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
-import "datatables.net-responsive-bs5/js/responsive.bootstrap5.js";
-import "datatables.net-buttons/js/buttons.colVis.mjs";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 export default function Booking() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -23,6 +23,18 @@ export default function Booking() {
   const [showCancel, setShowCancel] = useState(false);
   const [firstRowData, setFirstRowData] = useState(0);
   const [reasons, setReasons] = useState("");
+
+  const [openS, setOPenS] = useState(false);
+  const [snackSeverity, setSnackSeverity] = useState("");
+  const [snackMessage, setSnackMessage] = useState("");
+
+  const handleCloseSnack = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOPenS(false);
+  };
 
   const handleClose = () => {
     fetchBookingData();
@@ -40,8 +52,15 @@ export default function Booking() {
       const response = await axios.post(process.env.REACT_APP_SENDACCEPTDATA, dataAccept);
       console.log("Accept data successfully: ", response.data);
       handleClose();
+
+      setOPenS(true);
+      setSnackMessage("Accepted!");
+      setSnackSeverity("success");
     } catch (error) {
       console.log("error fetching from accept booking: ", error);
+      setOPenS(true);
+      setSnackMessage("Error Accepting!");
+      setSnackSeverity("error");
     }
   };
 
@@ -52,7 +71,14 @@ export default function Booking() {
       const response = await axios.post(process.env.REACT_APP_SENDCANCELDATA, dataAccept);
       console.log("Cancel Data successfully: ", response.data);
       handleClose();
+
+      setOPenS(true);
+      setSnackMessage("Cancelled!");
+      setSnackSeverity("success");
     } catch (error) {
+      setOPenS(true);
+      setSnackMessage("Cancel Failed!");
+      setSnackSeverity("error");
       console.log("error fetching from accept booking: ", error);
     }
   };
@@ -92,8 +118,8 @@ export default function Booking() {
               if (type === "display") {
                 return `
                             <div class='d-flex' style='gap:.3rem;'>
-                                <button class='btn btn-success btn-sm acceptBtn'>Accept</button>
-                                <button class='btn btn-primary btn-sm cancelBtn'>Cancel</button>
+                                <button class='acceptBtn'>Accept</button>
+                                <button class='cancelBtn'>Cancel</button>
                             </div>
                         `;
               }
@@ -169,26 +195,41 @@ export default function Booking() {
           <table id="myTable" className="row-border" width="100%"></table>
         </div>
         {/* **********************Accept Modal********************** */}
-        <Modal show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
-          <Modal.Header closeButton>{/* <Modal.Title>Modal heading</Modal.Title> */}</Modal.Header>
-          <Modal.Body>Do you want to accept the booking? {firstRowData}</Modal.Body>
+        <Modal
+          size="sm"
+          show={show}
+          onHide={handleClose}
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title style={{ fontSize: "20px" }}>
+              <p className="mb-0">Accept </p>
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Do you want to accept booking?</Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={acceptBooking}>
+            <Button variant="primary" onClick={acceptBooking}>
               Yes
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
           </Modal.Footer>
         </Modal>
         {/* **********************Cancel Modal********************** */}
         <Modal
+          size="sm"
           show={showCancel}
           onHide={handleClose}
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
-          <Modal.Header closeButton>{/* <Modal.Title>Modal heading</Modal.Title> */}</Modal.Header>
+          <Modal.Header closeButton>
+            <Modal.Title style={{ fontSize: "20px" }}>
+              <p className="mb-0">Cancel </p>
+            </Modal.Title>
+          </Modal.Header>
           <Modal.Body>
             <FloatingLabel controlId="floatingTextarea" label="Reasons for Cancelling" className="mb-3">
               <Form.Control
@@ -200,14 +241,25 @@ export default function Booking() {
             </FloatingLabel>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={cancelBooking}>
+            <Button variant="primary" onClick={cancelBooking}>
               Confirm
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <Snackbar
+          open={openS}
+          autoHideDuration={2000}
+          onClose={handleCloseSnack}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        >
+          <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: "100%" }}>
+            {snackMessage}
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );

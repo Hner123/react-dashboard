@@ -25,9 +25,33 @@
   margin: 0 !important;
 }
 
-.bookingPage label {
-  display: flex;
+.bookingTable th span {
+  font-size: 12px;
 }
+.bookingTable tbody tr td:first-child {
+  font-size: 12px !important;
+}
+.bookingTable tbody tr td:nth-child(2) {
+  color: #333;
+  font-weight: 500;
+}
+
+.bookingTable tbody tr td,
+.bookingTable th {
+  text-align: start !important;
+  /* font-size: 14px; */
+  color: #6c757d;
+}
+
+.acceptBtn,
+.cancelBtn {
+  border: none;
+  background-color: initial;
+  color: #2266d7;
+  font-size: 12px;
+  text-decoration: underline;
+}
+
 /* .bookingTable tbody tr td:nth-child(3) {
   width: 10px !important;
 }

@@ -12,15 +12,23 @@ import Button from "@mui/material/Button";
 import $ from "jquery";
 import DataTable from "datatables.net-bs5";
 
+import Modal from "react-bootstrap/Modal";
+import { ButtonToolbar } from "react-bootstrap";
+import DeletePatient from "../components/DeletePatient";
+
 export default function Patients() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
   const navigate = useNavigate();
 
   const [addPatientModal, setAddPatientModal] = useState(false);
+  const [deletePatientModal, setDeletePatientModal] = useState(false);
   const [totalPatient, setTotalPatient] = useState(0);
+  const [deleteId, setDeleteId] = useState(0);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const handleClose = () => {
     setAddPatientModal(false);
+    setDeletePatientModal(false);
   };
 
   const togglePanel = () => {
@@ -40,6 +48,7 @@ export default function Patients() {
       setTotalPatient(response.data.count);
       const table = new DataTable("#myTable", {
         data: response.data.myPatients,
+        hover: true,
 
         columns: [
           { title: "ID" },
@@ -57,7 +66,10 @@ export default function Patients() {
                             <div class='d-flex' style='gap:.3rem;'>
                            
                                 <button class='viewBtn d-flex justify-content-center align-items-center'>
-                                  <span class="material-icons">visibility</span> View
+                                View
+                                  </button>
+                                  <button class='deleteBtn d-flex justify-content-center align-items-center'>
+                                Delete
                                   </button>
                             </div>
                         `;
@@ -75,6 +87,15 @@ export default function Patients() {
               const rowData = table.row($(this).closest("tr")).data()[0];
               console.log("Data from current row:", rowData);
               patientDetailsPage(rowData);
+            });
+          $(row)
+            .find(".deleteBtn")
+            .on("click", function () {
+              // Retrieve data from the current row
+              const rowData = table.row($(this).closest("tr")).data()[0];
+              console.log("Data from current row:", rowData);
+              setDeleteId(rowData);
+              setDeletePatientModal(true);
             });
         },
 
@@ -100,8 +121,6 @@ export default function Patients() {
       console.error("Error posting data:", error);
     }
   };
-
-  const test = () => console.log("HEINER KYOT");
 
   useEffect(() => {
     fetchPatientsData();
@@ -149,6 +168,13 @@ export default function Patients() {
         patientModalOpen={addPatientModal}
         patientModalClose={handleClose}
         refetchData={fetchPatientsData}
+      />
+      {/* ***************************Delete PATIENT MODAL*********************** */}
+      <DeletePatient
+        refetchData={fetchPatientsData}
+        deleteModalOpen={deletePatientModal}
+        deleteModalClose={handleClose}
+        id={deleteId}
       />
     </>
   );
