@@ -27,6 +27,9 @@ export default function Booking() {
   const [openS, setOPenS] = useState(false);
   const [snackSeverity, setSnackSeverity] = useState("");
   const [snackMessage, setSnackMessage] = useState("");
+  const [preload, setPreload] = useState(true);
+
+  const [active, setActive] = useState("Booking");
 
   const handleCloseSnack = (event, reason) => {
     if (reason === "clickaway") {
@@ -175,6 +178,8 @@ export default function Booking() {
       };
     } catch (error) {
       console.error("Error posting data:", error);
+    } finally {
+      setPreload(false);
     }
   };
 
@@ -186,8 +191,8 @@ export default function Booking() {
 
   return (
     <>
-      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
-      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
+      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
+      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
 
       <div className="bookingPage">
         <h1>Booking</h1>

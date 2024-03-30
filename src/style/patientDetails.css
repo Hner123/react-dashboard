@@ -68,7 +68,7 @@ body {
   border-radius: 0;
   resize: none;
 }
-.btn {
+.patientDetailsPage .btn {
   font-size: 10px;
 }
 .bg-history {

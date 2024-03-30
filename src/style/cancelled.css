@@ -31,7 +31,7 @@ colgroup {
 .cancelTable th span {
   font-size: 12px;
 }
-.cancelTable tbody tr td:first-child {
+.cancelTable tbody tr td {
   font-size: 12px !important;
 }
 .cancelTable tbody tr td,

@@ -35,6 +35,10 @@
   width: 100% !important;
 }
 
+.patientsTable tbody tr td {
+  font-size: 12px !important;
+}
+
 colgroup {
   display: none;
 }

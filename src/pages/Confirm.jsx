@@ -4,13 +4,17 @@ import "../style/confirm.css";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import $ from "jquery";
-import DataTable from "datatables.net-bs5";
+import DataTable from "datatables.net-dt";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+
+// ***************************These both datatables needed for Colvis features********************************
+import "datatables.net-responsive-bs5/js/responsive.bootstrap5.js";
+import "datatables.net-buttons/js/buttons.colVis.mjs";
 
 export default function Confirm() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -27,10 +31,13 @@ export default function Confirm() {
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
   const [reasons, setReasons] = useState("");
+  const [preload, setPreload] = useState(true);
 
   const [openS, setOPenS] = useState(false);
   const [snackSeverity, setSnackSeverity] = useState("");
   const [snackMessage, setSnackMessage] = useState("");
+
+  const [active, setActive] = useState("Confirm");
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
@@ -140,6 +147,8 @@ export default function Confirm() {
       };
     } catch (error) {
       console.error("Error posting data:", error);
+    } finally {
+      setPreload(false);
     }
   };
 
@@ -266,8 +275,9 @@ export default function Confirm() {
 
   return (
     <>
-      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
-      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
+      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
+
+      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
 
       <div className="confirmPage">
         <h1>Confirm</h1>

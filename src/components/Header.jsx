@@ -7,9 +7,10 @@ import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import LinearProgress from "@mui/material/LinearProgress";
 
-export default function Header({ togglePanel, hamburgerClose }) {
-  const [isVisible, setIsVisible] = useState(false);
+export default function Header({ togglePanel, hamburgerClose, preload }) {
+  const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
   const ref = useRef(null);
 
@@ -48,9 +49,7 @@ export default function Header({ togglePanel, hamburgerClose }) {
 
       // Check if the token has expired
       if (tokenData.exp * 1000 > Date.now()) {
-        console.log(
-          "checking count time - " + tokenData.exp + " " + Date.now()
-        );
+        console.log("checking count time - " + tokenData.exp + " " + Date.now());
       } else {
         // Token has expired, perform logout
         handleLogout();
@@ -62,14 +61,13 @@ export default function Header({ togglePanel, hamburgerClose }) {
 
   return (
     <div>
+      <LinearProgress
+        style={{ position: "fixed", width: "100%", top: "80px", visibility: preload ? "visible" : "hidden" }}
+      />
+
       <header className="Navheader d-flex justify-content-between">
         <label htmlFor="check" className="menuButton ms-4">
-          <input
-            id="check"
-            type="checkbox"
-            onChange={togglePanel}
-            checked={!hamburgerClose}
-          />
+          <input id="check" type="checkbox" onChange={togglePanel} checked={!hamburgerClose} />
           <span className="top"></span>
           <span className="mid"></span>
           <span className="bot"></span>

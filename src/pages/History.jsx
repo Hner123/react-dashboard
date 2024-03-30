@@ -7,6 +7,8 @@ import DataTable from "datatables.net-bs5";
 
 export default function History() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
+  const [preload, setPreload] = useState(true);
+  const [active, setActive] = useState("History");
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
@@ -20,8 +22,6 @@ export default function History() {
 
       const table = new DataTable("#myTable", {
         data: response.data.history_data,
-        dom: "Bfrtip",
-        buttons: ["colvis"],
         columns: [
           { title: "ID" },
           { title: "History Data" },
@@ -37,8 +37,8 @@ export default function History() {
             visible: false,
             searchable: false,
           },
-          { responsivePriority: 1, targets: -1 },
-          { responsivePriority: 2, targets: 2 },
+          { responsivePriority: 1, targets: 1 },
+          { responsivePriority: 2, targets: -1 },
         ],
       });
       // Extra step to do extra clean-up.
@@ -49,6 +49,8 @@ export default function History() {
       };
     } catch (error) {
       console.error("Error posting data:", error);
+    } finally {
+      setPreload(false);
     }
   };
 
@@ -58,13 +60,13 @@ export default function History() {
 
   return (
     <>
-      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
-      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
+      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
+      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
 
       <div className="historyPage">
         <h1>History</h1>
         <div className="historyTable">
-          <table id="myTable" className="row-border"></table>
+          <table id="myTable" className="row-border" width="100%"></table>
         </div>
       </div>
     </>

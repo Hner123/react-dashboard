@@ -29,6 +29,9 @@
   padding: 0;
   text-decoration: none;
 }
+.sidePanel ul a {
+  text-decoration: none;
+}
 
 .sidePanel li:hover {
   transform: translateX(10px);
@@ -72,6 +75,14 @@
   transition: ease-in-out 300ms;
   opacity: 0;
   visibility: hidden;
+}
+.activeON {
+  color: #4096fa !important;
+  font-weight: bold;
+}
+
+.activeOFF {
+  color: #b7c0cd;
 }
 
 @media (max-width: 768px) {

@@ -17,26 +17,11 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 // import interactionPlugin from "@fullcalendar/interaction";
 import AmChart from "./components/AmChart";
 
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { Bar } from "react-chartjs-2";
 // import faker from "faker";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Dashboard() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -46,6 +31,9 @@ export default function Dashboard() {
   const [todayPatient, SetTodayPatient] = useState();
   const [dataq, SetData] = useState([]);
   const [events, setEvents] = useState([]);
+  const [preload, setPreload] = useState(true);
+  const [test, setTest] = useState([]);
+  const [active, setActive] = useState("Dashboard");
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
@@ -57,39 +45,18 @@ export default function Dashboard() {
       const response = await axios.post(process.env.REACT_APP_DATA);
       console.log("Post successful:", response.data);
 
-      // const filteredEvents = response.data.ConfirmAllBooking.filter(
-      //   (booking, index) => {
-      //     return response.data.allLocationBranch[index] === "Marikina";
-      //   }
-      // ).map((booking, index) => {
-      //   return {
-      //     title: response.data.ConfirmAllNames[index],
-      //     start: `${booking} ${response.data.ConfirmAlltimes[index]}`,
-      //   };
-      // });
-
       const filteredEvents = [];
       for (let i = 0; i < response.data.ConfirmAllBooking.length; i++) {
         if (response.data.allLocationBranch[i] === "Marikina") {
           filteredEvents.push({
             title: response.data.ConfirmAllNames[i],
-            start:
-              response.data.ConfirmAllBooking[i] +
-              " " +
-              response.data.ConfirmAlltimes[i],
+            start: response.data.ConfirmAllBooking[i] + " " + response.data.ConfirmAlltimes[i],
           });
         }
       }
 
       setEvents(filteredEvents);
 
-      const dataset = response.data.ConfirmAllNames.map((item, index) => [
-        response.data.ConfirmAllBooking[index] +
-          " (" +
-          response.data.ConfirmAlltimes[index] +
-          ")",
-        item,
-      ]);
       SetData(response.data.responselast30daysRange);
       SetTotalPatient(response.data.totalPatient);
       SetTotalAppointments(response.data.totalAppointment);
@@ -127,6 +94,8 @@ export default function Dashboard() {
       };
     } catch (error) {
       console.error("Error posting data:", error);
+    } finally {
+      setPreload(false);
     }
   };
 
@@ -140,10 +109,7 @@ export default function Dashboard() {
         if (response.data.allLocationBranch[i] === loc) {
           filteredEvents.push({
             title: response.data.ConfirmAllNames[i],
-            start:
-              response.data.ConfirmAllBooking[i] +
-              " " +
-              response.data.ConfirmAlltimes[i],
+            start: response.data.ConfirmAllBooking[i] + " " + response.data.ConfirmAlltimes[i],
           });
         }
       }
@@ -197,8 +163,8 @@ export default function Dashboard() {
   const formattedDate = currentDate.toISOString().split("T")[0];
   return (
     <div className="dash">
-      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
-      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
+      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
+      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
       <div>
         <div className="dashboard">
           <h5>Dashboard</h5>
@@ -235,16 +201,10 @@ export default function Dashboard() {
           <div className="fullCalendar">
             <div className="d-flex justify-content-center">
               <div className="col-md-6 d-flex justify-content-center">
-                <button
-                  onClick={() => filterCalendarLoc("Marikina")}
-                  className="btn btn-primary btn-sm me-5"
-                >
+                <button onClick={() => filterCalendarLoc("Marikina")} className="btn btn-primary btn-sm me-5">
                   Marikina
                 </button>
-                <button
-                  onClick={() => filterCalendarLoc("Antipolo")}
-                  className="btn btn-primary btn-sm"
-                >
+                <button onClick={() => filterCalendarLoc("Antipolo")} className="btn btn-primary btn-sm">
                   Antipolo
                 </button>
               </div>

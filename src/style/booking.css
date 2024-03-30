@@ -28,7 +28,7 @@
 .bookingTable th span {
   font-size: 12px;
 }
-.bookingTable tbody tr td:first-child {
+.bookingTable tbody tr td {
   font-size: 12px !important;
 }
 .bookingTable tbody tr td:nth-child(2) {

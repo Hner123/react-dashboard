@@ -61,6 +61,7 @@ export default function PatientDetails() {
   const [patientPhone, setPatientPhone] = useState(null);
   const [patientEmail, setPatientEmail] = useState("");
   const [patientDOB, setPatientDOB] = useState("");
+  const [preload, setPreload] = useState(true);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -110,6 +111,8 @@ export default function PatientDetails() {
       setPatientDOB(response.data.patientData[0][3]);
     } catch (error) {
       console.log("Error fetching patient deta :", error);
+    } finally {
+      setPreload(false);
     }
   };
 
@@ -288,7 +291,7 @@ export default function PatientDetails() {
 
   return (
     <>
-      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
+      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
       <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
       <div className="patientDetailsPage">
         <div className="d-flex justify-content-between">

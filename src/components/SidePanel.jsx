@@ -10,52 +10,50 @@ import { useNavigate } from "react-router-dom";
 
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 
-export default function SidePanel({ isOpen, togglePanel }) {
+export default function SidePanel({ isOpen, togglePanel, activeNav }) {
   const navigate = useNavigate();
+  // const [active, setActive] = useState(false);
 
   return (
     <div>
-      <div
-        className={isOpen ? "overlay hide" : "overlay show"}
-        onClick={togglePanel}
-      ></div>
+      <div className={isOpen ? "overlay hide" : "overlay show"} onClick={togglePanel}></div>
 
       <div className={isOpen ? "sidePanel hide" : "sidePanel show"}>
         <div className="sidePanelList">
           <ul>
-            <Link to="/dashboard">
-              <li>
+            <li>
+              <Link to="/dashboard" className={activeNav === "Dashboard" ? "activeON" : "activeOFF"}>
                 <DashboardOutlinedIcon fontSize="small" />
                 <span className="ms-2">Dashboard</span>
-              </li>
-            </Link>
+              </Link>
+            </li>
 
             <li>
-              <Link to="/pages/booking">
+              <Link to="/pages/booking" className={activeNav === "Booking" ? "activeON" : "activeOFF"}>
                 <DateRangeOutlinedIcon fontSize="small" />
                 <span className="ms-2">Booking</span>
               </Link>
             </li>
             <li>
-              <Link to="/pages/confirm">
+              <Link to="/pages/confirm" className={activeNav === "Confirm" ? "activeON" : "activeOFF"}>
                 <PlaylistAddCheckCircleOutlinedIcon fontSize="small" />
                 <span className="ms-2">Confirm</span>
               </Link>
             </li>
             <li>
-              <Link to="/pages/cancelled">
+              <Link to="/pages/cancelled" className={activeNav === "Cancelled" ? "activeON" : "activeOFF"}>
                 <EventBusyOutlinedIcon fontSize="small" />
                 <span className="ms-2">Cancelled</span>
               </Link>
             </li>
             <li>
-              <Link to="/pages/patients">
+              <Link to="/pages/patients" className={activeNav === "Patients" ? "activeON" : "activeOFF"}>
                 <PeopleOutlinedIcon fontSize="small" />
                 <span className="ms-2">My Patients</span>
               </Link>
             </li>
             <li>
-              <Link to="/pages/history">
+              <Link to="/pages/history" className={activeNav === "History" ? "activeON" : "activeOFF"}>
                 <UpdateOutlinedIcon fontSize="small" />
                 <span className="ms-2">History</span>
               </Link>

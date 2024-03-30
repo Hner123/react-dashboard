@@ -24,7 +24,19 @@
 .historyTable #myTable {
   width: 100% !important;
 }
+.historyTable tbody tr td {
+  font-size: 12px !important;
+}
 
 colgroup {
   display: none;
+}
+.historyTable th span {
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .historyPage {
+    padding: 115px 25px 30px 25px;
+  }
 }

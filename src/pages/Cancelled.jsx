@@ -15,10 +15,13 @@ export default function Cancelled() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [firstRowData, setFirstRowData] = useState(0);
+  const [active, setActive] = useState("Cancelled");
 
   const [openS, setOPenS] = useState(false);
   const [snackSeverity, setSnackSeverity] = useState("");
   const [snackMessage, setSnackMessage] = useState("");
+
+  const [preload, setPreload] = useState(true);
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
@@ -128,6 +131,8 @@ export default function Cancelled() {
       };
     } catch (error) {
       console.error("Error posting data:", error);
+    } finally {
+      setPreload(false);
     }
   };
 
@@ -157,8 +162,8 @@ export default function Cancelled() {
 
   return (
     <>
-      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
-      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
+      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
+      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
 
       <div className="cancelPage">
         <h1>Cancelled</h1>

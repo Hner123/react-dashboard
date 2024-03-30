@@ -31,7 +31,7 @@ colgroup {
 .confirmTable th span {
   font-size: 12px;
 }
-.confirmTable tbody tr td:first-child {
+.confirmTable tbody tr td {
   font-size: 12px !important;
 }
 .confirmTable tbody tr td:nth-child(2) {

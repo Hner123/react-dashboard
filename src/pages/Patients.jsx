@@ -19,12 +19,15 @@ import DeletePatient from "../components/DeletePatient";
 export default function Patients() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
   const navigate = useNavigate();
+  const [active, setActive] = useState("Patients");
 
   const [addPatientModal, setAddPatientModal] = useState(false);
   const [deletePatientModal, setDeletePatientModal] = useState(false);
   const [totalPatient, setTotalPatient] = useState(0);
   const [deleteId, setDeleteId] = useState(0);
   const [deleteModal, setDeleteModal] = useState(false);
+
+  const [preload, setPreload] = useState(true);
 
   const handleClose = () => {
     setAddPatientModal(false);
@@ -119,6 +122,8 @@ export default function Patients() {
       };
     } catch (error) {
       console.error("Error posting data:", error);
+    } finally {
+      setPreload(false);
     }
   };
 
@@ -128,8 +133,8 @@ export default function Patients() {
 
   return (
     <>
-      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
-      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
+      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
+      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
       <div className="patientsPage">
         <h1>My Patients</h1>
 
