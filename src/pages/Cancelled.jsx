@@ -62,34 +62,7 @@ export default function Cancelled() {
           { title: "Branch" },
           { title: "Notes" },
           { title: "Reasons for cancelling" },
-          {
-            title: "Actions",
-            render: function (data, type, row) {
-              // Assuming you have access to row data, you can create buttons dynamically
-              if (type === "display") {
-                return `
-                            <div class='d-flex' style='gap:.3rem;'>
-                                <button class='deleteBtn'>Delete</button>
-                            </div>
-                        `;
-              }
-              return null;
-            },
-          },
         ],
-        createdRow: (row, data) => {
-          // Attach event listeners to buttons when rows are created
-          $(row)
-            .find(".deleteBtn")
-            .on("click", function () {
-              // Retrieve data from the current row
-              const rowData = table.row($(this).closest("tr")).data()[0];
-              console.log("Data from current row:", rowData);
-              showModalFunction();
-              setFirstRowData(rowData);
-            });
-        },
-
         destroy: true, // I think some clean up is happening here
         responsive: true,
         deferRender: true,
@@ -114,11 +87,6 @@ export default function Cancelled() {
             visible: false,
             searchable: false,
           },
-          {
-            target: 7,
-            visible: false,
-            searchable: false,
-          },
           { responsivePriority: 1, targets: -1 },
           { responsivePriority: 2, targets: 2 },
         ],
@@ -137,27 +105,17 @@ export default function Cancelled() {
   };
 
   const deleteToHistory = async () => {
-    const data = { firstRowData };
-
     try {
-      const response = await axios.post(process.env.REACT_APP_DELETETOHISTORY, data);
+      const response = await axios.post(process.env.REACT_APP_DELETETOHISTORY);
       console.log("Fetch status response :", response.data);
-      fetchCancelData();
-      handleClose();
-
-      setOPenS(true);
-      setSnackMessage("Succesfully deleted!");
-      setSnackSeverity("success");
     } catch (error) {
       console.log("error from deleteToHistry :", error);
-      setOPenS(true);
-      setSnackMessage("Error deleting!");
-      setSnackSeverity("error");
     }
   };
 
   useEffect(() => {
     fetchCancelData();
+    deleteToHistory();
   }, []);
 
   return (
@@ -171,29 +129,6 @@ export default function Cancelled() {
           <table id="myTable" className="row-border" width="100%"></table>
         </div>
       </div>
-
-      <Modal
-        size="sm"
-        show={showModal}
-        onHide={handleClose}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
-        <Modal.Header>
-          <Modal.Title style={{ fontSize: "20px" }}>
-            <p className="mb-0">Delete </p>
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Are you sure you want to delete?</Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={deleteToHistory}>
-            Yes
-          </Button>
-          <Button variant="secondary" onClick={handleClose}>
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
 
       {/* **********************SNACK BAR POP UP***************************** */}
       <Snackbar

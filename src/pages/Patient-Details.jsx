@@ -62,6 +62,7 @@ export default function PatientDetails() {
   const [patientEmail, setPatientEmail] = useState("");
   const [patientDOB, setPatientDOB] = useState("");
   const [preload, setPreload] = useState(true);
+  const [active, setActive] = useState("Patients");
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -292,7 +293,7 @@ export default function PatientDetails() {
   return (
     <>
       <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
-      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} />
+      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
       <div className="patientDetailsPage">
         <div className="d-flex justify-content-between">
           <h1>

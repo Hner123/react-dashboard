@@ -20,6 +20,9 @@ import AmChart from "./components/AmChart";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { Bar } from "react-chartjs-2";
 // import faker from "faker";
+import { Person } from "@mui/icons-material";
+import { EventNote } from "@mui/icons-material";
+import { GroupAdd } from "@mui/icons-material";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -34,6 +37,7 @@ export default function Dashboard() {
   const [preload, setPreload] = useState(true);
   const [test, setTest] = useState([]);
   const [active, setActive] = useState("Dashboard");
+  const [todayPatientsValue, setTodayPatientsValue] = useState(0);
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
@@ -44,6 +48,8 @@ export default function Dashboard() {
     try {
       const response = await axios.post(process.env.REACT_APP_DATA);
       console.log("Post successful:", response.data);
+
+      setTodayPatientsValue(response.data.percentage_Patients_vs_yesterday);
 
       const filteredEvents = [];
       for (let i = 0; i < response.data.ConfirmAllBooking.length; i++) {
@@ -168,23 +174,142 @@ export default function Dashboard() {
       <div>
         <div className="dashboard">
           <h5>Dashboard</h5>
+
           {/* ****************************4 BOX STATS************************ */}
           <div className="stats d-flex justify-content-center">
-            <div className="col-md-3">
-              Today's Patient
-              <h4>{todayPatient}</h4>
+            <div className="col-md-3 blue">
+              <div className="row">
+                <div className="col-md">
+                  <span>Today's Patient </span>
+                  <h4>{todayPatient}</h4>
+                </div>
+                <div className="col-md">
+                  <span className="d-flex justify-content-end">
+                    <Person className="statsBlue" />
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                {todayPatientsValue < 0 ? (
+                  <span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-caret-down-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                    </svg>
+                    {todayPatientsValue}% vs Yesterday
+                  </span>
+                ) : (
+                  <span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-caret-up-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                    </svg>
+                    {todayPatientsValue}% vs Yesterday
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="col-md-3">
-              Appointments
-              <h4>{totalAppointments}</h4>
+
+            <div className="col-md-3 green">
+              <div className="row">
+                <div className="col-md">
+                  <span>Appointments</span>
+                  <h4>{totalAppointments}</h4>
+                </div>
+                <div className="col-md">
+                  <span className="d-flex justify-content-end">
+                    <EventNote className="statsGreen" />
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-caret-up-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                  </svg>
+                  12% vs Yesterday
+                </span>
+              </div>
             </div>
-            <div className="col-md-3">
-              Total Patients
-              <h4>{totalPatient}</h4>
+
+            <div className="col-md-3 yellow">
+              <div className="row">
+                <div className="col-md">
+                  <span>Total Patients</span>
+                  <h4>{totalPatient}</h4>
+                </div>
+                <div className="col-md">
+                  <span className="d-flex justify-content-end">
+                    <GroupAdd className="statsYellow" />
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-caret-up-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                  </svg>
+                  12% vs Yesterday
+                </span>
+              </div>
             </div>
-            <div className="col-md-3">
-              Sales Today
-              <h4>{totalSales}</h4>
+
+            <div className="col-md-3 red">
+              <div className="row">
+                <div className="col-md">
+                  <span>Sales Today</span>
+                  <h4>{totalSales}</h4>
+                </div>
+                <div className="col-md d-flex justify-content-end">
+                  <span
+                    className="d-flex justify-content-center align-items-center mb-3 statsRed"
+                    style={{ fontSize: "26px", fontWeight: "500" }}
+                  >
+                    ₱
+                  </span>
+                </div>
+              </div>
+              <div className="mt-4">
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-caret-up-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                  </svg>
+                  12% vs Yesterday
+                </span>
+              </div>
             </div>
           </div>
           {/* **************************upcoming Table********************** */}
@@ -197,7 +322,6 @@ export default function Dashboard() {
               <Bar options={options} data={weeklySalesData} />
             </div>
           </div>
-
           <div className="fullCalendar">
             <div className="d-flex justify-content-center">
               <div className="col-md-6 d-flex justify-content-center">
@@ -229,7 +353,6 @@ export default function Dashboard() {
               />
             </div>
           </div>
-
           <div className="amChart">
             <h5>Sales for the last 30 days till now</h5>
             <AmChart />

@@ -12,9 +12,6 @@ header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
 
-
-
-
 date_default_timezone_set('Asia/Manila');
 
 $year = date('Y');
@@ -56,7 +53,6 @@ $Last30DaysFormatted = $Last30Days->format('Y-m-d');
 
 
 // echo $year."-".$month."-".$day;
-$todaysPatient = "SELECT * FROM confirmed_booking WHERE book_Year = '$year' && book_Month = '$month' && book_Day ='$day'";
 $appointments = "SELECT * FROM confirmed_booking";
 $totalPatient = "SELECT * FROM customer_details";
 $salesToday = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) = '$today'";
@@ -64,12 +60,83 @@ $Salesweek = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETW
 $salesLastWeek = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$lastLastSundayFormatted' AND '$lastSaturdayFormatted'";
 $last30daysDate = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$Last30DaysFormatted' AND '$today'";
 
+
+
+// ***********minus 30 days***********
+// $lastMonth = date('m', strtotime('-1 month', strtotime($today)));
+
+
+// ********************count Yesterday patient*************************
+$lastMonth = date('m', strtotime('first day of -2 month'));
+
+// if($day == 1){
+//     $yesterday_SQL = "SELECT * FROM confirmed_booking WHERE book_Year = '$year' && book_Month = '$lastMonth' && book_Day = '$yesterday'";
+// }
+// else{
+//     $yesterday_SQL = "SELECT * FROM confirmed_booking WHERE book_Year = '$year' && book_Month = '$month' && book_Day = '$yesterday'";
+// }
+
+// $yesterdayResult = $connection->query($yesterday_SQL);
+// $countYesterdayResult = 0;
+// while($yesterdayResult->fetch_assoc()){
+//     $countYesterdayResult += 1;
+// }
+
+$yesterday = date('Y-m-d', strtotime('-1 day'));
+$yesterday_SQL = "SELECT * FROM historyforcustomerdetails";
+$yesterday_SQL_result = $connection->query($yesterday_SQL);
+
+$yesterdayCount = 0;
+while($row = $yesterday_SQL_result->fetch_assoc()){
+
+        $formatted_date = date('Y-m-d', strtotime($row['timestamp']));
+
+        if($formatted_date == $yesterday){
+           $yesterdayCount += 1;
+        }
+}
+
+$yesterday2 = "SELECT * FROM cancelled_booking";
+$yesterdayResult = $connection->query($yesterday2);
+$getYesterday = "";
+while($row = $yesterdayResult->fetch_assoc()){
+    $formattedDate = $row['book_Year'] ."-". ($row['book_Month']+1)."-". $row['book_Day'] ;
+    $getYesterday = date('Y-m-d', strtotime($formattedDate));
+
+   if($getYesterday == $yesterday){
+    $yesterdayCount += 1;
+   }
+}
+
+
+
 // ******************count todays patient*************************
+$todaysPatient = "SELECT * FROM confirmed_booking WHERE book_Year = '$year' && book_Month = '$month' && book_Day ='$day'";
 $result = $connection->query($todaysPatient);
 $count = 0;
 while ($result->fetch_assoc()) {
     $count += 1;
 }
+
+$transactedToday = "SELECT * FROM historyforcustomerdetails";
+$transactedTodayResult = $connection->query($transactedToday);
+// $todayTransaction = array();
+while($row = $transactedTodayResult->fetch_assoc()){
+
+    $formatted_date = date('Y-m-d', strtotime($row['timestamp']));
+    $todayTransaction[] = $formatted_date;
+
+    if($formatted_date == $today){
+        $count += 1;
+    }
+}
+$todaysPatient2 = "SELECT * FROM cancelled_booking WHERE book_Year = '$year' && book_Month = '$month' && book_Day = '$day'";
+$todaysPatient2result = $connection->query($todaysPatient2);
+while($row = $todaysPatient2result->fetch_assoc()){
+    $count += 1;
+}
+
+$percentage_Patients_vs_yesterday = intval((($count - $yesterdayCount) / $yesterdayCount) * 100);
 
 // ******************count confirmed appointment*******************
 $result2 = $connection->query($appointments);
@@ -247,6 +314,8 @@ $jsonData = json_encode($calendarData, JSON_UNESCAPED_UNICODE);
 
 $responseData = array(
     'todayPatient' => $count,
+    'PatientYesterday' => $yesterdayCount,
+    'percentage_Patients_vs_yesterday' => $percentage_Patients_vs_yesterday,
     'totalAppointment' => $countAppoint,
     'totalPatient' => $countPatient,
     'totalSales' => $todaySalesTotal,
@@ -259,7 +328,6 @@ $responseData = array(
     'allLocationBranch' => $allLocationBranch,
     'upComingPatient' => $upComingPatient,
     'amcharMonthSales' => $amcharMonthSales,
- 
 
     );
 
@@ -269,12 +337,8 @@ ksort($responseData['responselast30daysRange']);
 
     // Send the data as JSON
     header('Content-Type: application/json');
-    echo json_encode($responseData);
+    echo json_encode($responseData, JSON_PRETTY_PRINT);
     // echo $jsonOutput;
 
-
-  
-   
-    
 ?>
 

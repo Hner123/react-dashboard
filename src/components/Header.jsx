@@ -62,7 +62,13 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
   return (
     <div>
       <LinearProgress
-        style={{ position: "fixed", width: "100%", top: "80px", visibility: preload ? "visible" : "hidden" }}
+        style={{
+          height: "6px",
+          position: "fixed",
+          width: "100%",
+          top: "80px",
+          visibility: preload ? "visible" : "hidden",
+        }}
       />
 
       <header className="Navheader d-flex justify-content-between">

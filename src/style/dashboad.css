@@ -20,21 +20,20 @@
   width: 22%;
   height: 150px;
   border-radius: 7px;
-  background-color: #4099ff;
   color: #fff;
   /* width: 100%; */
 }
 
-.stats div:nth-child(1) {
+.blue {
   background-color: #4099ff;
 }
-.stats div:nth-child(2) {
+.green {
   background-color: #2ed8b6;
 }
-.stats div:nth-child(3) {
+.yellow {
   background-color: #ffb64d;
 }
-.stats div:nth-child(4) {
+.red {
   background-color: #ff5370;
 }
 
@@ -47,6 +46,44 @@
   padding: 20px; */
   width: 100%;
   gap: 1rem;
+}
+
+.statsBlue {
+  border-radius: 50%;
+  width: 40px !important;
+  padding: 5px;
+  height: 40px !important;
+  box-shadow: 0 8px 15px rgba(62, 57, 107, 0.2);
+  background-color: #fff;
+  color: #4099ff;
+}
+.statsGreen {
+  border-radius: 50%;
+  width: 40px !important;
+  padding: 5px;
+  height: 40px !important;
+  box-shadow: 0 8px 15px rgba(62, 57, 107, 0.2);
+  background-color: #fff;
+  color: #2ed8b6;
+}
+.statsYellow {
+  border-radius: 50%;
+  width: 40px !important;
+  padding: 5px;
+  height: 40px !important;
+  box-shadow: 0 8px 15px rgba(62, 57, 107, 0.2);
+  background-color: #fff;
+  color: #ffb64d;
+}
+
+.statsRed {
+  border-radius: 50%;
+  width: 40px !important;
+  padding: 5px;
+  height: 40px !important;
+  box-shadow: 0 8px 15px rgba(62, 57, 107, 0.2);
+  background-color: #fff;
+  color: #ff5370;
 }
 
 .upcomingPatient .col-md,
