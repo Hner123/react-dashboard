@@ -38,6 +38,8 @@ export default function Dashboard() {
   const [test, setTest] = useState([]);
   const [active, setActive] = useState("Dashboard");
   const [todayPatientsValue, setTodayPatientsValue] = useState(0);
+  const [todaySalesPercentage, setTodaySalesPercentage] = useState(0);
+  const [patientAddedLastmonth, setPatientAddedLastMonth] = useState(0);
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
@@ -50,7 +52,8 @@ export default function Dashboard() {
       console.log("Post successful:", response.data);
 
       setTodayPatientsValue(response.data.percentage_Patients_vs_yesterday);
-
+      setTodaySalesPercentage(response.data.percentageSales_today_vs_yesterday);
+      setPatientAddedLastMonth(response.data.totalPatientLastMonth);
       const filteredEvents = [];
       for (let i = 0; i < response.data.ConfirmAllBooking.length; i++) {
         if (response.data.allLocationBranch[i] === "Marikina") {
@@ -66,7 +69,7 @@ export default function Dashboard() {
       SetData(response.data.responselast30daysRange);
       SetTotalPatient(response.data.totalPatient);
       SetTotalAppointments(response.data.totalAppointment);
-      SetTotalSales(response.data.totalSales);
+      SetTotalSales(response.data.todaySalesTotal);
       SetTodayPatient(response.data.todayPatient);
       // SetConfirmnames(response.data.sample);
       // SetConfirmSched(response.data.ConfirmAllBooking);
@@ -197,7 +200,7 @@ export default function Dashboard() {
                       width="16"
                       height="16"
                       fill="currentColor"
-                      class="bi bi-caret-down-fill"
+                      className="bi bi-caret-down-fill"
                       viewBox="0 0 16 16"
                     >
                       <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
@@ -211,12 +214,12 @@ export default function Dashboard() {
                       width="16"
                       height="16"
                       fill="currentColor"
-                      class="bi bi-caret-up-fill"
+                      className="bi bi-caret-up-fill"
                       viewBox="0 0 16 16"
                     >
                       <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
                     </svg>
-                    {todayPatientsValue}% vs Yesterday
+                    +{todayPatientsValue}% vs Yesterday
                   </span>
                 )}
               </div>
@@ -241,7 +244,7 @@ export default function Dashboard() {
                     width="16"
                     height="16"
                     fill="currentColor"
-                    class="bi bi-caret-up-fill"
+                    className="bi bi-caret-up-fill"
                     viewBox="0 0 16 16"
                   >
                     <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
@@ -270,12 +273,12 @@ export default function Dashboard() {
                     width="16"
                     height="16"
                     fill="currentColor"
-                    class="bi bi-caret-up-fill"
+                    className="bi bi-caret-up-fill"
                     viewBox="0 0 16 16"
                   >
                     <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
                   </svg>
-                  12% vs Yesterday
+                  {patientAddedLastmonth} Added Last Month
                 </span>
               </div>
             </div>
@@ -296,19 +299,35 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="mt-4">
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-caret-up-fill"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
-                  </svg>
-                  12% vs Yesterday
-                </span>
+                {todaySalesPercentage < 0 ? (
+                  <span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-caret-down-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z" />
+                    </svg>
+                    {todaySalesPercentage}% vs Yesterday
+                  </span>
+                ) : (
+                  <span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-caret-up-fill"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
+                    </svg>
+                    +{todaySalesPercentage}% vs Yesterday
+                  </span>
+                )}
               </div>
             </div>
           </div>

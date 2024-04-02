@@ -54,9 +54,9 @@ $Last30DaysFormatted = $Last30Days->format('Y-m-d');
 
 // echo $year."-".$month."-".$day;
 $appointments = "SELECT * FROM confirmed_booking";
-$totalPatient = "SELECT * FROM customer_details";
-$salesToday = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) = '$today'";
-$Salesweek = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$startDateFormatted' AND '$endDateFormatted'";
+
+
+
 $salesLastWeek = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$lastLastSundayFormatted' AND '$lastSaturdayFormatted'";
 $last30daysDate = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$Last30DaysFormatted' AND '$today'";
 
@@ -145,22 +145,49 @@ while ($result2->fetch_assoc()) {
     $countAppoint += 1;
 }
 
-// ******************count confirmed appointment*******************
+// ******************Total Patients*******************
+$totalPatient = "SELECT * FROM customer_details";
 $result3 = $connection->query($totalPatient);
 $countPatient = 0;
 while ($result3->fetch_assoc()) {
     $countPatient += 1;
 }
 
-// ******************count total sales*******************
+$firstDayLastMonth = (new DateTime('first day of last month'))->format('Y-m-d');
+$lastDayLastMonth = (new DateTime('last day of last month'))->format('Y-m-d');
+
+$lastMonthPatient = "SELECT * FROM customer_details WHERE DATE(timestamp) BETWEEN '$firstDayLastMonth' AND '$lastDayLastMonth'";
+
+$result10 = $connection->query($lastMonthPatient);
+$totalPatientLastMonth = 0;
+while($row = $result10->fetch_assoc()){
+    $totalPatientLastMonth += 1;
+}
+
+// ******************count total sales Today*******************
+$salesToday = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) = '$today'";
 $result4 = $connection->query($salesToday);
 $todaySalesTotal = 0;
 while ($row = $result4->fetch_assoc()) {
     $todaySales = $row['Payment_Cost'];
-    $todaySalesTotal += $todaySales; // Use += to add to the existing total
+    $todaySalesTotal += $todaySales; 
 }
 
+
+// ******************count total sales Yesterday*******************
+$salesYesterday = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) = '$yesterday'";
+$result9 = $connection->query($salesYesterday);
+$totalSalesYesterday = 0;
+while ($row = $result9->fetch_assoc()) {
+    $yesterdaySales = $row['Payment_Cost'];
+    $totalSalesYesterday += $yesterdaySales; 
+}
+
+$percentageSales_today_vs_yesterday = intval((($todaySalesTotal - $totalSalesYesterday) / $totalSalesYesterday) * 100);
+
+
 // ******************Sales week*******************
+$Salesweek = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$startDateFormatted' AND '$endDateFormatted'";
 $result5 = $connection->query($Salesweek);
 $weekSales = array();
 
@@ -318,7 +345,10 @@ $responseData = array(
     'percentage_Patients_vs_yesterday' => $percentage_Patients_vs_yesterday,
     'totalAppointment' => $countAppoint,
     'totalPatient' => $countPatient,
-    'totalSales' => $todaySalesTotal,
+    'todaySalesTotal' => $todaySalesTotal,
+    'totalSalesYesterday' => $totalSalesYesterday,
+    'percentageSales_today_vs_yesterday' => $percentageSales_today_vs_yesterday,
+    'totalPatientLastMonth' => $totalPatientLastMonth,
     'responseWeekSales' => $responseWeekSales,
     'responseLastWeekSales' => $responseLastWeekSales,
     'responselast30daysRange' => $responselast30daysRange,
@@ -328,7 +358,7 @@ $responseData = array(
     'allLocationBranch' => $allLocationBranch,
     'upComingPatient' => $upComingPatient,
     'amcharMonthSales' => $amcharMonthSales,
-
+  
     );
 
 ksort($responseData['responseWeekSales']);

@@ -16,6 +16,7 @@
   margin-top: 20px;
   padding: 20px;
   margin: auto;
+  min-height: 75dvh;
 }
 .patientsTable tbody tr td,
 .patientsTable th {
