@@ -4,11 +4,13 @@ import { useState } from "react";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import Spinner from "react-bootstrap/Spinner";
 
 export default function DeletePatient({ refetchData, deleteModalOpen, deleteModalClose, id }) {
   const [openS, setOPenS] = useState(false);
   const [snackSeverity, setSnackSeverity] = useState("");
   const [snackMessage, setSnackMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCloseSnack = (event, reason) => {
     if (reason === "clickaway") {
@@ -19,6 +21,7 @@ export default function DeletePatient({ refetchData, deleteModalOpen, deleteModa
   };
   const deleteData = async () => {
     try {
+      setIsLoading(true);
       const data = { id };
       const response = await axios.post(process.env.REACT_APP_DELETEPATIENT, data);
       console.log("Patient deleted success :" + response.data);
@@ -33,6 +36,8 @@ export default function DeletePatient({ refetchData, deleteModalOpen, deleteModa
       setOPenS(true);
       setSnackMessage("Error deleting patient!");
       setSnackSeverity("error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,9 +57,12 @@ export default function DeletePatient({ refetchData, deleteModalOpen, deleteModa
         </Modal.Header>
         <Modal.Body>Are you sure you want to delete this patient?</Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={deleteData}>
-            Yes
+          <Button variant="primary" disabled={isLoading} onClick={deleteData}>
+            <Spinner style={{ display: isLoading ? "inline-block" : "none" }} animation="border" size="sm" />{" "}
+            &nbsp;
+            {isLoading ? "Deleting..." : "Delete"}
           </Button>
+
           <Button variant="secondary" onClick={deleteModalClose}>
             Cancel
           </Button>

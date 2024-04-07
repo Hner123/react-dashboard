@@ -22,8 +22,10 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import "react-datepicker/dist/react-datepicker.css";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import Spinner from "react-bootstrap/Spinner";
 
 export default function PatientDetails() {
+  const [isLoading, setIsLoading] = useState(false);
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -156,6 +158,7 @@ export default function PatientDetails() {
 
   const saveNotes = async () => {
     try {
+      setIsLoading(true);
       const data = {
         id,
         clientNotes,
@@ -170,11 +173,14 @@ export default function PatientDetails() {
       setOPenS(true);
       setSnackMessage("Error saving notes!");
       setSnackSeverity("error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const saveProfilePic = async () => {
     try {
+      setIsLoading(true);
       const formData = new FormData();
       formData.append("profilePic", profilePic);
       formData.append("id", id);
@@ -188,11 +194,14 @@ export default function PatientDetails() {
       console.log("Successfully send data :", response.data, response2.data.patientData[0][9]);
     } catch (error) {
       console.log("Error saving profile pic :", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const saveDocument = async () => {
     try {
+      setIsLoading(true);
       const formData = new FormData();
       formData.append("addFile", addFile);
       formData.append("id", id);
@@ -206,11 +215,14 @@ export default function PatientDetails() {
       console.log("Successfully send data :", response.data);
     } catch (error) {
       console.log("Error saving profile pic :", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const deleteDocu = async () => {
     try {
+      setIsLoading(true);
       const data = { deleteID };
       const response = await axios.post(process.env.REACT_APP_DELETEDOCUMENT, data);
       const data2 = { id };
@@ -220,6 +232,8 @@ export default function PatientDetails() {
       console.log("Successfully deleted the file: " + response.data);
     } catch (error) {
       console.log("Error Delete the file :", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -394,8 +408,14 @@ export default function PatientDetails() {
                 </Form.Group>
               </div>
               <div className="d-flex justify-content-end">
-                <Button size="sm" variant="primary" onClick={saveNotes}>
-                  Save Changes
+                <Button size="sm" variant="primary" disabled={isLoading} onClick={saveNotes}>
+                  <Spinner
+                    style={{ display: isLoading ? "inline-block" : "none", height: "12px", width: "12px" }}
+                    animation="border"
+                    size="sm"
+                  />
+                  &nbsp;
+                  {isLoading ? "Adding..." : "Add Note"}
                 </Button>
               </div>
             </div>
@@ -558,9 +578,12 @@ export default function PatientDetails() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={saveProfilePic}>
-            Save
+          <Button variant="primary" disabled={isLoading} onClick={saveProfilePic}>
+            <Spinner style={{ display: isLoading ? "inline-block" : "none" }} animation="border" size="sm" />{" "}
+            &nbsp;
+            {isLoading ? "Uploading..." : "Upload"}
           </Button>
+
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
@@ -588,9 +611,12 @@ export default function PatientDetails() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={saveDocument}>
-            Save
+          <Button variant="primary" disabled={isLoading} onClick={saveDocument}>
+            <Spinner style={{ display: isLoading ? "inline-block" : "none" }} animation="border" size="sm" />{" "}
+            &nbsp;
+            {isLoading ? "Saving..." : "Save"}
           </Button>
+
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
@@ -617,9 +643,12 @@ export default function PatientDetails() {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={deleteDocu}>
-            Yes
+          <Button variant="primary" disabled={isLoading} onClick={deleteDocu}>
+            <Spinner style={{ display: isLoading ? "inline-block" : "none" }} animation="border" size="sm" />{" "}
+            &nbsp;
+            {isLoading ? "Deleting..." : "Delete"}
           </Button>
+
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import Spinner from "react-bootstrap/Spinner";
 
 export default function AddPatient({ patientModalOpen, patientModalClose, refetchData }) {
   const [name, setName] = useState("");
@@ -18,6 +19,7 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
   const [openS, setOPenS] = useState(false);
   const [snackSeverity, setSnackSeverity] = useState("");
   const [snackMessage, setSnackMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const closeModal = () => {
     setModalClose(patientModalClose());
@@ -56,6 +58,7 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
       birth != ""
     ) {
       try {
+        setIsLoading(true);
         const data = { name, lastName, address, email, gender, number, birth };
         const response = await axios.post(process.env.REACT_APP_ADDPATIENT, data);
         console.log("succesfully saved patient :" + response.data);
@@ -79,6 +82,8 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
         setOPenS(true);
         setSnackMessage("Error adding patient!");
         setSnackSeverity("error");
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -187,9 +192,18 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button type="submit" form="addPatientForm" onClick={saveData}>
-            Add Patient
+          <Button
+            type="submit"
+            form="addPatientForm"
+            variant="primary"
+            disabled={isLoading}
+            onClick={saveData}
+          >
+            <Spinner style={{ display: isLoading ? "inline-block" : "none" }} animation="border" size="sm" />{" "}
+            &nbsp;
+            {isLoading ? "Adding..." : "Add Patient"}
           </Button>
+
           <Button variant="secondary" onClick={closeModal}>
             Cancel
           </Button>

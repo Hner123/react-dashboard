@@ -53,12 +53,12 @@ $Last30DaysFormatted = $Last30Days->format('Y-m-d');
 
 
 // echo $year."-".$month."-".$day;
-$appointments = "SELECT * FROM confirmed_booking";
 
 
 
-$salesLastWeek = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$lastLastSundayFormatted' AND '$lastSaturdayFormatted'";
-$last30daysDate = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$Last30DaysFormatted' AND '$today'";
+
+
+
 
 
 
@@ -130,15 +130,20 @@ while($row = $transactedTodayResult->fetch_assoc()){
         $count += 1;
     }
 }
+
 $todaysPatient2 = "SELECT * FROM cancelled_booking WHERE book_Year = '$year' && book_Month = '$month' && book_Day = '$day'";
 $todaysPatient2result = $connection->query($todaysPatient2);
 while($row = $todaysPatient2result->fetch_assoc()){
     $count += 1;
 }
 
-$percentage_Patients_vs_yesterday = intval((($count - $yesterdayCount) / $yesterdayCount) * 100);
+$percentage_Patients_vs_yesterday = 0; // default value if $yesterdayCount is zero
+if ($yesterdayCount != 0) {
+    $percentage_Patients_vs_yesterday = intval((($count - $yesterdayCount) / $yesterdayCount) * 100);
+}
 
 // ******************count confirmed appointment*******************
+$appointments = "SELECT * FROM confirmed_booking";
 $result2 = $connection->query($appointments);
 $countAppoint = 0;
 while ($result2->fetch_assoc()) {
@@ -183,8 +188,10 @@ while ($row = $result9->fetch_assoc()) {
     $totalSalesYesterday += $yesterdaySales; 
 }
 
+$percentageSales_today_vs_yesterday = 0;
+if ($totalSalesYesterday != 0) {
 $percentageSales_today_vs_yesterday = intval((($todaySalesTotal - $totalSalesYesterday) / $totalSalesYesterday) * 100);
-
+}
 
 // ******************Sales week*******************
 $Salesweek = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$startDateFormatted' AND '$endDateFormatted'";
@@ -214,6 +221,8 @@ foreach ($weekSales as $date => $totalSales) {
 }
 
 
+
+$salesLastWeek = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$lastLastSundayFormatted' AND '$lastSaturdayFormatted'";
 $result6 = $connection->query($salesLastWeek);
 $lastWeekSales = array();
 
@@ -239,7 +248,7 @@ foreach ($lastWeekSales as $date2 => $LastWeektotalSales) {
 }
 
 // ********************************LAST 30 DAYS**********************************************
-
+$last30daysDate = "SELECT * FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$Last30DaysFormatted' AND '$today'";
 $result7 = $connection->query($last30daysDate);
 $last30daysRange = array();
 $amcharMonthSales = array();
@@ -289,24 +298,56 @@ foreach ($last30daysRange as $date3 => $Last30DaysTotalSales) {
 //     echo "{'date':'" . $sale['date'] . "', 'value':'" . $sale['value'] . "'}\n";
 // }
 
+
+// ********************************7 days completed and cancelled booking status**********************************************
+
+$completed = array();
+$weekdates = date('Y-m-d', strtotime('-7 day'));
+$sqlWeekstats = "SELECT DATE(timestamp) AS date, COUNT(*) AS count FROM historyforcustomerdetails WHERE DATE(timestamp) BETWEEN '$weekdates' AND '$today' GROUP BY DATE(timestamp)";
+$result = $connection->query($sqlWeekstats);
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+
+        $completed[$row['date']] = $row['count'];
+    }
+} 
+
+$sqlWeekstatsCancelled = "SELECT DATE(dateCancelled) AS date, COUNT(*) AS count FROM cancelled_booking WHERE DATE(dateCancelled) BETWEEN '$weekdates' AND '$today' GROUP BY DATE(dateCancelled)";
+$resultCancelled = $connection->query($sqlWeekstatsCancelled);
+$cancelled = array();
+if ($resultCancelled->num_rows > 0) {
+    while ($row = $resultCancelled->fetch_assoc()) {
+
+        $cancelled[$row['date']] = $row['count'];
+    }
+} 
+
 // ********************************List of all confirm booking**********************************************
 $ConfirmAllBooking = array();
 $ConfirmAllNames = array();
 $ConfirmAlltimes = array();
 $allLocationBranch = array();
+$allID = array();
 $sample = array();
 $result8 = $connection->query($appointments);
 $upComingPatient = array();
 $calendarData = array();
+$notes = array();
+$services = array();
 while ($row = $result8->fetch_assoc()) {
+
     $confirmDate = $row['book_Year'] . "-" . $row['book_Month'] + 1 . "-" . $row['book_Day'];
     $confirmName = $row['First_Name'] . " " . $row['Last_Name'];
     $confirmTime =  $row['book_Time'];
 
+    $allID[] = $row['id'];
     $ConfirmAllNames[] = $confirmName;
     $ConfirmAllBooking[] = date('Y-m-d', strtotime($confirmDate));
     $ConfirmAlltimes[] = $confirmTime;
     $allLocationBranch[] = $row['location'];
+    $notes[] = $row['Patient_Note'];
+    $services[] = $row['service'];
 
     $twelveHourTime = date("h:i A", strtotime($confirmTime));
 
@@ -317,13 +358,6 @@ while ($row = $result8->fetch_assoc()) {
 
     $upComingPatient[] = $data;
 
-    $calendar = array(
-        'title' => $row['First_Name'] . " " . $row['Last_Name'],
-        'start' => $confirmDate . " " . $confirmTime
-    );
-
-    $calendarData[] = $calendar;
-    
       
 }
 
@@ -348,17 +382,23 @@ $responseData = array(
     'todaySalesTotal' => $todaySalesTotal,
     'totalSalesYesterday' => $totalSalesYesterday,
     'percentageSales_today_vs_yesterday' => $percentageSales_today_vs_yesterday,
+    'SuccessProcessYesterday' => $yesterdayCount,
     'totalPatientLastMonth' => $totalPatientLastMonth,
     'responseWeekSales' => $responseWeekSales,
     'responseLastWeekSales' => $responseLastWeekSales,
     'responselast30daysRange' => $responselast30daysRange,
+    'CalendarID' => $allID,
     'ConfirmAllBooking' => $ConfirmAllBooking,
     'ConfirmAllNames' => $ConfirmAllNames,
     'ConfirmAlltimes' => $ConfirmAlltimes,
     'allLocationBranch' => $allLocationBranch,
+    'notes' => $notes,
+    'services' => $services,
     'upComingPatient' => $upComingPatient,
     'amcharMonthSales' => $amcharMonthSales,
-  
+    'completed' => $completed,
+    'cancelled' => $cancelled,
+
     );
 
 ksort($responseData['responseWeekSales']);
@@ -367,7 +407,7 @@ ksort($responseData['responselast30daysRange']);
 
     // Send the data as JSON
     header('Content-Type: application/json');
-    echo json_encode($responseData, JSON_PRETTY_PRINT);
+    echo json_encode($responseData);
     // echo $jsonOutput;
 
 ?>

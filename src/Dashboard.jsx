@@ -8,12 +8,17 @@ import axios from "axios";
 import DataTable from "datatables.net-bs5";
 // import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
-import $ from "jquery";
 
 import { formatDate } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import CircleIcon from "@mui/icons-material/Circle";
+import Spinner from "react-bootstrap/Spinner";
+
 // import interactionPlugin from "@fullcalendar/interaction";
 import AmChart from "./components/AmChart";
 
@@ -35,11 +40,16 @@ export default function Dashboard() {
   const [dataq, SetData] = useState([]);
   const [events, setEvents] = useState([]);
   const [preload, setPreload] = useState(true);
-  const [test, setTest] = useState([]);
   const [active, setActive] = useState("Dashboard");
   const [todayPatientsValue, setTodayPatientsValue] = useState(0);
   const [todaySalesPercentage, setTodaySalesPercentage] = useState(0);
   const [patientAddedLastmonth, setPatientAddedLastMonth] = useState(0);
+  const [yesterdayCompleted, setYesterdayCompleted] = useState(0);
+  const [getCompleted, setGetCompleted] = useState([]);
+  const [getCancelled, setGetCancelled] = useState([]);
+  const [notes, setNotes] = useState("");
+  const [services, setServices] = useState("");
+  const [calendarLoading, setCalendarLoading] = useState(false);
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
@@ -54,12 +64,19 @@ export default function Dashboard() {
       setTodayPatientsValue(response.data.percentage_Patients_vs_yesterday);
       setTodaySalesPercentage(response.data.percentageSales_today_vs_yesterday);
       setPatientAddedLastMonth(response.data.totalPatientLastMonth);
+      setYesterdayCompleted(response.data.SuccessProcessYesterday);
+      setGetCompleted(response.data.completed);
+      setGetCancelled(response.data.cancelled);
+
       const filteredEvents = [];
       for (let i = 0; i < response.data.ConfirmAllBooking.length; i++) {
         if (response.data.allLocationBranch[i] === "Marikina") {
           filteredEvents.push({
+            id: response.data.CalendarID[i],
             title: response.data.ConfirmAllNames[i],
             start: response.data.ConfirmAllBooking[i] + " " + response.data.ConfirmAlltimes[i],
+            notes: response.data.notes[i],
+            services: response.data.services[i],
           });
         }
       }
@@ -73,7 +90,6 @@ export default function Dashboard() {
       SetTodayPatient(response.data.todayPatient);
       // SetConfirmnames(response.data.sample);
       // SetConfirmSched(response.data.ConfirmAllBooking);
-      console.log("TEST KO RA  " + dataq);
 
       // console.log(tableRef.current);
       // new DataTable('#example', {
@@ -99,7 +115,6 @@ export default function Dashboard() {
       return function () {
         console.log("Table destroyed");
         table.destroy();
-        console.log("events to" + events);
       };
     } catch (error) {
       console.error("Error posting data:", error);
@@ -110,6 +125,7 @@ export default function Dashboard() {
 
   const filterCalendarLoc = async (loc) => {
     try {
+      setCalendarLoading(true);
       const response = await axios.post(process.env.REACT_APP_DATA);
       console.log("Post successful:", response.data);
 
@@ -117,22 +133,28 @@ export default function Dashboard() {
       for (let i = 0; i < response.data.ConfirmAllBooking.length; i++) {
         if (response.data.allLocationBranch[i] === loc) {
           filteredEvents.push({
+            id: response.data.CalendarID[i],
             title: response.data.ConfirmAllNames[i],
             start: response.data.ConfirmAllBooking[i] + " " + response.data.ConfirmAlltimes[i],
+            notes: response.data.notes[i],
+            services: response.data.services[i],
           });
         }
       }
 
       setEvents(filteredEvents);
+      console.log(events);
     } catch (error) {
       console.error("Error posting data:", error);
+    } finally {
+      setTimeout(() => {
+        setCalendarLoading(false);
+      }, 800);
     }
   };
 
   useEffect(() => {
     handleStatusData();
-    // console.log("dataSet daya " + data);
-    console.log("events to" + events);
   }, []);
 
   const options = {
@@ -143,7 +165,16 @@ export default function Dashboard() {
       },
       title: {
         display: true,
-        text: "Weekly Trend Sales",
+        text: "Completed Vs Cancelled",
+      },
+    },
+    scales: {
+      y: {
+        suggestedMin: 0, // Start the Y-axis from 0
+        suggestedMax: 3, // Set the maximum value for the Y-axis
+        // You can adjust the suggestedMax value based on your data range
+        // For example, if your data range is from 0 to 6, set suggestedMax to 6
+        // If your data range is from 0 to 20, set suggestedMax to 20, and so on
       },
     },
   };
@@ -151,22 +182,50 @@ export default function Dashboard() {
   const weeklySalesData = {
     // labels,
     datasets: [
-      // {\
-      //   label: "Dataset 1",
-      //   data: {
-      //     "2024-01-19": "2000",
-      //     "2024-01-28": "2000",
-      //     "2024-01-29": "1000",
-      //   },
-      //   backgroundColor: "rgba(255, 99, 132, 0.5)",
-      // },
       {
-        label: "Current Week",
-        data: dataq,
+        label: "Cancelled",
+        data: getCancelled,
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+      {
+        label: "Completed",
+        data: getCompleted,
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],
   };
+
+  const [showModal, setShowModal] = useState(false);
+  const [titleEvent, setTitleEvent] = useState("");
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  function renderEventContent(eventInfo, handleShowModal) {
+    return (
+      <>
+        <b>
+          <CircleIcon style={{ fontSize: "8px", color: "#4099FF" }} />
+          {eventInfo.timeText}&nbsp;
+        </b>
+        <span
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            setTitleEvent(eventInfo.event.title);
+            setNotes(eventInfo.event.extendedProps.notes);
+            setServices(eventInfo.event.extendedProps.services);
+            handleShowModal();
+          }}
+        >
+          {eventInfo.event.title}
+        </span>
+      </>
+    );
+  }
 
   const currentDate = new Date();
   const formattedDate = currentDate.toISOString().split("T")[0];
@@ -177,7 +236,6 @@ export default function Dashboard() {
       <div>
         <div className="dashboard">
           <h5>Dashboard</h5>
-
           {/* ****************************4 BOX STATS************************ */}
           <div className="stats d-flex justify-content-center">
             <div className="col-md-3 blue">
@@ -249,7 +307,7 @@ export default function Dashboard() {
                   >
                     <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z" />
                   </svg>
-                  12% vs Yesterday
+                  {yesterdayCompleted} Completed Patient/s Yesterday
                 </span>
               </div>
             </div>
@@ -341,6 +399,7 @@ export default function Dashboard() {
               <Bar options={options} data={weeklySalesData} />
             </div>
           </div>
+          {/* **************************FULL CALENDAR********************** */}
           <div className="fullCalendar">
             <div className="d-flex justify-content-center">
               <div className="col-md-6 d-flex justify-content-center">
@@ -353,40 +412,70 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="callendarSize">
+              {calendarLoading && (
+                <div className="forLoading d-flex justify-content-center align-items-center">
+                  <Spinner
+                    style={{ borderWidth: "10px", height: "5rem", width: "5rem", display: "block" }}
+                    animation="border"
+                    variant="primary"
+                  />
+                </div>
+              )}
+
               <FullCalendar
                 initialDate={formattedDate}
-                plugins={[dayGridPlugin, timeGridPlugin]}
+                plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
                 initialView="dayGridMonth"
                 navLinks={true}
                 dayMaxEventRows={true}
                 headerToolbar={{
                   left: "prev,next today",
                   center: "title",
-                  right: "dayGridMonth,timeGridWeek,timeGridDay",
+                  right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
                 }}
                 slotMinTime="10:00:00"
                 slotMaxTime="19:00:00"
                 // weekends={false}
                 events={events}
-                eventContent={renderEventContent}
+                eventContent={(eventInfo) => renderEventContent(eventInfo, handleShowModal)}
               />
             </div>
           </div>
+
           <div className="amChart">
             <h5>Sales for the last 30 days till now</h5>
             <AmChart />
           </div>
         </div>
       </div>
+      <Modal
+        size="md"
+        show={showModal}
+        onHide={handleCloseModal}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header>
+          <Modal.Title style={{ fontSize: "20px" }}>
+            <p className="mb-0">{titleEvent} </p>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            <strong>Notes : </strong>
+            {notes}
+          </p>
+          <p>
+            <strong>Services : </strong>
+            {services}
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
-  );
-}
-
-function renderEventContent(eventInfo) {
-  return (
-    <>
-      <b>{eventInfo.timeText}</b>
-      <i>{eventInfo.event.title}</i>
-    </>
   );
 }

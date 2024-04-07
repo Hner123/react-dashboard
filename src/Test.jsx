@@ -84,3 +84,40 @@ const fetchBookingData = async () => {
     console.error("Error posting data:", error);
   }
 };
+
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top",
+    },
+    title: {
+      display: true,
+      text: "Completed Vs Cancelled",
+    },
+  },
+ 
+
+};
+
+const weeklySalesData = {
+  // labels,
+  datasets: [
+    {
+      label: "Cancelled",
+      data: getCancelled,
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+    },
+    {
+      label: "Completed",
+      data: getCompleted,
+      backgroundColor: "rgba(53, 162, 235, 0.5)",
+    },
+  ],
+};
+
+<Bar options={options} data={weeklySalesData} />
+
+from react-chartjs-2> I get a legend stats from Y value of , 0.2, 0.3 0.4 0.5 upto 1..
+
+my only value is a whole number like 2 to 6, how do I make my barchart legend on Y axis into a whole number?
