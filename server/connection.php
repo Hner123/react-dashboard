@@ -27,5 +27,4 @@ if ($connection->connect_error) {
 //     echo 'success';
 // }
 
-
 ?>

@@ -50,6 +50,7 @@ export default function Dashboard() {
   const [notes, setNotes] = useState("");
   const [services, setServices] = useState("");
   const [calendarLoading, setCalendarLoading] = useState(false);
+  const [lokasyon, setLokasyon] = useState("Marikina");
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
@@ -149,7 +150,7 @@ export default function Dashboard() {
     } finally {
       setTimeout(() => {
         setCalendarLoading(false);
-      }, 800);
+      }, 500);
     }
   };
 
@@ -170,11 +171,10 @@ export default function Dashboard() {
     },
     scales: {
       y: {
-        suggestedMin: 0, // Start the Y-axis from 0
-        suggestedMax: 3, // Set the maximum value for the Y-axis
-        // You can adjust the suggestedMax value based on your data range
-        // For example, if your data range is from 0 to 6, set suggestedMax to 6
-        // If your data range is from 0 to 20, set suggestedMax to 20, and so on
+        ticks: {
+          stepSize: 1, // Display whole numbers only
+          precision: 0, // Display whole numbers only
+        },
       },
     },
   };
@@ -208,12 +208,12 @@ export default function Dashboard() {
   function renderEventContent(eventInfo, handleShowModal) {
     return (
       <>
-        <b>
-          <CircleIcon style={{ fontSize: "8px", color: "#4099FF" }} />
+        <b style={{ fontSize: "12px", color: "#fff" }}>
+          <CircleIcon style={{ fontSize: "10px", color: "#00FF00" }} />
           {eventInfo.timeText}&nbsp;
         </b>
         <span
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", fontSize: "12px", color: "#fff" }}
           onClick={() => {
             setTitleEvent(eventInfo.event.title);
             setNotes(eventInfo.event.extendedProps.notes);
@@ -403,10 +403,22 @@ export default function Dashboard() {
           <div className="fullCalendar">
             <div className="d-flex justify-content-center">
               <div className="col-md-6 d-flex justify-content-center">
-                <button onClick={() => filterCalendarLoc("Marikina")} className="btn btn-primary btn-sm me-5">
+                <button
+                  onClick={() => {
+                    filterCalendarLoc("Marikina");
+                    setLokasyon("Marikina");
+                  }}
+                  className={lokasyon == "Marikina" ? "btn btn-primary btn-md me-5" : "btn btn-md me-5"}
+                >
                   Marikina
                 </button>
-                <button onClick={() => filterCalendarLoc("Antipolo")} className="btn btn-primary btn-sm">
+                <button
+                  onClick={() => {
+                    filterCalendarLoc("Antipolo");
+                    setLokasyon("Antipolo");
+                  }}
+                  className={lokasyon == "Antipolo" ? "btn btn-primary btn-md" : "btn btn-md"}
+                >
                   Antipolo
                 </button>
               </div>
@@ -415,7 +427,7 @@ export default function Dashboard() {
               {calendarLoading && (
                 <div className="forLoading d-flex justify-content-center align-items-center">
                   <Spinner
-                    style={{ borderWidth: "10px", height: "5rem", width: "5rem", display: "block" }}
+                    style={{ borderWidth: "8px", height: "4rem", width: "4rem", display: "block" }}
                     animation="border"
                     variant="primary"
                   />
@@ -428,6 +440,7 @@ export default function Dashboard() {
                 initialView="dayGridMonth"
                 navLinks={true}
                 dayMaxEventRows={true}
+                contentHeight="575px"
                 headerToolbar={{
                   left: "prev,next today",
                   center: "title",

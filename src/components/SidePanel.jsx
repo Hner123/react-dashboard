@@ -5,15 +5,10 @@ import PlaylistAddCheckCircleOutlinedIcon from "@mui/icons-material/PlaylistAddC
 import EventBusyOutlinedIcon from "@mui/icons-material/EventBusyOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 
 export default function SidePanel({ isOpen, togglePanel, activeNav }) {
-  const navigate = useNavigate();
-  // const [active, setActive] = useState(false);
-
   return (
     <div>
       <div className={isOpen ? "overlay hide" : "overlay show"} onClick={togglePanel}></div>

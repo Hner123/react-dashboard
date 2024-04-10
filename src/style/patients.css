@@ -81,7 +81,7 @@ table.dataTable td.dt-empty {
 .addPatientBtn {
   border: none;
 }
-tbody tr:hover {
+.patientsPage tbody tr:hover {
   background-color: #e6f7ff !important;
 }
 

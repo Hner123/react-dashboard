@@ -12,6 +12,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 export default function Header({ togglePanel, hamburgerClose, preload }) {
   const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
+  const navigateProfile = useNavigate();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -79,7 +80,7 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
           <span className="bot"></span>
         </label>
         <div className="col-md-6 d-flex align-items-center ms-5">
-          <a href="/">
+          <a href="/dashboard">
             <img
               src="https://res.cloudinary.com/djyf3qi4d/image/upload/v1709660941/Avenue-Dental-Logo_pkztgi.png"
               alt="avenue-dental-logo"
@@ -102,12 +103,14 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
               <ul className={isVisible ? "show" : "hide"}>
                 <li>
                   <PersonOutlineOutlinedIcon fontSize="small" />
-                  <span className="ms-2">Profile</span>
+                  <span className="ms-2" onClick={() => navigateProfile("/profile")}>
+                    Profile
+                  </span>
                 </li>
-                <li>
+                {/* <li>
                   <SettingsSuggestOutlinedIcon fontSize="small" />
                   <span className="ms-2">Settings</span>
-                </li>
+                </li> */}
                 <li>
                   <ExitToAppOutlinedIcon fontSize="small" />
                   <span className="ms-2" onClick={handleLogout}>
