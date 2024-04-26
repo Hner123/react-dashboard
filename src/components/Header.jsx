@@ -1,19 +1,20 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
-import "../style/header.css";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
-import SettingsSuggestOutlinedIcon from "@mui/icons-material/SettingsSuggestOutlined";
-import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import LinearProgress from "@mui/material/LinearProgress";
+import '../style/header.css';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
+import SettingsSuggestOutlinedIcon from '@mui/icons-material/SettingsSuggestOutlined';
+import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import LinearProgress from '@mui/material/LinearProgress';
 
 export default function Header({ togglePanel, hamburgerClose, preload }) {
   const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
   const navigateProfile = useNavigate();
   const ref = useRef(null);
+  const [userName, setUserName] = useState('');
 
   useEffect(() => {
     setIsVisible(false);
@@ -25,38 +26,40 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
       }
     }
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener('click', handleClickOutside);
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener('click', handleClickOutside);
     };
   }, [ref]);
 
   const handleLogout = () => {
     // Remove the token from localStorage
-    localStorage.removeItem("authToken");
-    navigate("/");
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userName');
+    navigate('/');
   };
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
-    console.log("tae ka " + isVisible);
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
+    const storedToken = localStorage.getItem('authToken');
+    setUserName(localStorage.getItem('userName'));
     if (storedToken) {
       // Parse the token to get its expiration time
-      const tokenData = JSON.parse(atob(storedToken.split(".")[1]));
+      const tokenData = JSON.parse(atob(storedToken.split('.')[1]));
 
       // Check if the token has expired
       if (tokenData.exp * 1000 > Date.now()) {
-        console.log("checking count time - " + tokenData.exp + " " + Date.now());
+        console.log('checking count time - ' + tokenData.exp + ' ' + Date.now());
       } else {
         // Token has expired, perform logout
         handleLogout();
       }
     } else {
-      navigate("/");
+      navigate('/');
     }
   }, []);
 
@@ -64,11 +67,11 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
     <div>
       <LinearProgress
         style={{
-          height: "6px",
-          position: "fixed",
-          width: "100%",
-          top: "80px",
-          visibility: preload ? "visible" : "hidden",
+          height: '6px',
+          position: 'fixed',
+          width: '100%',
+          top: '80px',
+          visibility: preload ? 'visible' : 'hidden',
         }}
       />
 
@@ -94,16 +97,16 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
                 <span className="me-2">
                   <AccountCircleOutlinedIcon />
                 </span>
-                Heiner
+                {userName}
                 <span className="ms-2">
                   <ArrowDropDownOutlinedIcon />
                 </span>
               </p>
 
-              <ul className={isVisible ? "show" : "hide"}>
+              <ul className={isVisible ? 'show' : 'hide'}>
                 <li>
                   <PersonOutlineOutlinedIcon fontSize="small" />
-                  <span className="ms-2" onClick={() => navigateProfile("/profile")}>
+                  <span className="ms-2" onClick={() => navigateProfile('/profile')}>
                     Profile
                   </span>
                 </li>

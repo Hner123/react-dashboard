@@ -1,20 +1,24 @@
-import Header from "../components/Header";
-import SidePanel from "../components/SidePanel";
-import "../style/confirm.css";
-import { useEffect, useState, useRef } from "react";
-import axios from "axios";
-import $ from "jquery";
-import DataTable from "datatables.net-dt";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import Header from '../components/Header';
+import SidePanel from '../components/SidePanel';
+import '../style/confirm.css';
+import { useEffect, useState, useRef } from 'react';
+import axios from 'axios';
+import $ from 'jquery';
+import DataTable from 'datatables.net-dt';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import MaterialUIButton from '@mui/material/Button';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import TypeHead from '../components/TypeHead';
+import { Row, Col } from 'react-bootstrap';
 
 // ***************************These both datatables needed for Colvis features********************************
-import "datatables.net-responsive-bs5/js/responsive.bootstrap5.js";
-import "datatables.net-buttons/js/buttons.colVis.mjs";
+import 'datatables.net-responsive-bs5/js/responsive.bootstrap5.js';
+import 'datatables.net-buttons/js/buttons.colVis.mjs';
 
 export default function Confirm() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -23,29 +27,31 @@ export default function Confirm() {
   const [show, setShow] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [showCancel, setShowCancel] = useState(false);
-  const [userFound, setUserFound] = useState("");
-  const [procedure, setProcedure] = useState("");
-  const [paymentCost, setPaymentCost] = useState("");
-  const [notes, setNotes] = useState("");
+  const [showReschedModal, setShowReschedModal] = useState(false);
+
+  const [userFound, setUserFound] = useState('');
+  const [procedure, setProcedure] = useState('');
+  const [paymentCost, setPaymentCost] = useState('');
+  const [notes, setNotes] = useState('');
   const [userID, setUserID] = useState();
-  const [name, setName] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [reasons, setReasons] = useState("");
+  const [name, setName] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [reasons, setReasons] = useState('');
   const [preload, setPreload] = useState(true);
 
   const [openS, setOPenS] = useState(false);
-  const [snackSeverity, setSnackSeverity] = useState("");
-  const [snackMessage, setSnackMessage] = useState("");
+  const [snackSeverity, setSnackSeverity] = useState('');
+  const [snackMessage, setSnackMessage] = useState('');
 
-  const [active, setActive] = useState("Confirm");
+  const [active, setActive] = useState('Confirm');
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
-    console.log("dashboard " + sidePanelOPen);
+    console.log('dashboard ' + sidePanelOPen);
   };
 
   const handleCloseSnack = (event, reason) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
 
@@ -55,27 +61,27 @@ export default function Confirm() {
   const fetchConfirmData = async () => {
     try {
       const response = await axios.post(process.env.REACT_APP_CONFIRMLIST);
-      console.log("Post successful:", response.data);
+      console.log('Post successful:', response.data);
 
-      const table = new DataTable("#myTable", {
+      const table = new DataTable('#myTable', {
         data: response.data.DateAndName,
-        dom: "Bfrtip",
-        buttons: ["colvis"],
+        dom: 'Bfrtip',
+        buttons: ['colvis'],
         columns: [
-          { title: "ID" },
-          { title: "Schedule" },
-          { title: "Name" },
-          { title: "Email" },
-          { title: "Phone Number" },
-          { title: "Status" },
-          { title: "Services" },
-          { title: "Branch" },
-          { title: "Notes" },
+          { title: 'ID' },
+          { title: 'Schedule' },
+          { title: 'Name' },
+          { title: 'Email' },
+          { title: 'Phone Number' },
+          { title: 'Status' },
+          { title: 'Services' },
+          { title: 'Branch' },
+          { title: 'Notes' },
           {
-            title: "Actions",
+            title: 'Actions',
             render: function (data, type, row) {
               // Assuming you have access to row data, you can create buttons dynamically
-              if (type === "display") {
+              if (type === 'display') {
                 return `
                             <div class='d-flex confirmBtn'>
                                 <button class='manageBtn'>Manage</button>
@@ -91,31 +97,31 @@ export default function Confirm() {
         createdRow: (row, data) => {
           // Attach event listeners to buttons when rows are created
           $(row)
-            .find(".manageBtn")
-            .on("click", function () {
+            .find('.manageBtn')
+            .on('click', function () {
               // Retrieve data from the current row
-              const rowData = table.row($(this).closest("tr")).data()[0];
-              console.log("Data from current row:", rowData);
+              const rowData = table.row($(this).closest('tr')).data()[0];
+              console.log('Data from current row:', rowData);
               handleShow();
               setFirstRowData(rowData);
               fetchCompared(rowData);
             });
           $(row)
-            .find(".editBtn")
-            .on("click", function () {
+            .find('.editBtn')
+            .on('click', function () {
               // Retrieve data from the current row
-              const rowData = table.row($(this).closest("tr")).data()[0];
-              console.log("Data from current row:", rowData);
+              const rowData = table.row($(this).closest('tr')).data()[0];
+              console.log('Data from current row:', rowData);
               showEditModal();
               setFirstRowData(rowData);
               editClient(rowData);
             });
           $(row)
-            .find(".cancelBtn")
-            .on("click", function () {
+            .find('.cancelBtn')
+            .on('click', function () {
               // Retrieve data from the current row
-              const rowData = table.row($(this).closest("tr")).data()[0];
-              console.log("Data from current row:", rowData);
+              const rowData = table.row($(this).closest('tr')).data()[0];
+              console.log('Data from current row:', rowData);
               cancelModal();
               setFirstRowData(rowData);
             });
@@ -141,12 +147,12 @@ export default function Confirm() {
       });
       // Extra step to do extra clean-up.
       return function () {
-        console.log("Table destroyed");
+        console.log('Table destroyed');
         table.destroy();
-        console.log("events to" + events);
+        console.log('events to' + events);
       };
     } catch (error) {
-      console.error("Error posting data:", error);
+      console.error('Error posting data:', error);
     } finally {
       setPreload(false);
     }
@@ -160,6 +166,7 @@ export default function Confirm() {
     setShow(false);
     setShowCancel(false);
     setEditModal(false);
+    setShowReschedModal(false);
   };
 
   const fetchCompared = async (id_num) => {
@@ -167,13 +174,13 @@ export default function Confirm() {
       const id = { id_num };
 
       const response = await axios.post(process.env.REACT_APP_MANAGE, id);
-      console.log("Manage data successfully: ", response.data);
-      console.log("output ko: ", response.data.UserFound);
+      console.log('Manage data successfully: ', response.data);
+      console.log('output ko: ', response.data.UserFound);
       //   handleClose();
       setUserFound(response.data.UserFound);
       setUserID(response.data.User_ID);
     } catch (error) {
-      console.log("error fetching from Manage: ", error);
+      console.log('error fetching from Manage: ', error);
     }
   };
 
@@ -182,18 +189,18 @@ export default function Confirm() {
       const data = { userID, procedure, paymentCost, firstRowData, notes };
 
       const response = await axios.post(process.env.REACT_APP_PROCESSPAYMENT, data);
-      console.log("processpayment data successfully: ", response.data);
+      console.log('processpayment data successfully: ', response.data);
       fetchConfirmData();
 
       setOPenS(true);
-      setSnackMessage("Transaction Completed!");
-      setSnackSeverity("success");
+      setSnackMessage('Transaction Completed!');
+      setSnackSeverity('success');
       handleClose();
     } catch (error) {
-      console.log("error fetching from Manage: ", error);
+      console.log('error fetching from Manage: ', error);
       setOPenS(true);
-      setSnackMessage("Transaction Failed!");
-      setSnackSeverity("error");
+      setSnackMessage('Transaction Failed!');
+      setSnackSeverity('error');
     }
   };
 
@@ -202,11 +209,11 @@ export default function Confirm() {
       const data = { id_num };
 
       const response = await axios.post(process.env.REACT_APP_EDITCLIENT, data);
-      console.log("EditClient data successfully: ", response.data);
+      console.log('EditClient data successfully: ', response.data);
       setName(response.data.First_Name);
       setLastname(response.data.Last_Name);
     } catch (error) {
-      console.log("error fetching from EditClient: ", error);
+      console.log('error fetching from EditClient: ', error);
     }
   };
 
@@ -215,18 +222,18 @@ export default function Confirm() {
       const dataAccept = { firstRowData, reasons };
 
       const response = await axios.post(process.env.REACT_APP_SENDCANCELCONFIRMEDATA, dataAccept);
-      console.log("Cancel Data successfully: ", response.data);
+      console.log('Cancel Data successfully: ', response.data);
       fetchConfirmData();
       handleClose();
 
       setOPenS(true);
-      setSnackMessage("Cancelled!");
-      setSnackSeverity("success");
+      setSnackMessage('Cancelled!');
+      setSnackSeverity('success');
     } catch (error) {
-      console.log("error fetching from accept confirm page: ", error);
+      console.log('error fetching from accept confirm page: ', error);
       setOPenS(true);
-      setSnackMessage("Error Cancelling!");
-      setSnackSeverity("error");
+      setSnackMessage('Error Cancelling!');
+      setSnackSeverity('error');
     }
   };
 
@@ -235,18 +242,18 @@ export default function Confirm() {
       const data2 = { firstRowData, name, lastname };
 
       const response2 = await axios.post(process.env.REACT_APP_EDITNAMEANDLASTNAME, data2);
-      console.log("update name and lastname :", response2.data);
+      console.log('update name and lastname :', response2.data);
       fetchConfirmData();
       handleClose();
 
       setOPenS(true);
-      setSnackMessage("Edited Success!");
-      setSnackSeverity("success");
+      setSnackMessage('Edited Success!');
+      setSnackSeverity('success');
     } catch (error) {
-      console.log("Update edit and name got an error: ", error);
+      console.log('Update edit and name got an error: ', error);
       setOPenS(true);
-      setSnackMessage("Error editing!");
-      setSnackSeverity("error");
+      setSnackMessage('Error editing!');
+      setSnackSeverity('error');
     }
   };
 
@@ -269,8 +276,28 @@ export default function Confirm() {
     setReasons(event.target.value);
   };
 
+  const closeManageModal = () => {
+    setShow(false);
+  };
+
+  const [numberOfDays, setNumberOfDays] = useState([]);
+  const generateCalendar = () => {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    const numbers = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      numbers.push(i);
+    }
+    setNumberOfDays(numbers);
+  };
+
   useEffect(() => {
     fetchConfirmData();
+    generateCalendar();
   }, []);
 
   return (
@@ -280,27 +307,25 @@ export default function Confirm() {
       <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
 
       <div className="confirmPage">
-        <h1>Confirm</h1>
+        <div className="d-flex justify-content-between">
+          <h1>Confirm</h1>
+          <TypeHead />
+        </div>
+
         <div className="confirmTable">
           <table id="myTable" className="row-border" width="100%"></table>
         </div>
       </div>
 
       {/* **********************Manage Modal********************** */}
-      <Modal
-        size="md"
-        show={show}
-        onHide={handleClose}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
+      <Modal size="md" show={show} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter">
         <Modal.Header>
-          <Modal.Title style={{ fontSize: "20px" }}>
+          <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">Manage</p>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          {userFound === "User found!" ? (
+        <Modal.Body style={{ textAlign: 'center' }}>
+          {userFound === 'User found!' ? (
             <div>
               <div className="row">
                 <div className="col-md">
@@ -325,12 +350,20 @@ export default function Confirm() {
               </FloatingLabel>
             </div>
           ) : (
-            <span style={{ fontSize: "18px" }}>Patient doesn't exist.</span>
+            <span style={{ fontSize: '18px' }}>Patient doesn't exist.</span>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={Proccessing}>
-            Update
+          <Button variant="primary" onClick={Proccessing} disabled={userFound !== 'User found!'}>
+            Process Payment
+          </Button>
+          <Button
+            onClick={() => {
+              setShowReschedModal(true);
+              setShow(false);
+            }}
+          >
+            Reschedule
           </Button>
           <Button variant="secondary" onClick={handleClose}>
             Cancel
@@ -347,7 +380,7 @@ export default function Confirm() {
         centered
       >
         <Modal.Header>
-          <Modal.Title style={{ fontSize: "20px" }}>
+          <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">Edit</p>
           </Modal.Title>
         </Modal.Header>
@@ -373,7 +406,7 @@ export default function Confirm() {
       {/* **********************Cancel Modal********************** */}
       <Modal show={showCancel} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header closeButton>
-          <Modal.Title style={{ fontSize: "20px" }}>
+          <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">Cancel </p>
           </Modal.Title>
         </Modal.Header>
@@ -382,7 +415,7 @@ export default function Confirm() {
             <Form.Control
               as="textarea"
               placeholder="Leave a comment here"
-              style={{ height: "80px" }}
+              style={{ height: '80px' }}
               onChange={reasonsValue}
             />
           </FloatingLabel>
@@ -396,14 +429,67 @@ export default function Confirm() {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* **********************Reschedule Modal********************** */}
+      <Modal show={showReschedModal} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter">
+        <Modal.Header closeButton>
+          <Modal.Title style={{ fontSize: '20px' }}>
+            <p className="mb-0">Reschedule </p>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Row>
+            <Form.Group as={Col} md="6">
+              <Form.Label>Day</Form.Label>
+              <Form.Select aria-label="Default select example">
+                <option value="">Select ---</option>
+
+                {numberOfDays.map((numberOfday) => (
+                  <option value="Male">{numberOfday}</option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group as={Col} md="6">
+              <Form.Label>Time</Form.Label>
+              <Form.Select aria-label="Default select example">
+                <option>Select ---</option>
+                <option value="10:00">10:00 AM</option>
+                <option value="10:30">10:30 AM</option>
+                <option value="11:00">11:00 AM</option>
+                <option value="11:30">11:30 AM</option>
+                <option value="12:00">12:00 PM</option>
+                <option value="12:30">12:30 PM</option>
+                <option value="13:00">01:00 PM</option>
+                <option value="13:30">01:30 PM</option>
+                <option value="14:00">02:00 PM</option>
+                <option value="14:30">02:30 PM</option>
+                <option value="15:00">03:00 PM</option>
+                <option value="15:30">03:30 PM</option>
+                <option value="16:00">04:00 PM</option>
+                <option value="16:30">04:30 PM</option>
+                <option value="17:00">05:00 PM</option>
+                <option value="17:30">05:30 PM</option>
+                <option value="18:00">06:00 PM</option>
+              </Form.Select>
+            </Form.Group>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={cancelBooking}>
+            Confirm
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Snackbar
         open={openS}
         autoHideDuration={2000}
         onClose={handleCloseSnack}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: "100%" }}>
+        <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: '100%' }}>
           {snackMessage}
         </Alert>
       </Snackbar>

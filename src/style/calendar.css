@@ -1,0 +1,10 @@
+.daysList {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  list-style-type: none;
+  text-align: center;
+}
+.daysList li {
+  border: 1px solid black;
+  margin: 0.3px;
+}

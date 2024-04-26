@@ -8,14 +8,14 @@ include './vendor/autoload.php'; // Include the autoloader for JWT
 use Firebase\JWT\JWT;
 
 // Your secret key for encoding and decoding JWTs
-$secret_key = "your_secret_key";
-$token_duration = 3600; // Token expiration time in seconds (1 hour)
+$secret_key = 'your_secret_key';
+$token_duration = 18000; // Token expiration time in seconds (1 hour) = 3600
 
 // Set headers after starting the session
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json");
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+header('Content-Type: application/json');
 
 $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData);
@@ -27,20 +27,25 @@ $sql = "SELECT * FROM user_login WHERE username = '$username' AND password = '$p
 $result = $connection->query($sql);
 
 if ($result->num_rows == 1) {
+    $row = $result->fetch_assoc();
+    $id = $row['id'];
+    $name = $row['first_name'];
 
-    $token_payload = array(
-        "username" => $username,
-        "exp" => time() + $token_duration
-    );
+    $token_payload = [
+        'username' => $username,
+        'exp' => time() + $token_duration,
+    ];
     $token = JWT::encode($token_payload, $secret_key, 'HS256');
     // Send the token as a response
-    echo json_encode(array("token" => $token, "message" => "Success"));
-
+    echo json_encode([
+        'token' => $token,
+        'message' => 'Success',
+        'id' => $id,
+        'name' => $name,
+    ]);
 } else {
-    echo json_encode(array("message" => "Failed"));
+    echo json_encode(['message' => 'Failed']);
 }
-
-
 ?>
 
 

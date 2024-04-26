@@ -15,8 +15,8 @@ export default function Login() {
   const [alertMsge, setAlertMsge] = useState(false);
 
   useEffect(() => {
-    console.log("API LOGIN - " + process.env.REACT_APP_LOGIN);
     const storedToken = localStorage.getItem("authToken");
+    const userID = localStorage.getItem("user");
     if (storedToken) {
       navigate("/dashboard");
     }
@@ -33,14 +33,17 @@ export default function Login() {
     try {
       const postData = { userName, userPass };
       const response = await axios.post(process.env.REACT_APP_LOGIN, postData);
-      console.log("Post successful:", response.data);
 
       if (response.data.message === "Success") {
         console.log("LOGGED In");
 
         const { token } = response.data;
+        const userID = response.data.id;
+        const userName = response.data.name;
         localStorage.setItem("authToken", token);
-        console.log(token);
+        localStorage.setItem("user", userID);
+        localStorage.setItem("userName", userName);
+
         navigate("/Dashboard");
       } else {
         setAlertMsge(true);

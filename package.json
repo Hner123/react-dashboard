@@ -32,6 +32,7 @@
     "jsonwebtoken": "^9.0.2",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.0",
+    "react-bootstrap-typeahead": "^6.3.2",
     "react-chartjs-2": "^5.2.0",
     "react-datepicker": "^6.6.0",
     "react-dom": "^18.2.0",
@@ -64,6 +65,7 @@
     ]
   },
   "devDependencies": {
+    "@prettier/plugin-php": "^0.22.2",
     "@types/datatables.net-buttons": "^1.4.10"
   }
 }

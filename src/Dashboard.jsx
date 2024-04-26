@@ -68,21 +68,7 @@ export default function Dashboard() {
       setYesterdayCompleted(response.data.SuccessProcessYesterday);
       setGetCompleted(response.data.completed);
       setGetCancelled(response.data.cancelled);
-
-      const filteredEvents = [];
-      for (let i = 0; i < response.data.ConfirmAllBooking.length; i++) {
-        if (response.data.allLocationBranch[i] === "Marikina") {
-          filteredEvents.push({
-            id: response.data.CalendarID[i],
-            title: response.data.ConfirmAllNames[i],
-            start: response.data.ConfirmAllBooking[i] + " " + response.data.ConfirmAlltimes[i],
-            notes: response.data.notes[i],
-            services: response.data.services[i],
-          });
-        }
-      }
-
-      setEvents(filteredEvents);
+      setEvents(response.data.Calendar_Marikina);
 
       SetData(response.data.responselast30daysRange);
       SetTotalPatient(response.data.totalPatient);
@@ -130,21 +116,11 @@ export default function Dashboard() {
       const response = await axios.post(process.env.REACT_APP_DATA);
       console.log("Post successful:", response.data);
 
-      const filteredEvents = [];
-      for (let i = 0; i < response.data.ConfirmAllBooking.length; i++) {
-        if (response.data.allLocationBranch[i] === loc) {
-          filteredEvents.push({
-            id: response.data.CalendarID[i],
-            title: response.data.ConfirmAllNames[i],
-            start: response.data.ConfirmAllBooking[i] + " " + response.data.ConfirmAlltimes[i],
-            notes: response.data.notes[i],
-            services: response.data.services[i],
-          });
-        }
+      if (loc === "Marikina") {
+        setEvents(response.data.Calendar_Marikina);
+      } else {
+        setEvents(response.data.Calendar_Antipolo);
       }
-
-      setEvents(filteredEvents);
-      console.log(events);
     } catch (error) {
       console.error("Error posting data:", error);
     } finally {
@@ -229,6 +205,7 @@ export default function Dashboard() {
 
   const currentDate = new Date();
   const formattedDate = currentDate.toISOString().split("T")[0];
+
   return (
     <div className="dash">
       <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
