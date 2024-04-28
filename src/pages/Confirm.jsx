@@ -15,6 +15,7 @@ import MaterialUIButton from '@mui/material/Button';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import TypeHead from '../components/TypeHead';
 import { Row, Col } from 'react-bootstrap';
+import Calendar from '../components/Calendar';
 
 // ***************************These both datatables needed for Colvis features********************************
 import 'datatables.net-responsive-bs5/js/responsive.bootstrap5.js';
@@ -437,41 +438,8 @@ export default function Confirm() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Row>
-            <Form.Group as={Col} md="6">
-              <Form.Label>Day</Form.Label>
-              <Form.Select aria-label="Default select example">
-                <option value="">Select ---</option>
-
-                {numberOfDays.map((numberOfday) => (
-                  <option value="Male">{numberOfday}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-            <Form.Group as={Col} md="6">
-              <Form.Label>Time</Form.Label>
-              <Form.Select aria-label="Default select example">
-                <option>Select ---</option>
-                <option value="10:00">10:00 AM</option>
-                <option value="10:30">10:30 AM</option>
-                <option value="11:00">11:00 AM</option>
-                <option value="11:30">11:30 AM</option>
-                <option value="12:00">12:00 PM</option>
-                <option value="12:30">12:30 PM</option>
-                <option value="13:00">01:00 PM</option>
-                <option value="13:30">01:30 PM</option>
-                <option value="14:00">02:00 PM</option>
-                <option value="14:30">02:30 PM</option>
-                <option value="15:00">03:00 PM</option>
-                <option value="15:30">03:30 PM</option>
-                <option value="16:00">04:00 PM</option>
-                <option value="16:30">04:30 PM</option>
-                <option value="17:00">05:00 PM</option>
-                <option value="17:30">05:30 PM</option>
-                <option value="18:00">06:00 PM</option>
-              </Form.Select>
-            </Form.Group>
-          </Row>
+          {/* ***************************CALENDAR MODAL BODY********************** */}
+          <Calendar />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={cancelBooking}>

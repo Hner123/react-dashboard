@@ -5,6 +5,34 @@
   text-align: center;
 }
 .daysList li {
-  border: 1px solid black;
-  margin: 0.3px;
+  /* border: 1px solid black; */
+  margin: 6px;
+}
+.disableDay {
+  cursor: default;
+  color: #33333343;
+}
+.enableDay {
+  cursor: pointer;
+  color: #333;
+  transition: all 0.2s ease-in-out;
+}
+
+.enableDay:hover {
+  background-color: #4099ff;
+  color: #fff;
+  border-radius: 3px;
+}
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  list-style-type: none;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+.days li {
+  /* border: 1px solid black; */
+  margin: 6px;
+  color: #333;
 }
