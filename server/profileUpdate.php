@@ -11,13 +11,13 @@ $userName = $data->userName;
 
 $sql = 'UPDATE user_login SET first_name=?, last_name=?, email=?, username=? WHERE id=?';
 $stmt = $connection->prepare($sql);
-$stmt->bind_param("ssssi", $firstName, $lastName, $userEmail, $userName, $id);
+$stmt->bind_param('ssssi', $firstName, $lastName, $userEmail, $userName, $id);
 $stmt->execute();
 
 if ($stmt->errno) {
-    die("ERROR EXECUTING: " . $stmt->error);
+    die('ERROR EXECUTING: ' . $stmt->error);
 } else {
-    echo "SUCCESS";
+    echo 'SUCCESS';
 }
 
 $stmt->close();

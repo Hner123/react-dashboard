@@ -16,10 +16,12 @@ import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import TypeHead from '../components/TypeHead';
 import { Row, Col } from 'react-bootstrap';
 import Calendar from '../components/Calendar';
+import Spinner from 'react-bootstrap/Spinner';
 
 // ***************************These both datatables needed for Colvis features********************************
 import 'datatables.net-responsive-bs5/js/responsive.bootstrap5.js';
 import 'datatables.net-buttons/js/buttons.colVis.mjs';
+import { height } from '@mui/system';
 
 export default function Confirm() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -29,6 +31,7 @@ export default function Confirm() {
   const [editModal, setEditModal] = useState(false);
   const [showCancel, setShowCancel] = useState(false);
   const [showReschedModal, setShowReschedModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [userFound, setUserFound] = useState('');
   const [procedure, setProcedure] = useState('');
@@ -39,6 +42,7 @@ export default function Confirm() {
   const [lastname, setLastname] = useState('');
   const [reasons, setReasons] = useState('');
   const [preload, setPreload] = useState(true);
+  const [editNameLoader, setEditNameLoader] = useState(false);
 
   const [openS, setOPenS] = useState(false);
   const [snackSeverity, setSnackSeverity] = useState('');
@@ -61,8 +65,9 @@ export default function Confirm() {
 
   const fetchConfirmData = async () => {
     try {
+      console.log('na run ru fetch');
       const response = await axios.post(process.env.REACT_APP_CONFIRMLIST);
-      console.log('Post successful:', response.data);
+      console.log('Post successful data:', response.data);
 
       const table = new DataTable('#myTable', {
         data: response.data.DateAndName,
@@ -168,6 +173,7 @@ export default function Confirm() {
     setShowCancel(false);
     setEditModal(false);
     setShowReschedModal(false);
+    setUserFound('');
   };
 
   const fetchCompared = async (id_num) => {
@@ -207,6 +213,7 @@ export default function Confirm() {
 
   const editClient = async (id_num) => {
     try {
+      setEditNameLoader(true);
       const data = { id_num };
 
       const response = await axios.post(process.env.REACT_APP_EDITCLIENT, data);
@@ -215,6 +222,8 @@ export default function Confirm() {
       setLastname(response.data.Last_Name);
     } catch (error) {
       console.log('error fetching from EditClient: ', error);
+    } finally {
+      setEditNameLoader(false);
     }
   };
 
@@ -240,6 +249,7 @@ export default function Confirm() {
 
   const updateNameAndLastname = async () => {
     try {
+      setIsLoading(true);
       const data2 = { firstRowData, name, lastname };
 
       const response2 = await axios.post(process.env.REACT_APP_EDITNAMEANDLASTNAME, data2);
@@ -255,6 +265,8 @@ export default function Confirm() {
       setOPenS(true);
       setSnackMessage('Error editing!');
       setSnackSeverity('error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -277,28 +289,8 @@ export default function Confirm() {
     setReasons(event.target.value);
   };
 
-  const closeManageModal = () => {
-    setShow(false);
-  };
-
-  const [numberOfDays, setNumberOfDays] = useState([]);
-  const generateCalendar = () => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
-
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-    const numbers = [];
-    for (let i = 1; i <= daysInMonth; i++) {
-      numbers.push(i);
-    }
-    setNumberOfDays(numbers);
-  };
-
   useEffect(() => {
     fetchConfirmData();
-    generateCalendar();
   }, []);
 
   return (
@@ -326,32 +318,43 @@ export default function Confirm() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body style={{ textAlign: 'center' }}>
-          {userFound === 'User found!' ? (
-            <div>
-              <div className="row">
-                <div className="col-md">
-                  <FloatingLabel controlId="floatingInput" label="Procedure:" className="mb-3">
-                    <Form.Control type="text" onChange={procedures} placeholder="" />
-                  </FloatingLabel>
-                </div>
-                <div className="col-md">
-                  <FloatingLabel controlId="floatingInput" label="Cost:" className="mb-3">
-                    <Form.Control type="text" onChange={cost} placeholder="" />
-                  </FloatingLabel>
-                </div>
-              </div>
-              <FloatingLabel controlId="floatingInput" label="Note:" className="mb-3">
-                <Form.Control
-                  type="text"
-                  onChange={(e) => {
-                    setNotes(e.target.value);
-                  }}
-                  placeholder=""
-                />
-              </FloatingLabel>
+          {userFound === '' ? (
+            <div className="confirmManageloader">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
             </div>
           ) : (
-            <span style={{ fontSize: '18px' }}>Patient doesn't exist.</span>
+            <>
+              {userFound === 'User found!' ? (
+                <div>
+                  <div className="row">
+                    <div className="col-md">
+                      <FloatingLabel controlId="floatingInput" label="Procedure:" className="mb-3">
+                        <Form.Control type="text" onChange={procedures} placeholder="" />
+                      </FloatingLabel>
+                    </div>
+                    <div className="col-md">
+                      <FloatingLabel controlId="floatingInput" label="Cost:" className="mb-3">
+                        <Form.Control type="text" onChange={cost} placeholder="" />
+                      </FloatingLabel>
+                    </div>
+                  </div>
+                  <FloatingLabel controlId="floatingInput" label="Note:" className="mb-3">
+                    <Form.Control
+                      type="text"
+                      onChange={(e) => {
+                        setNotes(e.target.value);
+                      }}
+                      placeholder=""
+                    />
+                  </FloatingLabel>
+                </div>
+              ) : (
+                <span style={{ fontSize: '18px' }}>Patient doesn't exist.</span>
+              )}
+            </>
           )}
         </Modal.Body>
         <Modal.Footer>
@@ -386,18 +389,38 @@ export default function Confirm() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <FloatingLabel controlId="floatingInput" label="Name" className="mb-3">
-            <Form.Control type="text" placeholder="" value={name} onChange={editName} />
-          </FloatingLabel>
+          {editNameLoader ? (
+            <div className="d-flex justify-content-center">
+              <div className="confirmManageloader">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <FloatingLabel controlId="floatingInput" label="Name" className="mb-3">
+                <Form.Control type="text" placeholder="" value={name} onChange={editName} />
+              </FloatingLabel>
 
-          <FloatingLabel controlId="floatingInput" label="Lastname" className="mb-3">
-            <Form.Control type="text" placeholder="" value={lastname} onChange={editLastName} />
-          </FloatingLabel>
+              <FloatingLabel controlId="floatingInput" label="Lastname" className="mb-3">
+                <Form.Control type="text" placeholder="" value={lastname} onChange={editLastName} />
+              </FloatingLabel>
+            </>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={updateNameAndLastname}>
-            Update
+          <Button variant="primary" disabled={isLoading} onClick={updateNameAndLastname}>
+            <Spinner
+              style={{ display: isLoading ? 'inline-block' : 'none', height: '12px', width: '12px' }}
+              animation="border"
+              size="sm"
+            />
+            &nbsp;
+            {isLoading ? 'Updating...' : 'Update'}
           </Button>
+
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
@@ -422,10 +445,10 @@ export default function Confirm() {
           </FloatingLabel>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={cancelBooking}>
+          <Button variant="primary" onClick={cancelBooking}>
             Confirm
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
         </Modal.Footer>
@@ -437,18 +460,16 @@ export default function Confirm() {
             <p className="mb-0">Reschedule </p>
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body style={{ minHeight: '400px', height: '100%' }}>
           {/* ***************************CALENDAR MODAL BODY********************** */}
-          <Calendar />
+          <Calendar id={firstRowData} reschedModalClose={handleClose} refreshData={fetchConfirmData} />
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={cancelBooking}>
-            Confirm
-          </Button>
+        {/* <Modal.Footer>
+          <Button >Confirm</Button>
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal>
 
       <Snackbar

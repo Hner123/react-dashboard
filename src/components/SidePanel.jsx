@@ -5,10 +5,35 @@ import PlaylistAddCheckCircleOutlinedIcon from '@mui/icons-material/PlaylistAddC
 import EventBusyOutlinedIcon from '@mui/icons-material/EventBusyOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import UpdateOutlinedIcon from '@mui/icons-material/UpdateOutlined';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
-export default function SidePanel({ isOpen, togglePanel, activeNav }) {
+export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBooking }) {
+  const [notif, setNotif] = useState(0);
+
+  const fetchDataNotif = async () => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_BOOKINGNOTIF);
+
+      setNotif(response.data);
+    } catch (error) {
+      console.error('error fetching # of notif', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDataNotif();
+
+    const interval = setInterval(
+      () => {
+        fetchDataNotif();
+      },
+      3 * 60 * 1000
+    );
+    return () => clearInterval(interval);
+  }, [acceptBooking]);
   return (
     <div>
       <div className={isOpen ? 'overlay hide' : 'overlay show'} onClick={togglePanel}></div>
@@ -26,7 +51,10 @@ export default function SidePanel({ isOpen, togglePanel, activeNav }) {
             <li>
               <Link to="/pages/booking" className={activeNav === 'Booking' ? 'activeON' : 'activeOFF'}>
                 <DateRangeOutlinedIcon fontSize="small" />
-                <span className="ms-2">Booking</span>
+                <span className="ms-2" style={{ position: 'relative' }}>
+                  Booking
+                  {notif === 0 ? null : <span className="bookingNotif">{notif}</span>}
+                </span>
               </Link>
             </li>
             <li>

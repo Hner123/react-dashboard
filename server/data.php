@@ -318,18 +318,14 @@ $SQL_Antipolo = 'SELECT * FROM confirmed_booking WHERE location="Antipolo"';
 $result_Antipolo = $connection->query($SQL_Antipolo);
 
 $fullCalendar_antipolo = [];
+$dateFormat = '';
 while ($row = $result_Antipolo->fetch_assoc()) {
+    $dateFormat = $row['book_Year'] . '-' . $row['book_Month'] + 1 . '-' . $row['book_Day'];
+
     $response = [
         'id' => $row['id'],
         'title' => $row['First_Name'] . ' ' . $row['Last_Name'],
-        'start' =>
-            $row['book_Year'] .
-            '-' .
-            sprintf('%02d', $row['book_Month'] + 1) .
-            '-' .
-            $row['book_Day'] .
-            ' ' .
-            $row['book_Time'],
+        'start' => date('Y-m-d', strtotime($dateFormat)) . ' ' . $row['book_Time'],
         'notes' => $row['Patient_Note'],
         'services' => $row['service'],
     ];
@@ -341,17 +337,12 @@ $result_Marikina = $connection->query($SQL_Marikina);
 
 $fullCalendar_marikina = [];
 while ($row = $result_Marikina->fetch_assoc()) {
+    $dateFormat = $row['book_Year'] . '-' . $row['book_Month'] + 1 . '-' . $row['book_Day'];
+
     $response = [
         'id' => $row['id'],
         'title' => $row['First_Name'] . ' ' . $row['Last_Name'],
-        'start' =>
-            $row['book_Year'] .
-            '-' .
-            sprintf('%02d', $row['book_Month'] + 1) .
-            '-' .
-            $row['book_Day'] .
-            ' ' .
-            $row['book_Time'],
+        'start' => date('Y-m-d', strtotime($dateFormat)) . ' ' . $row['book_Time'],
         'notes' => $row['Patient_Note'],
         'services' => $row['service'],
     ];

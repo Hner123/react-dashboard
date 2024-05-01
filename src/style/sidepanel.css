@@ -85,6 +85,37 @@
   color: #b7c0cd;
 }
 
+.bookingNotif {
+  display: flex;
+  justify-content: center;
+  height: 19px;
+  width: 19.25px;
+  border-radius: 50%;
+  background-color: #ff5370;
+  position: absolute;
+  top: -5px;
+  right: -20px;
+  font-size: 0.75em;
+  color: #fff;
+  /* font-weight: 700; */
+  animation: not-blink 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+
+@keyframes not-blink {
+  0% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .sidePanel.hide {
     transform: translateX(-50px);

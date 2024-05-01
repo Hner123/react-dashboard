@@ -1,20 +1,20 @@
-import Header from "../components/Header";
-import SidePanel from "../components/SidePanel";
-import "../style/booking.css";
-import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import Header from '../components/Header';
+import SidePanel from '../components/SidePanel';
+import '../style/booking.css';
+import axios from 'axios';
+import { useEffect, useState, useRef } from 'react';
 
-import DataTable from "datatables.net-bs5";
-import $ from "jquery";
+import DataTable from 'datatables.net-bs5';
+import $ from 'jquery';
 // import "datatables.net-responsive-dt";
 
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
 
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function Booking() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -22,17 +22,17 @@ export default function Booking() {
   const [show, setShow] = useState(false);
   const [showCancel, setShowCancel] = useState(false);
   const [firstRowData, setFirstRowData] = useState(0);
-  const [reasons, setReasons] = useState("");
+  const [reasons, setReasons] = useState('');
 
   const [openS, setOPenS] = useState(false);
-  const [snackSeverity, setSnackSeverity] = useState("");
-  const [snackMessage, setSnackMessage] = useState("");
+  const [snackSeverity, setSnackSeverity] = useState('');
+  const [snackMessage, setSnackMessage] = useState('');
   const [preload, setPreload] = useState(true);
 
-  const [active, setActive] = useState("Booking");
+  const [active, setActive] = useState('Booking');
 
   const handleCloseSnack = (event, reason) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
 
@@ -53,17 +53,17 @@ export default function Booking() {
       const dataAccept = { firstRowData };
 
       const response = await axios.post(process.env.REACT_APP_SENDACCEPTDATA, dataAccept);
-      console.log("Accept data successfully: ", response.data);
+      console.log('Accept data successfully: ', response.data);
       handleClose();
 
       setOPenS(true);
-      setSnackMessage("Accepted!");
-      setSnackSeverity("success");
+      setSnackMessage('Accepted!');
+      setSnackSeverity('success');
     } catch (error) {
-      console.log("error fetching from accept booking: ", error);
+      console.log('error fetching from accept booking: ', error);
       setOPenS(true);
-      setSnackMessage("Error Accepting!");
-      setSnackSeverity("error");
+      setSnackMessage('Error Accepting!');
+      setSnackSeverity('error');
     }
   };
 
@@ -72,17 +72,17 @@ export default function Booking() {
       const dataAccept = { firstRowData, reasons };
 
       const response = await axios.post(process.env.REACT_APP_SENDCANCELDATA, dataAccept);
-      console.log("Cancel Data successfully: ", response.data);
+      console.log('Cancel Data successfully: ', response.data);
       handleClose();
 
       setOPenS(true);
-      setSnackMessage("Cancelled!");
-      setSnackSeverity("success");
+      setSnackMessage('Cancelled!');
+      setSnackSeverity('success');
     } catch (error) {
       setOPenS(true);
-      setSnackMessage("Cancel Failed!");
-      setSnackSeverity("error");
-      console.log("error fetching from accept booking: ", error);
+      setSnackMessage('Cancel Failed!');
+      setSnackSeverity('error');
+      console.log('error fetching from accept booking: ', error);
     }
   };
 
@@ -92,33 +92,33 @@ export default function Booking() {
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
-    console.log("dashboard " + sidePanelOPen);
+    console.log('dashboard ' + sidePanelOPen);
   };
 
   const fetchBookingData = async () => {
     try {
       const response = await axios.post(process.env.REACT_APP_BOOKINGLIST);
-      console.log("Post successful:", response.data);
+      console.log('Post successful:', response.data);
 
-      const table = new DataTable("#myTable", {
+      const table = new DataTable('#myTable', {
         data: response.data.DateAndName,
-        dom: "Bfrtip",
-        buttons: ["colvis"],
+        dom: 'Bfrtip',
+        buttons: ['colvis'],
         columns: [
-          { title: "ID" },
-          { title: "Schedule" },
-          { title: "Name" },
-          { title: "Email" },
-          { title: "Phone Number" },
-          { title: "Status" },
-          { title: "Services" },
-          { title: "Branch" },
-          { title: "Notes" },
+          { title: 'ID' },
+          { title: 'Schedule' },
+          { title: 'Name' },
+          { title: 'Email' },
+          { title: 'Phone Number' },
+          { title: 'Status' },
+          { title: 'Services' },
+          { title: 'Branch' },
+          { title: 'Notes' },
           {
-            title: "Actions",
+            title: 'Actions',
             render: function (data, type, row) {
               // Assuming you have access to row data, you can create buttons dynamically
-              if (type === "display") {
+              if (type === 'display') {
                 return `
                             <div class='d-flex' style='gap:.3rem;'>
                                 <button class='acceptBtn'>Accept</button>
@@ -133,20 +133,20 @@ export default function Booking() {
         createdRow: (row, data) => {
           // Attach event listeners to buttons when rows are created
           $(row)
-            .find(".acceptBtn")
-            .on("click", function () {
+            .find('.acceptBtn')
+            .on('click', function () {
               // Retrieve data from the current row
-              const rowData = table.row($(this).closest("tr")).data()[0];
-              console.log("Data from current row:", rowData);
+              const rowData = table.row($(this).closest('tr')).data()[0];
+              console.log('Data from current row:', rowData);
               handleShow();
               setFirstRowData(rowData);
             });
           $(row)
-            .find(".cancelBtn")
-            .on("click", function () {
+            .find('.cancelBtn')
+            .on('click', function () {
               // Retrieve data from the current row
-              const rowData = table.row($(this).closest("tr")).data()[0];
-              console.log("Data from current row:", rowData);
+              const rowData = table.row($(this).closest('tr')).data()[0];
+              console.log('Data from current row:', rowData);
               cancelModal();
               setFirstRowData(rowData);
             });
@@ -172,12 +172,12 @@ export default function Booking() {
       });
       // Extra step to do extra clean-up.
       return function () {
-        console.log("Table destroyed");
+        console.log('Table destroyed');
         table.destroy();
-        console.log("events to" + events);
+        console.log('events to' + events);
       };
     } catch (error) {
-      console.error("Error posting data:", error);
+      console.error('Error posting data:', error);
     } finally {
       setPreload(false);
     }
@@ -186,13 +186,18 @@ export default function Booking() {
   useEffect(() => {
     fetchBookingData();
     // console.log("dataSet daya " + data);
-    console.log("events to" + events);
+    console.log('events to' + events);
   }, []);
 
   return (
     <>
       <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
-      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
+      <SidePanel
+        isOpen={sidePanelOPen}
+        togglePanel={togglePanel}
+        activeNav={active}
+        acceptBooking={acceptBooking}
+      />
 
       <div className="bookingPage">
         <h1>Booking</h1>
@@ -208,7 +213,7 @@ export default function Booking() {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title style={{ fontSize: "20px" }}>
+            <Modal.Title style={{ fontSize: '20px' }}>
               <p className="mb-0">Accept </p>
             </Modal.Title>
           </Modal.Header>
@@ -231,7 +236,7 @@ export default function Booking() {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title style={{ fontSize: "20px" }}>
+            <Modal.Title style={{ fontSize: '20px' }}>
               <p className="mb-0">Cancel </p>
             </Modal.Title>
           </Modal.Header>
@@ -240,7 +245,7 @@ export default function Booking() {
               <Form.Control
                 as="textarea"
                 placeholder="Leave a comment here"
-                style={{ height: "80px" }}
+                style={{ height: '80px' }}
                 onChange={reasonsValue}
               />
             </FloatingLabel>
@@ -259,9 +264,9 @@ export default function Booking() {
           open={openS}
           autoHideDuration={2000}
           onClose={handleCloseSnack}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: "100%" }}>
+          <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: '100%' }}>
             {snackMessage}
           </Alert>
         </Snackbar>
