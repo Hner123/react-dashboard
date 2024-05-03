@@ -181,7 +181,9 @@ tbody tr {
 }
 
 .fc-daygrid-event-harness a {
-  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(120, 120, 120, 0.4);
+  box-shadow:
+    0 4px 20px 0 rgba(0, 0, 0, 0.14),
+    0 7px 10px -5px rgba(120, 120, 120, 0.4);
   background-color: #4096fa;
 }
 .fc-daygrid-event-harness a:hover {
@@ -195,4 +197,53 @@ tbody tr {
 }
 .fc-list-event-title {
   background-color: #4099ff !important;
+}
+
+@media (max-width: 1330px) {
+  .stats .col-md-3 {
+    width: 45%;
+  }
+  .dt-scroll-body {
+    max-height: 200px !important;
+  }
+}
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 115px 25px 30px 25px;
+  }
+  .Navheader .col-md-6 {
+    width: 30%;
+  }
+  .dt-scroll-body {
+    max-height: 200px !important;
+  }
+  .upcomingPatient {
+    flex-wrap: wrap;
+  }
+  .upcomingPatient .col-md,
+  .weeklyChart {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .upcomingPatient {
+    flex-wrap: wrap;
+  }
+  .stats .col-md-3 {
+    width: 100%;
+  }
+  .stats .col-md {
+    width: 50%;
+  }
+  .weeklyChart {
+    width: 100%;
+  }
+
+  .fullCalendar {
+    display: none;
+  }
+  .upcomingPatient .col-md {
+    width: 100%;
+  }
 }

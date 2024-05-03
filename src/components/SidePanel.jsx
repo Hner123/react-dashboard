@@ -12,6 +12,7 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBooking }) {
   const [notif, setNotif] = useState(0);
+  const [userRole, setUserRole] = useState('');
 
   const fetchDataNotif = async () => {
     try {
@@ -25,15 +26,12 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
 
   useEffect(() => {
     fetchDataNotif();
-
-    const interval = setInterval(
-      () => {
-        fetchDataNotif();
-      },
-      3 * 60 * 1000
-    );
-    return () => clearInterval(interval);
   }, [acceptBooking]);
+
+  useEffect(() => {
+    setUserRole(localStorage.getItem('role'));
+  }, []);
+
   return (
     <div>
       <div className={isOpen ? 'overlay hide' : 'overlay show'} onClick={togglePanel}></div>
@@ -75,12 +73,14 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
                 <span className="ms-2">My Patients</span>
               </Link>
             </li>
-            <li>
-              <Link to="/pages/history" className={activeNav === 'History' ? 'activeON' : 'activeOFF'}>
-                <UpdateOutlinedIcon fontSize="small" />
-                <span className="ms-2">History</span>
-              </Link>
-            </li>
+            {userRole === 'admin' && (
+              <li>
+                <Link to="/pages/history" className={activeNav === 'History' ? 'activeON' : 'activeOFF'}>
+                  <UpdateOutlinedIcon fontSize="small" />
+                  <span className="ms-2">History</span>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

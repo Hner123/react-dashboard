@@ -5,7 +5,7 @@ import { Row, Col } from 'react-bootstrap';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Spinner from 'react-bootstrap/Spinner';
 
-export default function Calendar({ id, reschedModalClose, refreshData }) {
+export default function Calendar({ id, reschedModalClose, refreshData, userLocation }) {
   const [month, setMonth] = useState(0);
   const [numbersArray, setNumbersArray] = useState([]);
   const [blankDay, setBlankDay] = useState([]);
@@ -54,7 +54,8 @@ export default function Calendar({ id, reschedModalClose, refreshData }) {
 
   const fetchData = async () => {
     try {
-      const response = await axios.post(process.env.REACT_APP_RESCHEDULE);
+      const location = { userLocation };
+      const response = await axios.post(process.env.REACT_APP_RESCHEDULE, location);
       console.log('fetch success :', response.data.disableDay[0].SameDayCount);
 
       for (let i = 0; i < response.data.disableDay.length; i++) {
@@ -74,7 +75,7 @@ export default function Calendar({ id, reschedModalClose, refreshData }) {
 
   const fetchDataTime = async (number) => {
     try {
-      const data = { currentYear, currentMonth, number };
+      const data = { currentYear, currentMonth, number, userLocation };
       const response = await axios.post(process.env.REACT_APP_RESCHEDULETIME, data);
       console.log('fetch data time response : ', response.data.List);
       setTimeOption(response.data.List);

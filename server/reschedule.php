@@ -1,6 +1,11 @@
 <?php include 'connection.php';
 
-$sqlQuery = 'SELECT * FROM confirmed_booking';
+$jsonData = file_get_contents('php://input');
+$data = json_decode($jsonData);
+
+$userLocation = $data->userLocation;
+
+$sqlQuery = "SELECT * FROM confirmed_booking WHERE location='$userLocation'";
 $result = $connection->query($sqlQuery);
 
 if (!$result) {

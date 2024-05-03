@@ -1,24 +1,25 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import React from "react";
-import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./style/login.css";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './style/login.css';
 // import  Alert  from 'bootstrap';
+import Form from 'react-bootstrap/Form';
 
-import Alert from "react-bootstrap/Alert";
+import Alert from 'react-bootstrap/Alert';
 
 export default function Login() {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
-  const [userPass, setUserpass] = useState("");
+  const [userName, setUserName] = useState('');
+  const [userPass, setUserpass] = useState('');
   const [alertMsge, setAlertMsge] = useState(false);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
-    const userID = localStorage.getItem("user");
+    const storedToken = localStorage.getItem('authToken');
+    const userID = localStorage.getItem('user');
     if (storedToken) {
-      navigate("/dashboard");
+      navigate('/dashboard');
     }
   }, []);
 
@@ -34,23 +35,25 @@ export default function Login() {
       const postData = { userName, userPass };
       const response = await axios.post(process.env.REACT_APP_LOGIN, postData);
 
-      if (response.data.message === "Success") {
-        console.log("LOGGED In");
+      if (response.data.message === 'Success') {
+        console.log('LOGGED In');
 
         const { token } = response.data;
         const userID = response.data.id;
         const userName = response.data.name;
-        localStorage.setItem("authToken", token);
-        localStorage.setItem("user", userID);
-        localStorage.setItem("userName", userName);
 
-        navigate("/Dashboard");
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('user', userID);
+        localStorage.setItem('userName', userName);
+        localStorage.setItem('role', response.data.role);
+
+        navigate('/Dashboard');
       } else {
         setAlertMsge(true);
         console.log(alertMsge);
       }
     } catch (error) {
-      console.error("Error posting data:", error);
+      console.error('Error posting data:', error);
     }
   };
 
@@ -77,6 +80,7 @@ export default function Login() {
             )}
 
             <h3>Login</h3>
+
             <div className="col-md-12">
               <label htmlFor="username" className="form-label">
                 Username
@@ -99,9 +103,18 @@ export default function Login() {
               <label htmlFor="password" className="form-label">
                 Password
               </label>
-              <span className="text-end">
-                <a href="">I forgot my password</a>
+              <span style={{ width: '100%' }} className="text-end">
+                <input
+                  style={{ position: 'relative', top: '2px', marginRight: '6px' }}
+                  id="chck"
+                  type="checkbox"
+                />
+
+                <label htmlFor="chck" style={{ color: '#2266D7' }}>
+                  Remember me
+                </label>
               </span>
+
               <input
                 type="password"
                 className="form-control"

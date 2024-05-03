@@ -35,6 +35,7 @@ export default function Confirm() {
 
   const [userFound, setUserFound] = useState('');
   const [procedure, setProcedure] = useState('');
+  const [userLocation, setUserLocation] = useState('');
   const [paymentCost, setPaymentCost] = useState('');
   const [notes, setNotes] = useState('');
   const [userID, setUserID] = useState();
@@ -186,6 +187,7 @@ export default function Confirm() {
       //   handleClose();
       setUserFound(response.data.UserFound);
       setUserID(response.data.User_ID);
+      setUserLocation(response.data.Branch);
     } catch (error) {
       console.log('error fetching from Manage: ', error);
     }
@@ -462,7 +464,12 @@ export default function Confirm() {
         </Modal.Header>
         <Modal.Body style={{ minHeight: '400px', height: '100%' }}>
           {/* ***************************CALENDAR MODAL BODY********************** */}
-          <Calendar id={firstRowData} reschedModalClose={handleClose} refreshData={fetchConfirmData} />
+          <Calendar
+            id={firstRowData}
+            reschedModalClose={handleClose}
+            refreshData={fetchConfirmData}
+            userLocation={userLocation}
+          />
         </Modal.Body>
         {/* <Modal.Footer>
           <Button >Confirm</Button>

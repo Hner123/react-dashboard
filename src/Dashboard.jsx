@@ -1,33 +1,33 @@
-import { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "./components/Header";
-import SidePanel from "./components/SidePanel";
-import "./style/dashboad.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import axios from "axios";
-import DataTable from "datatables.net-bs5";
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from './components/Header';
+import SidePanel from './components/SidePanel';
+import './style/dashboad.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from 'axios';
+import DataTable from 'datatables.net-bs5';
 // import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
-import "datatables.net-dt/css/jquery.dataTables.min.css";
+import 'datatables.net-dt/css/jquery.dataTables.min.css';
 
-import { formatDate } from "@fullcalendar/core";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import listPlugin from "@fullcalendar/list";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import CircleIcon from "@mui/icons-material/Circle";
-import Spinner from "react-bootstrap/Spinner";
+import { formatDate } from '@fullcalendar/core';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import listPlugin from '@fullcalendar/list';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import CircleIcon from '@mui/icons-material/Circle';
+import Spinner from 'react-bootstrap/Spinner';
 
 // import interactionPlugin from "@fullcalendar/interaction";
-import AmChart from "./components/AmChart";
+import AmChart from './components/AmChart';
 
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
-import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 // import faker from "faker";
-import { Person } from "@mui/icons-material";
-import { EventNote } from "@mui/icons-material";
-import { GroupAdd } from "@mui/icons-material";
+import { Person } from '@mui/icons-material';
+import { EventNote } from '@mui/icons-material';
+import { GroupAdd } from '@mui/icons-material';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -40,27 +40,27 @@ export default function Dashboard() {
   const [dataq, SetData] = useState([]);
   const [events, setEvents] = useState([]);
   const [preload, setPreload] = useState(true);
-  const [active, setActive] = useState("Dashboard");
+  const [active, setActive] = useState('Dashboard');
   const [todayPatientsValue, setTodayPatientsValue] = useState(0);
   const [todaySalesPercentage, setTodaySalesPercentage] = useState(0);
   const [patientAddedLastmonth, setPatientAddedLastMonth] = useState(0);
   const [yesterdayCompleted, setYesterdayCompleted] = useState(0);
   const [getCompleted, setGetCompleted] = useState([]);
   const [getCancelled, setGetCancelled] = useState([]);
-  const [notes, setNotes] = useState("");
-  const [services, setServices] = useState("");
+  const [notes, setNotes] = useState('');
+  const [services, setServices] = useState('');
   const [calendarLoading, setCalendarLoading] = useState(false);
-  const [lokasyon, setLokasyon] = useState("Marikina");
+  const [lokasyon, setLokasyon] = useState('Marikina');
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
-    console.log("dashboard " + sidePanelOPen);
+    console.log('dashboard ' + sidePanelOPen);
   };
 
   const handleStatusData = async () => {
     try {
       const response = await axios.post(process.env.REACT_APP_DATA);
-      console.log("Post successful:", response.data);
+      console.log('Post successful:', response.data);
 
       setTodayPatientsValue(response.data.percentage_Patients_vs_yesterday);
       setTodaySalesPercentage(response.data.percentageSales_today_vs_yesterday);
@@ -81,9 +81,9 @@ export default function Dashboard() {
       // console.log(tableRef.current);
       // new DataTable('#example', {
 
-      const table = new DataTable("#myTable", {
+      const table = new DataTable('#myTable', {
         data: response.data.upComingPatient,
-        columns: [{ title: "Schedule" }, { title: "Name" }],
+        columns: [{ title: 'Schedule' }, { title: 'Name' }],
 
         destroy: true, // I think some clean up is happening here
         paging: false,
@@ -100,11 +100,11 @@ export default function Dashboard() {
       });
       // Extra step to do extra clean-up.
       return function () {
-        console.log("Table destroyed");
+        console.log('Table destroyed');
         table.destroy();
       };
     } catch (error) {
-      console.error("Error posting data:", error);
+      console.error('Error posting data:', error);
     } finally {
       setPreload(false);
     }
@@ -114,15 +114,15 @@ export default function Dashboard() {
     try {
       setCalendarLoading(true);
       const response = await axios.post(process.env.REACT_APP_DATA);
-      console.log("Post successful:", response.data);
+      console.log('Post successful:', response.data);
 
-      if (loc === "Marikina") {
+      if (loc === 'Marikina') {
         setEvents(response.data.Calendar_Marikina);
       } else {
         setEvents(response.data.Calendar_Antipolo);
       }
     } catch (error) {
-      console.error("Error posting data:", error);
+      console.error('Error posting data:', error);
     } finally {
       setTimeout(() => {
         setCalendarLoading(false);
@@ -138,11 +138,11 @@ export default function Dashboard() {
     responsive: true,
     plugins: {
       legend: {
-        position: "top",
+        position: 'top',
       },
       title: {
         display: true,
-        text: "Completed Vs Cancelled",
+        text: 'Completed Vs Cancelled',
       },
     },
     scales: {
@@ -159,20 +159,20 @@ export default function Dashboard() {
     // labels,
     datasets: [
       {
-        label: "Cancelled",
+        label: 'Cancelled',
         data: getCancelled,
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       {
-        label: "Completed",
+        label: 'Completed',
         data: getCompleted,
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
       },
     ],
   };
 
   const [showModal, setShowModal] = useState(false);
-  const [titleEvent, setTitleEvent] = useState("");
+  const [titleEvent, setTitleEvent] = useState('');
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -184,12 +184,12 @@ export default function Dashboard() {
   function renderEventContent(eventInfo, handleShowModal) {
     return (
       <>
-        <b style={{ fontSize: "12px", color: "#fff" }}>
-          <CircleIcon style={{ fontSize: "10px", color: "#00FF00" }} />
+        <b style={{ fontSize: '12px', color: '#fff' }}>
+          <CircleIcon style={{ fontSize: '10px', color: '#00FF00' }} />
           {eventInfo.timeText}&nbsp;
         </b>
         <span
-          style={{ cursor: "pointer", fontSize: "12px", color: "#fff" }}
+          style={{ cursor: 'pointer', fontSize: '12px', color: '#fff' }}
           onClick={() => {
             setTitleEvent(eventInfo.event.title);
             setNotes(eventInfo.event.extendedProps.notes);
@@ -204,7 +204,7 @@ export default function Dashboard() {
   }
 
   const currentDate = new Date();
-  const formattedDate = currentDate.toISOString().split("T")[0];
+  const formattedDate = currentDate.toISOString().split('T')[0];
 
   return (
     <div className="dash">
@@ -214,7 +214,7 @@ export default function Dashboard() {
         <div className="dashboard">
           <h5>Dashboard</h5>
           {/* ****************************4 BOX STATS************************ */}
-          <div className="stats d-flex justify-content-center">
+          <div className="row stats d-flex justify-content-center">
             <div className="col-md-3 blue">
               <div className="row">
                 <div className="col-md">
@@ -327,7 +327,7 @@ export default function Dashboard() {
                 <div className="col-md d-flex justify-content-end">
                   <span
                     className="d-flex justify-content-center align-items-center mb-3 statsRed"
-                    style={{ fontSize: "26px", fontWeight: "500" }}
+                    style={{ fontSize: '26px', fontWeight: '500' }}
                   >
                     ₱
                   </span>
@@ -382,19 +382,19 @@ export default function Dashboard() {
               <div className="col-md-6 d-flex justify-content-center">
                 <button
                   onClick={() => {
-                    filterCalendarLoc("Marikina");
-                    setLokasyon("Marikina");
+                    filterCalendarLoc('Marikina');
+                    setLokasyon('Marikina');
                   }}
-                  className={lokasyon == "Marikina" ? "btn btn-primary btn-md me-5" : "btn btn-md me-5"}
+                  className={lokasyon == 'Marikina' ? 'btn btn-primary btn-md me-5' : 'btn btn-md me-5'}
                 >
                   Marikina
                 </button>
                 <button
                   onClick={() => {
-                    filterCalendarLoc("Antipolo");
-                    setLokasyon("Antipolo");
+                    filterCalendarLoc('Antipolo');
+                    setLokasyon('Antipolo');
                   }}
-                  className={lokasyon == "Antipolo" ? "btn btn-primary btn-md" : "btn btn-md"}
+                  className={lokasyon == 'Antipolo' ? 'btn btn-primary btn-md' : 'btn btn-md'}
                 >
                   Antipolo
                 </button>
@@ -404,7 +404,7 @@ export default function Dashboard() {
               {calendarLoading && (
                 <div className="forLoading d-flex justify-content-center align-items-center">
                   <Spinner
-                    style={{ borderWidth: "8px", height: "4rem", width: "4rem", display: "block" }}
+                    style={{ borderWidth: '8px', height: '4rem', width: '4rem', display: 'block' }}
                     animation="border"
                     variant="primary"
                   />
@@ -419,9 +419,9 @@ export default function Dashboard() {
                 dayMaxEventRows={true}
                 contentHeight="575px"
                 headerToolbar={{
-                  left: "prev,next today",
-                  center: "title",
-                  right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
                 }}
                 slotMinTime="10:00:00"
                 slotMaxTime="19:00:00"
@@ -446,7 +446,7 @@ export default function Dashboard() {
         centered
       >
         <Modal.Header>
-          <Modal.Title style={{ fontSize: "20px" }}>
+          <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">{titleEvent} </p>
           </Modal.Title>
         </Modal.Header>

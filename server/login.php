@@ -30,6 +30,7 @@ if ($result->num_rows == 1) {
     $row = $result->fetch_assoc();
     $id = $row['id'];
     $name = $row['first_name'];
+    $role = $row['role'];
 
     $token_payload = [
         'username' => $username,
@@ -42,6 +43,7 @@ if ($result->num_rows == 1) {
         'message' => 'Success',
         'id' => $id,
         'name' => $name,
+        'role' => $role,
     ]);
 } else {
     echo json_encode(['message' => 'Failed']);

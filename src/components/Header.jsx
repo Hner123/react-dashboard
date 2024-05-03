@@ -15,6 +15,7 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
   const navigateProfile = useNavigate();
   const ref = useRef(null);
   const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
     setIsVisible(false);
@@ -22,11 +23,12 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {
         setIsVisible(false);
-        // console.log(!ref.current.contains(event.target));
+        console.log('ref check ' + !ref.current.contains(event.target));
       }
     }
 
     document.addEventListener('click', handleClickOutside);
+
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
@@ -37,6 +39,7 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
     localStorage.removeItem('userName');
+    localStorage.removeItem('role');
     navigate('/');
   };
 
@@ -47,6 +50,7 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
   useEffect(() => {
     const storedToken = localStorage.getItem('authToken');
     setUserName(localStorage.getItem('userName'));
+    setUserRole(localStorage.getItem('role'));
     if (storedToken) {
       // Parse the token to get its expiration time
       const tokenData = JSON.parse(atob(storedToken.split('.')[1]));
@@ -104,12 +108,15 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
               </p>
 
               <ul className={isVisible ? 'show' : 'hide'}>
-                <li>
-                  <PersonOutlineOutlinedIcon fontSize="small" />
-                  <span className="ms-2" onClick={() => navigateProfile('/profile')}>
-                    Profile
-                  </span>
-                </li>
+                {userRole === 'admin' && (
+                  <li>
+                    <PersonOutlineOutlinedIcon fontSize="small" />
+                    <span className="ms-2" onClick={() => navigateProfile('/profile')}>
+                      Profile
+                    </span>
+                  </li>
+                )}
+
                 {/* <li>
                   <SettingsSuggestOutlinedIcon fontSize="small" />
                   <span className="ms-2">Settings</span>

@@ -6,14 +6,12 @@ $data = json_decode($jsonData);
 $yearDate = $data->currentYear;
 $monthDate = $data->currentMonth;
 $dateDate = $data->number;
+$userLocation = $data->userLocation;
 
-// $yearDate = 2024;
-// $monthDate = 5;
-// $dateDate = 15;
-
-$sqlQuery = 'SELECT * FROM confirmed_booking WHERE book_Year=? AND book_Month=? AND book_Day=?';
+$sqlQuery =
+    'SELECT * FROM confirmed_booking WHERE book_Year=? AND book_Month=? AND book_Day=? AND location=?';
 $stmt = $connection->prepare($sqlQuery);
-$stmt->bind_param('iii', $yearDate, $monthDate, $dateDate);
+$stmt->bind_param('iiis', $yearDate, $monthDate, $dateDate, $userLocation);
 $stmt->execute();
 
 $result = $stmt->get_result();

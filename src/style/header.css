@@ -46,7 +46,7 @@ header a {
 }
 
 .Navheader ul::before {
-  content: "";
+  content: '';
   border: 10px solid transparent;
   border-left-color: #fff;
   border-top-color: #fff;
@@ -106,7 +106,7 @@ Menu icon transofmation insperation by @Ali-Tahmazi99
   display: none;
 }
 
-input[type="checkbox"] {
+.header input[type='checkbox'] {
   /* -webkit-appearance: none; */
   display: none;
   visibility: hidden;
@@ -120,18 +120,18 @@ input[type="checkbox"] {
   transition: 0.3s ease;
 }
 
-input[type]:checked ~ span.top {
+.header input[type]:checked ~ span.top {
   transform: translateY(230%) rotate(45deg);
   width: 20px;
 }
 
-input[type]:checked ~ span.bot {
+.header input[type]:checked ~ span.bot {
   transform: translateY(-200%) rotate(-45deg);
   width: 20px;
   box-shadow: 0 0 10px #495057;
 }
 
-input[type]:checked ~ span.mid {
+.header input[type]:checked ~ span.mid {
   transform: translateX(-20px);
   opacity: 0;
 }
