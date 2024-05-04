@@ -7,16 +7,24 @@ import axios from 'axios';
 import Spinner from 'react-bootstrap/Spinner';
 import { useState, useEffect, useRef } from 'react';
 import Alert from 'react-bootstrap/Alert';
+import Table from 'react-bootstrap/Table';
+import EditStaffAccount from '../components/EditStaffAccount';
 
 export default function Profile() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
 
   const [preload, setPreload] = useState(true);
   const [validated, setValidated] = useState(false);
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
+
+  const [staffName, setStaffName] = useState('');
+  const [stafLastname, setStafLastname] = useState('');
+  const [staffUsername, setStaffUsername] = useState('');
+  const [staffID, setStaffID] = useState();
 
   const [userCurrentPass, setUserCurrentPass] = useState('');
   const [userNewPass, setUserNewPass] = useState('');
@@ -37,6 +45,11 @@ export default function Profile() {
     console.log('dashboard ' + sidePanelOPen);
   };
 
+  const [showModal, setShowModal] = useState(false);
+  const handleClose = () => {
+    setShowModal(false);
+  };
+
   const fetchUserDetails = async () => {
     try {
       const userID = localStorage.getItem('user');
@@ -47,6 +60,11 @@ export default function Profile() {
       setLastName(response.data.user_Accounts[0].lastname);
       setUserEmail(response.data.user_Accounts[0].email);
       setUserName(response.data.user_Accounts[0].username);
+
+      setStaffName(response.data.staff_Accounts[0].name);
+      setStafLastname(response.data.staff_Accounts[0].lastname);
+      setStaffUsername(response.data.staff_Accounts[0].username);
+      setStaffID(response.data.staff_Accounts[0].id);
     } catch (error) {
       console.log('Error fetching user :', error);
     } finally {
@@ -134,7 +152,7 @@ export default function Profile() {
 
   useEffect(() => {
     fetchUserDetails();
-  }, []);
+  }, [fetchUserDetails]);
 
   return (
     <>
@@ -300,7 +318,32 @@ export default function Profile() {
               </Form.Group>
             </div>
             <div style={{ borderBottom: '1px solid rgb(51 51 51 / 20%)' }} className="mt-5">
-              <h5>Add Staff</h5>
+              <h5>Staff Account</h5>
+            </div>
+            <div>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{staffName}</td>
+                    <td>{stafLastname}</td>
+                    <td>{staffUsername}</td>
+                    <td>
+                      <Button size="sm" onClick={() => setShowModal(true)}>
+                        Edit Account
+                      </Button>
+                    </td>
+                  </tr>
+                </tbody>
+                <EditStaffAccount showMods={showModal} closeMods={handleClose} staffUserID={staffID} />
+              </Table>
             </div>
           </div>
         </div>

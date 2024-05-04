@@ -32,7 +32,7 @@ export default function Login() {
 
   const handlePost = async () => {
     try {
-      const postData = { userName, userPass };
+      const postData = { userName, userPass, weekDaysLoggedIn };
       const response = await axios.post(process.env.REACT_APP_LOGIN, postData);
 
       if (response.data.message === 'Success') {
@@ -54,6 +54,18 @@ export default function Login() {
       }
     } catch (error) {
       console.error('Error posting data:', error);
+    }
+  };
+
+  const [isChecked, setIsChecked] = useState(false);
+  const [weekDaysLoggedIn, setWeekDaysLoggedIn] = useState(28800);
+
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+    if (event.target.checked === true) {
+      setWeekDaysLoggedIn(604800);
+    } else {
+      setWeekDaysLoggedIn(28800);
     }
   };
 
@@ -79,7 +91,7 @@ export default function Login() {
               console.log(alertMsge)
             )}
 
-            <h3>Login</h3>
+            <h3 className="text-center">Login</h3>
 
             <div className="col-md-12">
               <label htmlFor="username" className="form-label">
@@ -108,6 +120,8 @@ export default function Login() {
                   style={{ position: 'relative', top: '2px', marginRight: '6px' }}
                   id="chck"
                   type="checkbox"
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
                 />
 
                 <label htmlFor="chck" style={{ color: '#2266D7' }}>

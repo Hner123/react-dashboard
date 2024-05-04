@@ -35,4 +35,6 @@ if (!$result) {
     }
 }
 
+$stmt->close();
+$connection->close();
 ?>

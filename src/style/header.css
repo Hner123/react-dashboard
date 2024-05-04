@@ -106,7 +106,7 @@ Menu icon transofmation insperation by @Ali-Tahmazi99
   display: none;
 }
 
-.header input[type='checkbox'] {
+.Navheader input[type='checkbox'] {
   /* -webkit-appearance: none; */
   display: none;
   visibility: hidden;
@@ -120,18 +120,18 @@ Menu icon transofmation insperation by @Ali-Tahmazi99
   transition: 0.3s ease;
 }
 
-.header input[type]:checked ~ span.top {
+.Navheader input[type]:checked ~ span.top {
   transform: translateY(230%) rotate(45deg);
   width: 20px;
 }
 
-.header input[type]:checked ~ span.bot {
+.Navheader input[type]:checked ~ span.bot {
   transform: translateY(-200%) rotate(-45deg);
   width: 20px;
   box-shadow: 0 0 10px #495057;
 }
 
-.header input[type]:checked ~ span.mid {
+.Navheader input[type]:checked ~ span.mid {
   transform: translateX(-20px);
   opacity: 0;
 }
