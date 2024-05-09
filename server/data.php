@@ -355,6 +355,36 @@ while ($row = $result_Marikina->fetch_assoc()) {
 //     echo $date . "\n";
 // }
 
+$sql_holiday = 'SELECT * FROM list_holiday WHERE location="Marikina"';
+$result_holiday = $connection->query($sql_holiday);
+
+while ($row = $result_holiday->fetch_assoc()) {
+    $dateFormat = $row['book_Year'] . '-' . $row['book_Month'] + 1 . '-' . $row['book_Day'];
+
+    $response = [
+        'id' => $row['id'],
+        'title' => $row['day_Remarks'],
+        'start' => date('Y-m-d', strtotime($dateFormat)),
+        'backgroundColor' => '#2ED8B6',
+    ];
+    $fullCalendar_marikina[] = $response;
+}
+
+$sql_holiday_antipolo = 'SELECT * FROM list_holiday WHERE location="Antipolo"';
+$result_holiday_antipolo = $connection->query($sql_holiday_antipolo);
+
+while ($row = $result_holiday_antipolo->fetch_assoc()) {
+    $dateFormat = $row['book_Year'] . '-' . $row['book_Month'] + 1 . '-' . $row['book_Day'];
+
+    $response = [
+        'id' => $row['id'],
+        'title' => $row['day_Remarks'],
+        'start' => date('Y-m-d', strtotime($dateFormat)),
+        'backgroundColor' => '#2ED8B6',
+    ];
+    $fullCalendar_antipolo[] = $response;
+}
+
 $responseData = [
     'todayPatient' => $count,
     'PatientYesterday' => $yesterdayCount,

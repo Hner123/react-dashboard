@@ -19,6 +19,10 @@ export default function Calendar({ id, reschedModalClose, refreshData, userLocat
   const [disableMonth, setDisableMonth] = useState([]);
   const [disableYear, setDisableYear] = useState([]);
 
+  const [holidayDay, setHolidayDay] = useState([]);
+  const [holidayMonth, setHolidayMonth] = useState([]);
+  const [holidayYear, setHolidayYear] = useState([]);
+
   const [timeLoader, setTimeLoader] = useState(true);
   const [confirmLoader, setConfirmLoader] = useState(false);
 
@@ -56,7 +60,7 @@ export default function Calendar({ id, reschedModalClose, refreshData, userLocat
     try {
       const location = { userLocation };
       const response = await axios.post(process.env.REACT_APP_RESCHEDULE, location);
-      console.log('fetch success :', response.data.disableDay[0].SameDayCount);
+      console.log('fetch success disable list :', response.data.disableDay[0].SameDayCount);
 
       for (let i = 0; i < response.data.disableDay.length; i++) {
         if (response.data.disableDay[i].SameDayCount === 17) {
@@ -70,6 +74,22 @@ export default function Calendar({ id, reschedModalClose, refreshData, userLocat
       // console.log('fetch success :', JSON.stringify(response.data.Booking_Details));
     } catch (error) {
       console.log('failed fetching of dates: ', error);
+    }
+  };
+
+  const fetchHoliday = async () => {
+    try {
+      const location = { userLocation };
+      const response = await axios.post(process.env.REACT_APP_HOLIDAYLIST, location);
+      console.log('success fetch holiday list :', response.data.holiday);
+
+      for (let i = 0; i < response.data.holiday.length; i++) {
+        setDisableYear((prevState) => [...prevState, parseInt(response.data.holiday[i].Year)]);
+        setDisableMonth((prevState) => [...prevState, parseInt(response.data.holiday[i].Month)]);
+        setDisableDay((prevState) => [...prevState, parseInt(response.data.holiday[i].Day)]);
+      }
+    } catch (error) {
+      console.log('failed fetching of holiday list: ', error);
     }
   };
 
@@ -147,6 +167,7 @@ export default function Calendar({ id, reschedModalClose, refreshData, userLocat
 
   useEffect(() => {
     fetchData();
+    fetchHoliday();
   }, []);
 
   useEffect(() => {
@@ -196,13 +217,16 @@ export default function Calendar({ id, reschedModalClose, refreshData, userLocat
                 <li key={blank}></li>
               ))}
 
-              {numbersArray.map((number) =>
-                currentYear < currentYear2 ||
-                (currentYear === currentYear2 && currentMonth < currentMonth2) ||
-                (currentYear === currentYear2 && currentMonth == currentMonth2 && today > number) ||
-                (disableYear.includes(currentYear) &&
-                  disableMonth.includes(currentMonth) &&
-                  disableDay2.includes(number)) ? (
+              {numbersArray.map((number) => {
+                const disableDay = disableYear.map(
+                  (year, i) =>
+                    currentYear < currentYear2 ||
+                    (currentYear === currentYear2 && currentMonth < currentMonth2) ||
+                    (currentYear === currentYear2 && currentMonth === currentMonth2 && today > number) ||
+                    (year === currentYear && disableMonth[i] === currentMonth && disableDay2[i] === number)
+                );
+
+                return disableDay.includes(true) ? (
                   <li className="disableDay" key={number}>
                     {number}
                   </li>
@@ -212,15 +236,15 @@ export default function Calendar({ id, reschedModalClose, refreshData, userLocat
                     key={number + ' ' + currentYear}
                     onClick={() => {
                       setSelection('Time');
-                      console.log('year: ' + currentYear + ' month: ' + currentMonth + ' day :' + number);
+
                       fetchDataTime(number);
                       setDaySelect(number);
                     }}
                   >
                     {number}
                   </li>
-                )
-              )}
+                );
+              })}
             </ul>
           </div>
         ) : (

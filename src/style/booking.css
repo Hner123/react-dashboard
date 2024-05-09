@@ -74,6 +74,9 @@
 colgroup {
   display: none;
 }
+.bookingPage tbody tr:hover {
+  background-color: #e6f7ff !important;
+}
 
 @media (max-width: 768px) {
   .bookingPage {

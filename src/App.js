@@ -12,6 +12,7 @@ import PatientDetails from './pages/Patient-Details';
 import Profile from './pages/Profile';
 import Calendar from './components/Calendar';
 import MuiCalendar from './components/MuiCalendar';
+import Test from './Test';
 const App = () => {
   return (
     // <Login />
@@ -29,6 +30,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/pages/calendar" element={<Calendar />} />
         <Route path="/pages/muicalendar" element={<MuiCalendar />} />
+        <Route path="/pages/test" element={<Test />} />
       </Routes>
     </Router>
   );

@@ -123,45 +123,45 @@ tbody tr {
   margin-top: 10px;
   position: relative;
 }
-.fc-button-group button {
+.dashboard .fc-button-group button {
   background-color: #f9f9f9 !important;
   color: #6c757d !important;
   border: none !important;
   font-weight: 500 !important;
 }
-.fc .fc-button-group > .fc-button.fc-button-active {
+.dashboard .fc .fc-button-group > .fc-button.fc-button-active {
   background-color: #4096fa !important;
   color: #fff !important;
 }
-.fullCalendar thead tr th a,
-.fc-daygrid-day-number {
+.dashboard .fullCalendar thead tr th a,
+.dashboard .fc-daygrid-day-number {
   color: #333 !important;
   text-decoration: none;
 }
 
-.fc .fc-daygrid-event-harness,
-.fc .fc-daygrid-event-harness a {
+.dashboard .fc .fc-daygrid-event-harness,
+.dashboard .fc .fc-daygrid-event-harness a {
   color: #6c757d !important;
   margin-bottom: 3px;
   border-radius: 3px;
   font-size: 14px;
 }
 
-.fc-direction-ltr .fc-timegrid-slot-label-frame {
+.dashboard .fc-direction-ltr .fc-timegrid-slot-label-frame {
   text-align: initial;
 }
-.fc-theme-standard td {
+.dashboard .fc-theme-standard td {
   border: 1px solid #dddddda7;
 }
-.fc .fc-button-primary:not(:disabled).fc-button-active:focus,
-.fc .fc-button-primary:not(:disabled):active:focus {
+.dashboard .fc .fc-button-primary:not(:disabled).fc-button-active:focus,
+.dashboard .fc .fc-button-primary:not(:disabled):active:focus {
   box-shadow: none !important;
 }
 
 /* .fc-day {
   width: 10% !important;
 } */
-.fc-timegrid-axis {
+.dashboard .fc-timegrid-axis {
   width: 5%;
 }
 .forLoading {
@@ -172,31 +172,37 @@ tbody tr {
   z-index: 3;
 }
 
-.fc-list-event-dot {
+.dashboard .fc-list-event-dot {
   display: none !important;
 }
 
-.fc .fc-daygrid-day-frame {
+.dashboard .fc .fc-daygrid-day-frame {
   min-height: 90px;
 }
 
-.fc-daygrid-event-harness a {
+.dashboard .fc-daygrid-event-harness a {
   box-shadow:
     0 4px 20px 0 rgba(0, 0, 0, 0.14),
     0 7px 10px -5px rgba(120, 120, 120, 0.4);
   background-color: #4096fa;
 }
-.fc-daygrid-event-harness a:hover {
+.dashboard .fc-daygrid-event-harness a:hover {
   background-color: #58a5fd;
 }
 .fullCalendar thead tr th a {
   color: #929292 !important;
 }
-.fc-event-start span {
+.dashboard .fc-event-start span {
   color: #fff !important;
 }
-.fc-list-event-title {
+.dashboard .fc-list-event-title {
   background-color: #4099ff !important;
+}
+
+.dashboard .fc-h-event {
+  background-color: var(--fc-event-bg-color);
+  border: none;
+  display: block;
 }
 
 @media (max-width: 1330px) {

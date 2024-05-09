@@ -1,25 +1,25 @@
-import Header from "../components/Header";
-import SidePanel from "../components/SidePanel";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "../style/patients.css";
-import axios from "axios";
-import AddPatient from "../components/AddPatient";
+import Header from '../components/Header';
+import SidePanel from '../components/SidePanel';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../style/patients.css';
+import axios from 'axios';
+import AddPatient from '../components/AddPatient';
 
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import Button from "@mui/material/Button";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import Button from '@mui/material/Button';
 
-import $ from "jquery";
-import DataTable from "datatables.net-bs5";
+import $ from 'jquery';
+import DataTable from 'datatables.net-bs5';
 
-import Modal from "react-bootstrap/Modal";
-import { ButtonToolbar } from "react-bootstrap";
-import DeletePatient from "../components/DeletePatient";
+import Modal from 'react-bootstrap/Modal';
+import { ButtonToolbar } from 'react-bootstrap';
+import DeletePatient from '../components/DeletePatient';
 
 export default function Patients() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
   const navigate = useNavigate();
-  const [active, setActive] = useState("Patients");
+  const [active, setActive] = useState('Patients');
 
   const [addPatientModal, setAddPatientModal] = useState(false);
   const [deletePatientModal, setDeletePatientModal] = useState(false);
@@ -36,35 +36,35 @@ export default function Patients() {
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
-    console.log("dashboard " + sidePanelOPen);
+    console.log('dashboard ' + sidePanelOPen);
   };
 
   const patientDetailsPage = (id_num) => {
     // Navigate to a different route
-    navigate("/pages/patients/patient-details?id=" + id_num);
+    navigate('/pages/patients/patient-details?id=' + id_num);
   };
 
   const fetchPatientsData = async () => {
     try {
       const response = await axios.post(process.env.REACT_APP_MYPATIENTS);
-      console.log("Post successful:", response.data);
+      console.log('Post successful:', response.data);
       setTotalPatient(response.data.count);
-      const table = new DataTable("#myTable", {
+      const table = new DataTable('#myTable', {
         data: response.data.myPatients,
         hover: true,
 
         columns: [
-          { title: "ID" },
-          { title: "Name" },
-          { title: "Address" },
-          { title: "Phone Number" },
-          { title: "Gender" },
-          { title: "Date Created" },
+          { title: 'ID' },
+          { title: 'Name' },
+          { title: 'Address' },
+          { title: 'Phone Number' },
+          { title: 'Gender' },
+          { title: 'Date Created' },
           {
-            title: "Actions",
+            title: 'Actions',
             render: function (data, type, row) {
               // Assuming you have access to row data, you can create buttons dynamically
-              if (type === "display") {
+              if (type === 'display') {
                 return `
                             <div class='d-flex' style='gap:.3rem;'>
                            
@@ -84,19 +84,19 @@ export default function Patients() {
         createdRow: (row, data) => {
           // Attach event listeners to buttons when rows are created
           $(row)
-            .find(".viewBtn")
-            .on("click", function () {
+            .find('.viewBtn')
+            .on('click', function () {
               // Retrieve data from the current row
-              const rowData = table.row($(this).closest("tr")).data()[0];
-              console.log("Data from current row:", rowData);
+              const rowData = table.row($(this).closest('tr')).data()[0];
+              console.log('Data from current row:', rowData);
               patientDetailsPage(rowData);
             });
           $(row)
-            .find(".deleteBtn")
-            .on("click", function () {
+            .find('.deleteBtn')
+            .on('click', function () {
               // Retrieve data from the current row
-              const rowData = table.row($(this).closest("tr")).data()[0];
-              console.log("Data from current row:", rowData);
+              const rowData = table.row($(this).closest('tr')).data()[0];
+              console.log('Data from current row:', rowData);
               setDeleteId(rowData);
               setDeletePatientModal(true);
             });
@@ -116,12 +116,12 @@ export default function Patients() {
       });
       // Extra step to do extra clean-up.
       return function () {
-        console.log("Table destroyed");
+        console.log('Table destroyed');
         table.destroy();
         // console.log("events to" + events);
       };
     } catch (error) {
-      console.error("Error posting data:", error);
+      console.error('Error posting data:', error);
     } finally {
       setPreload(false);
     }
@@ -139,13 +139,13 @@ export default function Patients() {
         <h1>My Patients</h1>
 
         <div className="">
-          <div className="row" style={{ maxWidth: "1100px", margin: "auto" }}>
+          <div className="row" style={{ maxWidth: '1100px', margin: 'auto' }}>
             <div className="col">
               <div>
-                <span style={{ fontSize: "32px", fontWeight: "500", marginRight: "10px", color: "#2266D7" }}>
+                <span style={{ fontSize: '32px', fontWeight: '500', marginRight: '10px', color: '#2266D7' }}>
                   {totalPatient}
                 </span>
-                <span style={{ color: "#6C757D" }}>Total Patients</span>
+                <span style={{ color: '#6C757D' }}>Total Patients</span>
               </div>
             </div>
             <div className="col d-flex justify-content-end mb-3">

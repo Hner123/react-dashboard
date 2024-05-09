@@ -1,24 +1,24 @@
-import { Button, Modal, Row, Col } from "react-bootstrap";
-import Form from "react-bootstrap/Form";
-import { useState } from "react";
-import axios from "axios";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import Spinner from "react-bootstrap/Spinner";
+import { Button, Modal, Row, Col } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
+import { useState } from 'react';
+import axios from 'axios';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import Spinner from 'react-bootstrap/Spinner';
 
 export default function AddPatient({ patientModalOpen, patientModalClose, refetchData }) {
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [address, setAddress] = useState("");
-  const [email, setEmail] = useState("");
-  const [gender, setGender] = useState("");
-  const [number, setNumber] = useState("");
-  const [birth, setBirth] = useState("");
+  const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [address, setAddress] = useState('');
+  const [email, setEmail] = useState('');
+  const [gender, setGender] = useState('');
+  const [number, setNumber] = useState('');
+  const [birth, setBirth] = useState('');
   const [validated, setValidated] = useState(false);
   const [modalClose, setModalClose] = useState(patientModalClose);
   const [openS, setOPenS] = useState(false);
-  const [snackSeverity, setSnackSeverity] = useState("");
-  const [snackMessage, setSnackMessage] = useState("");
+  const [snackSeverity, setSnackSeverity] = useState('');
+  const [snackMessage, setSnackMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const closeModal = () => {
@@ -29,7 +29,7 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
   const fetchData = () => refetchData();
 
   const handleCloseSnack = (event, reason) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
 
@@ -41,47 +41,47 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
     event.stopPropagation();
     setValidated(true);
 
-    console.log("name ito :" + name);
-    console.log("lastName ito :" + lastName);
-    console.log("address ito :" + address);
-    console.log("email ito :" + email);
-    console.log("gender ito :" + gender);
-    console.log("number ito :" + number);
-    console.log("birth ito :" + birth);
+    console.log('name ito :' + name);
+    console.log('lastName ito :' + lastName);
+    console.log('address ito :' + address);
+    console.log('email ito :' + email);
+    console.log('gender ito :' + gender);
+    console.log('number ito :' + number);
+    console.log('birth ito :' + birth);
     if (
-      name != "" &&
-      lastName != "" &&
-      address != "" &&
-      email != "" &&
-      gender != "" &&
-      number != "" &&
-      birth != ""
+      name != '' &&
+      lastName != '' &&
+      address != '' &&
+      email != '' &&
+      gender != '' &&
+      number != '' &&
+      birth != ''
     ) {
       try {
         setIsLoading(true);
         const data = { name, lastName, address, email, gender, number, birth };
         const response = await axios.post(process.env.REACT_APP_ADDPATIENT, data);
-        console.log("succesfully saved patient :" + response.data);
+        console.log('succesfully saved patient :' + response.data);
         closeModal();
 
-        setName("");
-        setLastName("");
-        setAddress("");
-        setEmail("");
-        setGender("");
-        setNumber("");
-        setBirth("");
+        setName('');
+        setLastName('');
+        setAddress('');
+        setEmail('');
+        setGender('');
+        setNumber('');
+        setBirth('');
 
         setOPenS(true);
-        setSnackMessage("Succesfully added patient!");
-        setSnackSeverity("success");
+        setSnackMessage('Succesfully added patient!');
+        setSnackSeverity('success');
 
         fetchData();
       } catch (error) {
-        console.log("Error saving patient :", error);
+        console.log('Error saving patient :', error);
         setOPenS(true);
-        setSnackMessage("Error adding patient!");
-        setSnackSeverity("error");
+        setSnackMessage('Error adding patient!');
+        setSnackSeverity('error');
       } finally {
         setIsLoading(false);
       }
@@ -98,7 +98,7 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
         centered
       >
         <Modal.Header>
-          <Modal.Title style={{ fontSize: "20px" }}>
+          <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">Add a patient </p>
           </Modal.Title>
         </Modal.Header>
@@ -199,9 +199,9 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
             disabled={isLoading}
             onClick={saveData}
           >
-            <Spinner style={{ display: isLoading ? "inline-block" : "none" }} animation="border" size="sm" />{" "}
+            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" />{' '}
             &nbsp;
-            {isLoading ? "Adding..." : "Add Patient"}
+            {isLoading ? 'Adding...' : 'Add Patient'}
           </Button>
 
           <Button variant="secondary" onClick={closeModal}>
@@ -214,9 +214,9 @@ export default function AddPatient({ patientModalOpen, patientModalClose, refetc
         open={openS}
         autoHideDuration={2000}
         onClose={handleCloseSnack}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: "100%" }}>
+        <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: '100%' }}>
           {snackMessage}
         </Alert>
       </Snackbar>

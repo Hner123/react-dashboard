@@ -1,74 +1,74 @@
-import Header from "../components/Header";
-import SidePanel from "../components/SidePanel";
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import axios from "axios";
-import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import "../style/patientDetails.css";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import IconButton from "@mui/material/IconButton";
-import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
-import Modal from "react-bootstrap/Modal";
-import DescriptionIcon from "@mui/icons-material/Description";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import GetAppIcon from "@mui/icons-material/GetApp";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
-import "react-datepicker/dist/react-datepicker.css";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
-import Spinner from "react-bootstrap/Spinner";
+import Header from '../components/Header';
+import SidePanel from '../components/SidePanel';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import axios from 'axios';
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
+import '../style/patientDetails.css';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import IconButton from '@mui/material/IconButton';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import Modal from 'react-bootstrap/Modal';
+import DescriptionIcon from '@mui/icons-material/Description';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
+import 'react-datepicker/dist/react-datepicker.css';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Spinner from 'react-bootstrap/Spinner';
 
 export default function PatientDetails() {
   const [isLoading, setIsLoading] = useState(false);
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [gender, setGender] = useState("");
-  const [birth, setBirth] = useState("");
-  const [phoneNum, setPhoneNum] = useState("");
-  const [address, setAddress] = useState("");
-  const [registeredData, setRegisteredDate] = useState("");
-  const [clientNotes, setClientNotes] = useState("");
+  const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [gender, setGender] = useState('');
+  const [birth, setBirth] = useState('');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [address, setAddress] = useState('');
+  const [registeredData, setRegisteredDate] = useState('');
+  const [clientNotes, setClientNotes] = useState('');
   const [history, setHistory] = useState([]);
-  const [profilePic, setProfilePic] = useState("");
+  const [profilePic, setProfilePic] = useState('');
   const [pic, setPic] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isHovered2, setIsHovered2] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showModaladdFiles, setshowModaladdFiles] = useState(false);
-  const [addFile, setAddFile] = useState("");
+  const [addFile, setAddFile] = useState('');
   const [documents, setDocuments] = useState([]);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [notesHistoryModal, setNotesHistoryModal] = useState(false);
-  const [noteInsideModal, setNoteInsideModal] = useState("None");
+  const [noteInsideModal, setNoteInsideModal] = useState('None');
   const [deleteID, setDeleteID] = useState(0);
   const [openS, setOPenS] = useState(false);
-  const [snackMessage, setSnackMessage] = useState("");
-  const [snackSeverity, setSnackSeverity] = useState("");
+  const [snackMessage, setSnackMessage] = useState('');
+  const [snackSeverity, setSnackSeverity] = useState('');
   const [editPatient, setEditPatient] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [validated, setValidated] = useState(false);
 
-  const [patientName, setPatientName] = useState("");
-  const [patientLastname, setPatientLastname] = useState("");
-  const [patientGender, setPatientGender] = useState("");
-  const [patientAddress, setPatientAddress] = useState("");
+  const [patientName, setPatientName] = useState('');
+  const [patientLastname, setPatientLastname] = useState('');
+  const [patientGender, setPatientGender] = useState('');
+  const [patientAddress, setPatientAddress] = useState('');
   const [patientPhone, setPatientPhone] = useState(null);
-  const [patientEmail, setPatientEmail] = useState("");
-  const [patientDOB, setPatientDOB] = useState("");
+  const [patientEmail, setPatientEmail] = useState('');
+  const [patientDOB, setPatientDOB] = useState('');
   const [preload, setPreload] = useState(true);
-  const [active, setActive] = useState("Patients");
+  const [active, setActive] = useState('Patients');
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get("id");
+  const id = searchParams.get('id');
 
   const showModalFunction = () => setShowModal(true);
   const addFilesModal = () => setshowModaladdFiles(true);
@@ -92,7 +92,7 @@ export default function PatientDetails() {
       const data = { id };
       const response = await axios.post(process.env.REACT_APP_PATIENTDATA, data);
       setHistory(response.data.patient_history);
-      console.log("Fetch patient data successful:", response.data.patientData);
+      console.log('Fetch patient data successful:', response.data.patientData);
       setName(response.data.patientData[0][1]);
       setLastName(response.data.patientData[0][2]);
       setEmail(response.data.patientData[0][5]);
@@ -113,7 +113,7 @@ export default function PatientDetails() {
       setPatientEmail(response.data.patientData[0][5]);
       setPatientDOB(response.data.patientData[0][3]);
     } catch (error) {
-      console.log("Error fetching patient deta :", error);
+      console.log('Error fetching patient deta :', error);
     } finally {
       setPreload(false);
     }
@@ -121,12 +121,12 @@ export default function PatientDetails() {
 
   const togglePanel = () => {
     setSidePanelOPen(!sidePanelOPen);
-    console.log("dashboard " + sidePanelOPen);
+    console.log('dashboard ' + sidePanelOPen);
   };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const month = monthNames[date.getMonth()];
     const day = date.getDate();
     const year = date.getFullYear();
@@ -138,7 +138,7 @@ export default function PatientDetails() {
     let hours = date.getHours();
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();
-    const period = hours >= 12 ? "PM" : "AM";
+    const period = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour clock
     return `${hours}:${minutes}:${seconds} ${period}`;
   };
@@ -164,15 +164,15 @@ export default function PatientDetails() {
         clientNotes,
       };
       const response = await axios.post(process.env.REACT_APP_ADDNOTES, data);
-      console.log("Successfully added notes :", response.data);
+      console.log('Successfully added notes :', response.data);
       setOPenS(true);
-      setSnackMessage("Notes has been saved!");
-      setSnackSeverity("success");
+      setSnackMessage('Notes has been saved!');
+      setSnackSeverity('success');
     } catch (error) {
-      console.log("Error saving notes :", error);
+      console.log('Error saving notes :', error);
       setOPenS(true);
-      setSnackMessage("Error saving notes!");
-      setSnackSeverity("error");
+      setSnackMessage('Error saving notes!');
+      setSnackSeverity('error');
     } finally {
       setIsLoading(false);
     }
@@ -182,8 +182,8 @@ export default function PatientDetails() {
     try {
       setIsLoading(true);
       const formData = new FormData();
-      formData.append("profilePic", profilePic);
-      formData.append("id", id);
+      formData.append('profilePic', profilePic);
+      formData.append('id', id);
 
       const response = await axios.post(process.env.REACT_APP_EDITPROFILEPIC, formData);
       const data = { id };
@@ -191,9 +191,9 @@ export default function PatientDetails() {
       setPic(response2.data.patientData[0][9]);
 
       handleClose();
-      console.log("Successfully send data :", response.data, response2.data.patientData[0][9]);
+      console.log('Successfully send data :', response.data, response2.data.patientData[0][9]);
     } catch (error) {
-      console.log("Error saving profile pic :", error);
+      console.log('Error saving profile pic :', error);
     } finally {
       setIsLoading(false);
     }
@@ -203,8 +203,8 @@ export default function PatientDetails() {
     try {
       setIsLoading(true);
       const formData = new FormData();
-      formData.append("addFile", addFile);
-      formData.append("id", id);
+      formData.append('addFile', addFile);
+      formData.append('id', id);
 
       const response = await axios.post(process.env.REACT_APP_ADD_DOCUMENT, formData);
       const data = { id };
@@ -212,9 +212,9 @@ export default function PatientDetails() {
       setDocuments(response2.data.patient_attachement_file);
       handleClose();
 
-      console.log("Successfully send data :", response.data);
+      console.log('Successfully send data :', response.data);
     } catch (error) {
-      console.log("Error saving profile pic :", error);
+      console.log('Error saving profile pic :', error);
     } finally {
       setIsLoading(false);
     }
@@ -229,16 +229,16 @@ export default function PatientDetails() {
       const response2 = await axios.post(process.env.REACT_APP_PATIENTDATA, data2);
       setDocuments(response2.data.patient_attachement_file);
       handleClose();
-      console.log("Successfully deleted the file: " + response.data);
+      console.log('Successfully deleted the file: ' + response.data);
     } catch (error) {
-      console.log("Error Delete the file :", error);
+      console.log('Error Delete the file :', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCloseSnack = (event, reason) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
 
@@ -246,19 +246,19 @@ export default function PatientDetails() {
   };
 
   const handleSubmit = async (event) => {
-    console.log("this button was click");
+    console.log('this button was click');
     event.preventDefault();
     event.stopPropagation();
     setValidated(true);
 
     if (
-      patientName != "" &&
-      patientLastname != "" &&
-      patientGender != "" &&
-      patientAddress != "" &&
-      patientPhone != "" &&
-      patientEmail != "" &&
-      patientDOB != ""
+      patientName != '' &&
+      patientLastname != '' &&
+      patientGender != '' &&
+      patientAddress != '' &&
+      patientPhone != '' &&
+      patientEmail != '' &&
+      patientDOB != ''
     ) {
       try {
         const data = {
@@ -274,7 +274,7 @@ export default function PatientDetails() {
         const data2 = { id };
 
         const response = await axios.post(process.env.REACT_APP_EDITPATIENTDETAILS, data);
-        console.log("Saving edited details :" + response.data);
+        console.log('Saving edited details :' + response.data);
 
         const response2 = await axios.post(process.env.REACT_APP_PATIENTDATA, data2);
         setName(response2.data.patientData[0][1]);
@@ -287,16 +287,16 @@ export default function PatientDetails() {
 
         handleClose();
         setOPenS(true);
-        setSnackSeverity("success");
-        setSnackMessage("Patient details updated!");
+        setSnackSeverity('success');
+        setSnackMessage('Patient details updated!');
       } catch (error) {
         setOPenS(true);
-        setSnackSeverity("error");
-        setSnackMessage("Error updating patient details!");
-        console.log("Error saving edited patient details :", error);
+        setSnackSeverity('error');
+        setSnackMessage('Error updating patient details!');
+        console.log('Error saving edited patient details :', error);
       }
     } else {
-      console.log("You need to fill out all the fields first.");
+      console.log('You need to fill out all the fields first.');
     }
   };
 
@@ -312,10 +312,10 @@ export default function PatientDetails() {
         <div className="d-flex justify-content-between">
           <h1>
             <Link to="/pages/patients">My Patients </Link>
-            <KeyboardArrowRightIcon /> <span>{name + " " + lastName} </span>
+            <KeyboardArrowRightIcon /> <span>{name + ' ' + lastName} </span>
           </h1>
           <button
-            style={{ fontSize: "11px" }}
+            style={{ fontSize: '11px' }}
             className="editPatientBtn px-3"
             onClick={() => setEditPatient(true)}
           >
@@ -334,7 +334,7 @@ export default function PatientDetails() {
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                 >
-                  {pic == "" || pic == null ? (
+                  {pic == '' || pic == null ? (
                     <img src={process.env.REACT_APP_BLANKPROFILE} />
                   ) : (
                     <img
@@ -344,13 +344,13 @@ export default function PatientDetails() {
                     />
                   )}
 
-                  <div className="cameraIcon" style={{ visibility: isHovered ? "visible" : "hidden" }}>
+                  <div className="cameraIcon" style={{ visibility: isHovered ? 'visible' : 'hidden' }}>
                     <IconButton className="Edit-profile-pic" onClick={showModalFunction}>
                       <PhotoCameraIcon />
                     </IconButton>
                   </div>
                 </div>
-                <h1 className="text-center mt-3">{name + " " + lastName}</h1>
+                <h1 className="text-center mt-3">{name + ' ' + lastName}</h1>
 
                 <span className="text-center">{email}</span>
               </div>
@@ -410,12 +410,12 @@ export default function PatientDetails() {
               <div className="d-flex justify-content-end">
                 <Button size="sm" variant="primary" disabled={isLoading} onClick={saveNotes}>
                   <Spinner
-                    style={{ display: isLoading ? "inline-block" : "none", height: "12px", width: "12px" }}
+                    style={{ display: isLoading ? 'inline-block' : 'none', height: '12px', width: '12px' }}
                     animation="border"
                     size="sm"
                   />
                   &nbsp;
-                  {isLoading ? "Adding..." : "Add Note"}
+                  {isLoading ? 'Adding...' : 'Add Note'}
                 </Button>
               </div>
             </div>
@@ -445,8 +445,8 @@ export default function PatientDetails() {
                             <p>&#8369;{histor[2]}</p>
                           </div>
                           <div className="col-md d-flex align-items-center">
-                            {histor[4] == "" ? (
-                              <span style={{ color: "#6c757d7a" }}>
+                            {histor[4] == '' ? (
+                              <span style={{ color: '#6c757d7a' }}>
                                 <SpeakerNotesIcon fontSize="small" /> Notes
                               </span>
                             ) : (
@@ -455,7 +455,7 @@ export default function PatientDetails() {
                                   setNotesHistoryModal(true);
                                   setNoteInsideModal(histor[4]);
                                 }}
-                                style={{ color: "#2266D7", cursor: "pointer" }}
+                                style={{ color: '#2266D7', cursor: 'pointer' }}
                               >
                                 <SpeakerNotesIcon fontSize="small" /> Notes
                               </span>
@@ -468,8 +468,8 @@ export default function PatientDetails() {
                   </div>
                 ) : (
                   <div className="mb-3">
-                    <h4 className="text-center mt-5" style={{ color: "#6c757d7a" }}>
-                      <img style={{ width: "37%" }} src={process.env.REACT_APP_NODATAIMAGE} alt="" />
+                    <h4 className="text-center mt-5" style={{ color: '#6c757d7a' }}>
+                      <img style={{ width: '37%' }} src={process.env.REACT_APP_NODATAIMAGE} alt="" />
                     </h4>
                   </div>
                 )}
@@ -483,7 +483,7 @@ export default function PatientDetails() {
                 </div>
                 <div className="col-md d-flex justify-content-end">
                   <button onClick={addFilesModal} id="addFilesBtn">
-                    <AddCircleOutlineIcon sx={{ fontSize: 18, marginRight: "5px" }} />
+                    <AddCircleOutlineIcon sx={{ fontSize: 18, marginRight: '5px' }} />
                     Add Files
                   </button>
                 </div>
@@ -502,15 +502,15 @@ export default function PatientDetails() {
                         <span>
                           <div className="row">
                             <div className="col-md-9" key={index}>
-                              <DescriptionIcon sx={{ fontSize: 14, marginRight: "7px" }} />
+                              <DescriptionIcon sx={{ fontSize: 14, marginRight: '7px' }} />
                               {document[0]}
                             </div>
 
                             <div className="kb col-md d-flex justify-content-end">
                               <div
                                 style={{
-                                  display: isHovered2 === index ? "none" : "block",
-                                  fontWeight: "initial",
+                                  display: isHovered2 === index ? 'none' : 'block',
+                                  fontWeight: 'initial',
                                 }}
                                 key={index}
                               >
@@ -519,20 +519,20 @@ export default function PatientDetails() {
 
                               <div
                                 style={{
-                                  display: isHovered2 === index ? "block" : "none",
+                                  display: isHovered2 === index ? 'block' : 'none',
                                 }}
                               >
                                 <DeleteIcon
                                   onClick={() => {
                                     deleteFilesModal(document[3]);
                                   }}
-                                  style={{ cursor: "pointer" }}
-                                  sx={{ fontSize: 12, marginRight: "7px" }}
+                                  style={{ cursor: 'pointer' }}
+                                  sx={{ fontSize: 12, marginRight: '7px' }}
                                 />
 
                                 <a href={process.env.REACT_APP_LINKPROFILE + document[2]} target="_blank">
                                   <GetAppIcon
-                                    style={{ cursor: "pointer" }}
+                                    style={{ cursor: 'pointer' }}
                                     className="mt-1"
                                     sx={{ fontSize: 12 }}
                                   />
@@ -546,7 +546,7 @@ export default function PatientDetails() {
                   </div>
                 ) : (
                   <div>
-                    <p className="text-center mt-5" style={{ color: "#6c757d7a" }}>
+                    <p className="text-center mt-5" style={{ color: '#6c757d7a' }}>
                       No documents
                     </p>
                   </div>
@@ -579,9 +579,9 @@ export default function PatientDetails() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" disabled={isLoading} onClick={saveProfilePic}>
-            <Spinner style={{ display: isLoading ? "inline-block" : "none" }} animation="border" size="sm" />{" "}
+            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" />{' '}
             &nbsp;
-            {isLoading ? "Uploading..." : "Upload"}
+            {isLoading ? 'Uploading...' : 'Upload'}
           </Button>
 
           <Button variant="secondary" onClick={handleClose}>
@@ -612,9 +612,9 @@ export default function PatientDetails() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" disabled={isLoading} onClick={saveDocument}>
-            <Spinner style={{ display: isLoading ? "inline-block" : "none" }} animation="border" size="sm" />{" "}
+            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" />{' '}
             &nbsp;
-            {isLoading ? "Saving..." : "Save"}
+            {isLoading ? 'Saving...' : 'Save'}
           </Button>
 
           <Button variant="secondary" onClick={handleClose}>
@@ -644,9 +644,9 @@ export default function PatientDetails() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" disabled={isLoading} onClick={deleteDocu}>
-            <Spinner style={{ display: isLoading ? "inline-block" : "none" }} animation="border" size="sm" />{" "}
+            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" />{' '}
             &nbsp;
-            {isLoading ? "Deleting..." : "Delete"}
+            {isLoading ? 'Deleting...' : 'Delete'}
           </Button>
 
           <Button variant="secondary" onClick={handleClose}>
@@ -663,7 +663,7 @@ export default function PatientDetails() {
         centered
       >
         <Modal.Header>
-          <Modal.Title style={{ fontSize: "20px" }}>
+          <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">Note </p>
           </Modal.Title>
         </Modal.Header>
@@ -689,7 +689,7 @@ export default function PatientDetails() {
         centered
       >
         <Modal.Header>
-          <Modal.Title style={{ fontSize: "20px" }}>
+          <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">Edit Patient </p>
           </Modal.Title>
         </Modal.Header>
@@ -809,9 +809,9 @@ export default function PatientDetails() {
         open={openS}
         autoHideDuration={2000}
         onClose={handleCloseSnack}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: "100%" }}>
+        <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: '100%' }}>
           {snackMessage}
         </Alert>
       </Snackbar>

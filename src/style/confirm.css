@@ -96,6 +96,10 @@ colgroup {
   animation: flip3 0.6s infinite;
 }
 
+.confirmPage tbody tr:hover {
+  background-color: #e6f7ff !important;
+}
+
 @keyframes flip1 {
   0% {
     transform: scale(0);

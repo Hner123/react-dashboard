@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Table from 'react-bootstrap/Table';
 import EditStaffAccount from '../components/EditStaffAccount';
+import BlockDateModal from '../components/BlockDateModal';
 
 export default function Profile() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -93,6 +94,17 @@ export default function Profile() {
     }
   };
 
+  const [closedList, setCloseList] = useState([]);
+  const getHoliday = async () => {
+    try {
+      const response = await axios.post(process.env.REACT_APP_HOLIDAYLIST);
+      console.log('date of closed branch: ', response.data.holiday);
+      setCloseList(response.data.holiday);
+    } catch (error) {
+      console.log('failed to get holiday list: ', error);
+    }
+  };
+
   const changePassword = async (event) => {
     event.preventDefault();
     setValidated(true);
@@ -152,7 +164,11 @@ export default function Profile() {
 
   useEffect(() => {
     fetchUserDetails();
-  }, [fetchUserDetails]);
+  }, [preload]);
+
+  useEffect(() => {
+    getHoliday();
+  }, []);
 
   return (
     <>
@@ -195,7 +211,12 @@ export default function Profile() {
 
                 <Row>
                   <Form.Group as={Col} controlId="validationCustom03">
-                    <Form.Label className="mt-3">Email</Form.Label>
+                    <Form.Label className="mt-3">
+                      Email{' '}
+                      <span style={{ fontSize: '10px', color: 'grey' }}>
+                        (This will be your email notification for booking...)
+                      </span>
+                    </Form.Label>
                     <Form.Control
                       value={userEmail}
                       onChange={(event) => setUserEmail(event.target.value)}
@@ -302,22 +323,6 @@ export default function Profile() {
 
           <div className="notifLayout col-md-6">
             <div style={{ borderBottom: '1px solid rgb(51 51 51 / 20%)' }}>
-              <h5>Notification</h5>
-            </div>
-            <div>
-              <Form.Group as={Row} controlId="validationCustom08" className="mt-4">
-                <Form.Label column sm={2} className="">
-                  Notification:
-                </Form.Label>
-                <Col sm={8}>
-                  <Form.Control required type="email" placeholder="Enter your email to send notif" />
-                </Col>
-                <Col>
-                  <Button>Save</Button>
-                </Col>
-              </Form.Group>
-            </div>
-            <div style={{ borderBottom: '1px solid rgb(51 51 51 / 20%)' }} className="mt-5">
               <h5>Staff Account</h5>
             </div>
             <div>
@@ -343,6 +348,50 @@ export default function Profile() {
                   </tr>
                 </tbody>
                 <EditStaffAccount showMods={showModal} closeMods={handleClose} staffUserID={staffID} />
+              </Table>
+            </div>
+
+            <div style={{ borderBottom: '1px solid rgb(51 51 51 / 20%)' }} className="mt-5">
+              <div className="row mb-3">
+                <div className="col-md-6">
+                  <h5 className="m-0">Holiday, Closed</h5>
+                </div>
+                <div className="col-md-6 d-flex justify-content-end">
+                  <BlockDateModal />
+                </div>
+              </div>
+            </div>
+            <div>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Remarks</th>
+                    <th>Location</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {closedList.map((list, index) => (
+                    <tr>
+                      <td>{list.id}</td>
+                      <td>
+                        {String(parseInt(list.Month) + 1).padStart(2, '0') + '/' + list.Day + '/' + list.Year}
+                      </td>
+                      <td>{list.Remarks}</td>
+                      <td>{list.Branch}</td>
+                      <td>
+                        <Button variant="secondary" size="sm">
+                          Edit
+                        </Button>{' '}
+                        <Button variant="primary" size="sm">
+                          Save
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </Table>
             </div>
           </div>
