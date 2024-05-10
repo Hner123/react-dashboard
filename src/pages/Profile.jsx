@@ -95,6 +95,7 @@ export default function Profile() {
   };
 
   const [closedList, setCloseList] = useState([]);
+  const [blockDateUpdate, setBlockDateUpdate] = useState('');
   const getHoliday = async () => {
     try {
       const response = await axios.post(process.env.REACT_APP_HOLIDAYLIST);
@@ -102,6 +103,17 @@ export default function Profile() {
       setCloseList(response.data.holiday);
     } catch (error) {
       console.log('failed to get holiday list: ', error);
+    }
+  };
+
+  const deleteBlockingDate = async (id) => {
+    try {
+      const data = { id };
+      const response = await axios.post(process.env.REACT_APP_DELETEBLOCKDATE, data);
+      console.log('success deleting blocking date...', response.data);
+      setBlockDateUpdate(response);
+    } catch (error) {
+      console.log('error deleting blocking date...', error);
     }
   };
 
@@ -168,7 +180,7 @@ export default function Profile() {
 
   useEffect(() => {
     getHoliday();
-  }, []);
+  }, [blockDateUpdate]);
 
   return (
     <>
@@ -357,13 +369,13 @@ export default function Profile() {
                   <h5 className="m-0">Holiday, Closed</h5>
                 </div>
                 <div className="col-md-6 d-flex justify-content-end">
-                  <BlockDateModal />
+                  <BlockDateModal setBlockDateUpdate={setBlockDateUpdate} />
                 </div>
               </div>
             </div>
-            <div>
-              <Table striped bordered hover>
-                <thead>
+            <div style={{ height: '200px', overflowY: 'scroll' }}>
+              <Table bordered hover>
+                <thead className="profileTHead">
                   <tr>
                     <th>Id</th>
                     <th>Date</th>
@@ -374,7 +386,7 @@ export default function Profile() {
                 </thead>
                 <tbody>
                   {closedList.map((list, index) => (
-                    <tr>
+                    <tr className="rowTableList" key={index}>
                       <td>{list.id}</td>
                       <td>
                         {String(parseInt(list.Month) + 1).padStart(2, '0') + '/' + list.Day + '/' + list.Year}
@@ -382,11 +394,13 @@ export default function Profile() {
                       <td>{list.Remarks}</td>
                       <td>{list.Branch}</td>
                       <td>
-                        <Button variant="secondary" size="sm">
-                          Edit
-                        </Button>{' '}
-                        <Button variant="primary" size="sm">
-                          Save
+                        <Button
+                          onClick={() => deleteBlockingDate(list.id)}
+                          variant="danger"
+                          className="deleteBtn"
+                          size="sm"
+                        >
+                          Delete
                         </Button>
                       </td>
                     </tr>

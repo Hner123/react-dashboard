@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
 
-export default function BlockDateModal() {
+export default function BlockDateModal({ setBlockDateUpdate }) {
   const [validated, setValidated] = useState(false);
   const [showMods, setShowMods] = useState(false);
 
@@ -31,6 +31,7 @@ export default function BlockDateModal() {
         const response = await axios.post(process.env.REACT_APP_BLOCKDATE, data);
         console.log('success blocking... ', response.data);
         if (response.data === 'success') {
+          setBlockDateUpdate(response);
           closeModal();
         }
       } catch (error) {
