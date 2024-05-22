@@ -138,7 +138,7 @@ export default function PatientDetails() {
     let hours = date.getHours();
     const minutes = date.getMinutes();
     const seconds = date.getSeconds();
-    const period = hours >= 12 ? 'PM' : 'AM';
+    const period = hours >= 12 ? 'AM' : 'PM';
     hours = hours % 12 || 12; // Convert 0 to 12 for 12-hour clock
     return `${hours}:${minutes}:${seconds} ${period}`;
   };

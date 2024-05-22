@@ -226,7 +226,8 @@ export default function Calendar({ id, reschedModalClose, refreshData, userLocat
                     (year === currentYear && disableMonth[i] === currentMonth && disableDay2[i] === number)
                 );
 
-                return disableDay.includes(true) ? (
+                return disableDay.includes(true) ||
+                  (currentYear === currentYear2 && currentMonth === currentMonth2 && today > number) ? (
                   <li className="disableDay" key={number}>
                     {number}
                   </li>
