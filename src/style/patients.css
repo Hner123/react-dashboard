@@ -40,10 +40,10 @@
   font-size: 12px !important;
 }
 
-colgroup {
+.patientsPage colgroup {
   display: none;
 }
-.dt-column-title {
+.patientsPage .dt-column-title {
   color: #6c757d;
 }
 .viewBtn {
@@ -65,17 +65,17 @@ colgroup {
   margin-right: 3px;
   margin-top: 3px;
 }
-.dt-paging,
-.dt-info,
-.dt-length label,
-.myTable_length label,
-.dt-search label {
+.patientsPage .dt-paging,
+.patientsPage .dt-info,
+.patientsPage .dt-length label,
+.patientsPage .myTable_length label,
+.patientsPage .dt-search label {
   font-size: 14px !important;
 }
 .dt-input {
   margin-right: 8px;
 }
-table.dataTable td.dt-empty {
+.patientsPage table.dataTable td.dt-empty {
   text-align: center !important;
 }
 .addPatientBtn {

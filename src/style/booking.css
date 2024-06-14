@@ -71,7 +71,7 @@
   text-align: start !important;
 }
 
-colgroup {
+.bookingPage colgroup {
   display: none;
 }
 .bookingPage tbody tr:hover {

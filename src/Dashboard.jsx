@@ -184,12 +184,12 @@ export default function Dashboard() {
   function renderEventContent(eventInfo, handleShowModal) {
     return (
       <>
-        <b style={{ fontSize: '12px', color: '#fff' }}>
+        <b style={{ fontSize: '12px', color: 'red' }}>
           <CircleIcon style={{ fontSize: '10px', color: '#00FF00' }} />
           {eventInfo.timeText}&nbsp;
         </b>
         <span
-          style={{ cursor: 'pointer', fontSize: '12px', color: '#fff' }}
+          style={{ cursor: 'pointer', fontSize: '12px', color: 'red' }}
           onClick={() => {
             setTitleEvent(eventInfo.event.title);
             setNotes(eventInfo.event.extendedProps.notes);

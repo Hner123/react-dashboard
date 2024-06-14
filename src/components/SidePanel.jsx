@@ -61,12 +61,21 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
                 <span className="ms-2">Confirm</span>
               </Link>
             </li>
+
+            <li>
+              <Link to="/pages/calendar" className={activeNav === 'Calendar' ? 'activeON' : 'activeOFF'}>
+                <EventBusyOutlinedIcon fontSize="small" />
+                <span className="ms-2">Calendar</span>
+              </Link>
+            </li>
+
             <li>
               <Link to="/pages/cancelled" className={activeNav === 'Cancelled' ? 'activeON' : 'activeOFF'}>
                 <EventBusyOutlinedIcon fontSize="small" />
                 <span className="ms-2">Cancelled</span>
               </Link>
             </li>
+
             <li>
               <Link to="/pages/patients" className={activeNav === 'Patients' ? 'activeON' : 'activeOFF'}>
                 <PeopleOutlinedIcon fontSize="small" />

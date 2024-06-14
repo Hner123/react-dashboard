@@ -1,4 +1,3 @@
-// import "bootstrap/dist/css/bootstrap.min.css";
 import '../style/header.css';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
@@ -23,7 +22,7 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {
         setIsVisible(false);
-        console.log('ref check ' + !ref.current.contains(event.target));
+        // console.log('ref check ' + !ref.current.contains(event.target));
       }
     }
 

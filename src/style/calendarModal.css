@@ -1,0 +1,30 @@
+@import url('https://fonts.cdnfonts.com/css/euclid-circular-b');
+
+div {
+  font-family: 'Euclid Circular B', sans-serif;
+}
+.patientModalInfo p,
+.patientModalInfo h5 {
+  padding: 0;
+  margin: 0;
+}
+.patientModalInfo {
+  margin-left: 30px;
+}
+.patientModalInfo span {
+  font-size: 13px;
+  color: #939393;
+  font-weight: 500;
+}
+
+.otherPatientInfo p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+.otherPatientInfo {
+  margin-top: 20px;
+}
+.otherPatientInfo span {
+  color: #939393;
+  font-size: 15px;
+}

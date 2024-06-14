@@ -1,14 +1,14 @@
 @font-face {
-  font-family: "Carmen Sans Regular";
-  src: url("carmen-sans/Carmen Sans Regular.otf") format("truetype");
+  font-family: 'Carmen Sans Regular';
+  src: url('carmen-sans/Carmen Sans Regular.otf') format('truetype');
 }
 @font-face {
-  font-family: "Carmen Sans Bold";
-  src: url("carmen-sans/Carmen Sans Bold.otf") format("truetype");
+  font-family: 'Carmen Sans Bold';
+  src: url('carmen-sans/Carmen Sans Bold.otf') format('truetype');
 }
 @font-face {
-  font-family: "Carmen Sans Heavy";
-  src: url("carmen-sans/Carmen Sans Heavy.otf") format("truetype");
+  font-family: 'Carmen Sans Heavy';
+  src: url('carmen-sans/Carmen Sans Heavy.otf') format('truetype');
 }
 
 body {
@@ -164,7 +164,7 @@ body {
 }
 
 .history::before {
-  content: "";
+  content: '';
   display: flex;
   height: 20px;
   width: 20px;
@@ -178,7 +178,7 @@ body {
   z-index: 5;
 }
 .history::after {
-  content: "";
+  content: '';
   display: flex;
   height: 100px;
   border: 2px solid #4096fa;

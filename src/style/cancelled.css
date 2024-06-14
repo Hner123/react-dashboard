@@ -25,7 +25,7 @@
   width: 100% !important;
 }
 
-colgroup {
+.cancelPage colgroup {
   display: none;
 }
 .cancelTable th span {
@@ -44,10 +44,10 @@ colgroup {
   color: #333;
   font-weight: 500;
 }
-.dt-paging {
+.cancelPage .dt-paging {
   text-align: end;
 }
-.dt-search {
+.cancelPage .dt-search {
   text-align: end;
 }
 

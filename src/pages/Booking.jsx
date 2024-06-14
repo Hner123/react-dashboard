@@ -6,7 +6,6 @@ import { useEffect, useState, useRef } from 'react';
 
 import DataTable from 'datatables.net-bs5';
 import $ from 'jquery';
-// import "datatables.net-responsive-dt";
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';

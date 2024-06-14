@@ -1,0 +1,101 @@
+@import url('https://fonts.cdnfonts.com/css/euclid-circular-b');
+
+.calendarView {
+  background-color: #6770d22e;
+  min-height: 100vh;
+  height: 100%;
+  padding: 115px 25px 30px 225px;
+  font-family: 'Euclid Circular B', sans-serif;
+}
+.calendarContent {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  min-height: 75dvh;
+  margin-top: 20px;
+  padding: 20px;
+}
+.custom-event {
+  border: 1px solid transparent;
+  color: #fff !important; /* Ensure text color is visible */
+  padding: 0 4px !important; /* Add some padding */
+  border-radius: 3px !important; /* Add border-radius */
+  overflow: hidden; /* Ensure text does not overflow */
+  /* white-space: nowrap; Prevent wrapping */
+  text-overflow: ellipsis; /* Ellipsis for overflowing text */
+  cursor: pointer;
+  height: 100%;
+}
+
+.calendarView .fc-daygrid-event-dot {
+  background-color: transparent !important;
+}
+
+.calendarView .fc-daygrid-event {
+  display: block !important;
+  background-color: inherit !important;
+  color: inherit !important;
+  border: none !important;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+.calendarView .fc-v-event {
+  border: none;
+}
+/* Custom styles for FullCalendar date elements */
+.fc .fc-col-header-cell-cushion {
+  color: #333 !important; /* Change the date color to #333 */
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: lighter;
+}
+.fc .fc-timegrid-slot-label-cushion {
+  font-size: 12px;
+}
+
+/* Additionally, you might want to ensure all text color within the calendar is consistent */
+.fc-daygrid-day-number,
+.fc-daygrid-day-top {
+  color: #333 !important; /* Change the day numbers to #333 */
+}
+
+.calendarView .fc a[data-navlink] {
+  text-decoration: none;
+  color: #3333337f !important;
+  font-size: 12px;
+}
+
+.calendarView .fc-daygrid-event-harness a {
+  box-shadow:
+    0 4px 20px 0 rgba(0, 0, 0, 0.14),
+    0 7px 10px -5px rgba(120, 120, 120, 0.4);
+  padding: 0 !important;
+  margin: 2px 0;
+}
+
+.fc-toolbar-title {
+  font-size: 20px;
+}
+.fc-toolbar-title h2 {
+  margin: 0;
+}
+.calendarView .fc-toolbar-chunk {
+  display: flex;
+}
+.calendarView .fc-toolbar-chunk h2 {
+  margin: 0 !important;
+  min-width: 200px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px !important;
+  display: flex;
+  justify-content: center;
+}
+.fc-prev-button,
+.fc-next-button {
+  margin: 0 !important;
+}

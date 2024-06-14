@@ -28,7 +28,7 @@
   font-size: 12px !important;
 }
 
-colgroup {
+.historyPage colgroup {
   display: none;
 }
 .historyTable th span {
