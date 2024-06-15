@@ -8,6 +8,8 @@ while ($row = $result->fetch_assoc()) {
     $response = [
         'id' => $row['id'],
         'name' => $row['Fname'] . ' ' . $row['Sname'],
+        'first_name' => $row['Fname'],
+        'last_name' => $row['Sname'],
     ];
     $data[] = $response;
 }

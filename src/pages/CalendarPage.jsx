@@ -1,60 +1,64 @@
 import Header from '../components/Header';
 import SidePanel from '../components/SidePanel';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import '../style/calendarPage.css';
 
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
-import { parse, format, subMinutes, subHours, addMinutes } from 'date-fns';
-
+import { parse, format, addMinutes } from 'date-fns';
+import { Button } from 'react-bootstrap';
 import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 import CalendarModal from '../components/CalendarModal';
+import CalendarModalCreate from '../components/CalendarModalCreate';
 
 export default function CalendarPage() {
-  const [sidePanelOPen, setSidePanelOPen] = useState(true);
+  const [sidePanelOpen, setSidePanelOpen] = useState(true);
   const [preload] = useState(false);
   const [active] = useState('Calendar');
 
   const [showModal, setShowModal] = useState(false);
-  const [events, setEvents] = useState([]);
+  const [showModalCreate, setShowModalCreate] = useState(false);
 
   const [nameP, setNamep] = useState('');
   const [emailP, setEmailP] = useState('');
   const [endTime, setEndTime] = useState('');
   const [servicesP, setServicesP] = useState('');
   const [notesP, setNotesP] = useState('');
-  const [timeS, setTimeS] = useState('');
+  const [timeS, setTimeS] = useState('00:00');
   const [durationP, setTimeDurationP] = useState('');
   const [statusP, setStatusP] = useState('');
   const [phoneNum, setPhoneNum] = useState(0);
   const [id, setId] = useState(0);
 
   const togglePanel = () => {
-    setSidePanelOPen(!sidePanelOPen);
-    console.log('dashboard ' + sidePanelOPen);
+    setSidePanelOpen(!sidePanelOpen);
   };
 
   const closeModal = () => {
     setShowModal(false);
+    setShowModalCreate(false);
   };
 
+  // Fetch function
   const fetchPatientBooking = async () => {
-    try {
-      const response = await axios.post(process.env.REACT_APP_CALENDARBOOKING);
-      console.log(response.data);
-      setEvents(response.data.Marikina);
-
-      console.log(response.data.Marikina);
-    } catch (error) {
-      console.log('Failed to fetch patient booking details: ', error);
-    }
+    const response = await axios.post(process.env.REACT_APP_CALENDARBOOKING);
+    return response.data.Marikina;
   };
+
+  const {
+    data: events,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ['patientBooking'],
+    queryFn: fetchPatientBooking,
+  });
 
   const addDuration = (time, duration) => {
-    // Parse the time string into a Date object
     const parsedTime = parse(time, 'HH:mm', new Date());
     const [amount, unit] = duration.split(' ');
 
@@ -65,13 +69,8 @@ export default function CalendarPage() {
       updatedTime = addMinutes(parsedTime, parseInt(amount));
     }
 
-    // Format the updated time back to the desired format
     return format(updatedTime, 'hh:mm a');
   };
-
-  useEffect(() => {
-    fetchPatientBooking();
-  }, []);
 
   const currentDate = new Date();
   const formattedDate = currentDate.toISOString().split('T')[0];
@@ -109,10 +108,18 @@ export default function CalendarPage() {
     );
   }
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <>
-      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
-      <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
+      <Header togglePanel={togglePanel} hamburgerClose={sidePanelOpen} preload={preload} />
+      <SidePanel isOpen={sidePanelOpen} togglePanel={togglePanel} activeNav={active} />
 
       <div className="calendarView">
         <div className="calendarContent">
@@ -122,19 +129,24 @@ export default function CalendarPage() {
               plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
               initialView="timeGridWeek"
               navLinks={true}
-              //   dayMaxEvents={true}
               contentHeight="575px"
               headerToolbar={{
                 left: 'today',
                 center: 'prev title next',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth customButton',
+              }}
+              customButtons={{
+                customButton: {
+                  text: ' + New Appointment',
+                  click: () => {
+                    setShowModalCreate(true);
+                  },
+                },
               }}
               slotMinTime="10:00:00"
               slotMaxTime="18:00:00"
               slotDuration="00:15:00"
-              //   weekends={false}
               events={events}
-              // eventContent={(eventInfo) => renderEventContent(eventInfo, handleShowModal)}
               eventContent={(eventInfo) => renderEventInfo(eventInfo)}
             />
           </div>
@@ -155,6 +167,7 @@ export default function CalendarPage() {
         endTime={endTime}
         id={id}
       />
+      <CalendarModalCreate showModalCreate={showModalCreate} closeModal={closeModal} />
     </>
   );
 }

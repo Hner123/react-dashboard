@@ -1,7 +1,9 @@
-import { Button, Modal, Form, Col, Row } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import '../style/calendarModal.css';
-import { useEffect } from 'react';
 import axios from 'axios';
+import { format, parse } from 'date-fns';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
 
 export default function CalendarModal({
   showModal,
@@ -17,14 +19,32 @@ export default function CalendarModal({
   endTime,
   id,
 }) {
-  const deletePatientBooking = async () => {
-    try {
-      const data = { id };
-      const response = await axios.post(process.env.REACT_APP_DELETEBOOKING, data);
-      console.log(response.data);
-    } catch (error) {
-      console.log('Failed to delete patient booking: ', error);
-    }
+  const queryClient = useQueryClient();
+
+  const deleteBooking = async ({ id }) => {
+    const { data } = await axios.post(process.env.REACT_APP_DELETEBOOKING, { id });
+    return data;
+  };
+
+  const mutation = useMutation({
+    mutationFn: deleteBooking,
+    onSuccess: () => {
+      queryClient.invalidateQueries('patientBooking');
+      closeModal();
+    },
+    onError: (error) => {
+      // Handle error, e.g., display a notification to the user
+      console.error('Error deleting booking:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to cancel booking. Please try again.',
+        icon: 'error',
+      });
+    },
+  });
+
+  const handleDeleteBooking = () => {
+    mutation.mutate({ id });
   };
 
   return (
@@ -47,9 +67,9 @@ export default function CalendarModal({
               Service: <span>{servicesP}</span>
             </p>
             <p>
-              Time:
+              Time:{' '}
               <span>
-                {timeS} - {endTime} ( {durationP} )
+                {format(parse(timeS, 'HH:mm', new Date()), 'hh:mm a')} - {endTime} ( {durationP} )
               </span>
             </p>
             <p>
@@ -61,8 +81,32 @@ export default function CalendarModal({
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => deletePatientBooking()} variant="danger">
-            Cancel Appointment
+          <Button
+            onClick={() =>
+              Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                reverseButtons: true, // Add this line to swap the buttons
+                cancelButtonColor: '#C8C8C8',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  handleDeleteBooking();
+                  Swal.fire({
+                    title: 'Canceled!',
+                    text: 'Canceled booking successfully.',
+                    icon: 'success',
+                  });
+                }
+              })
+            }
+            variant="danger"
+            disabled={mutation.isLoading}
+          >
+            {mutation.isLoading ? 'Cancelling...' : 'Cancel Appointment'}
           </Button>
           <Button variant="outline-secondary">Reschedule</Button>
           <Button variant="outline-primary">Checkout</Button>
