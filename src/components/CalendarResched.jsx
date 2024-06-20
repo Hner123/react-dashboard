@@ -1,104 +1,22 @@
-import { Typeahead } from 'react-bootstrap-typeahead';
-
-import { useQuery } from '@tanstack/react-query';
-import { useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
+import { useQuery } from '@tanstack/react-query';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useContext, useState } from 'react';
+import MyContext from '../MyContext';
+import { useForm, Controller } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { parse, format, subMinutes, addMinutes } from 'date-fns';
+import { fetchPatientBooking, fetchServiceList, fetchTimeList, sendReschedForm } from '../reactQueryApi/api';
 import Swal from 'sweetalert2';
-import { fetchPatientList, fetchBranchList, fetchServiceList, fetchTimeList, sendNewBookingForm } from '../reactQueryApi/api.js';
-import { useContext } from 'react';
-import MyContext from '../MyContext.jsx';
+import { parse, format, subMinutes, addMinutes } from 'date-fns';
 
-export default function CalendarModalCreate({ showModalCreate, closeModal }) {
-  const [selected, setSelected] = useState(['']);
-  const [receiveTimeList, setReceiveTimeList] = useState('');
+export default function CalendarResched({ shoModalReshed, setShowModalResched }) {
+  const [patientDetails, setPatientDetals] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedService, setSelectedService] = useState('');
   const [serviceDuration, setServiceDuration] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { branchList } = useContext(MyContext);
+  const [receiveTimeList, setReceiveTimeList] = useState('');
 
-  //   *********************REACT FORM LINE HERE*****************************
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    formState: { errors },
-  } = useForm();
-
-  //   *********************REACT QUERY*****************************
-  const {
-    data: patientList,
-    error: patientError,
-    isLoading: patientLoading,
-  } = useQuery({
-    queryKey: ['patientTypeHead'],
-    queryFn: fetchPatientList,
-  });
-
-  const { data: serviceList, error: serviceListError } = useQuery({
-    queryKey: ['fetchServiceList'],
-    queryFn: fetchServiceList,
-  });
-
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: fetchTimeList,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries('disableTime');
-      setReceiveTimeList(data);
-    },
-    onError: (error) => {
-      // Handle error, e.g., display a notification to the user
-      console.error('Error retrieving disable time:', error);
-      Swal.fire({
-        title: 'Error!',
-        text: 'Failed to view time disable. Please try again.',
-        icon: 'error',
-      });
-    },
-  });
-
-  const handleFetchTime = (dateSelected) => {
-    mutation.mutate({ dateSelected, selectedBranch });
-  };
-
-  const mutation2 = useMutation({
-    mutationFn: sendNewBookingForm,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries('sendNewBookingForm');
-      console.log('Success send Form... :', data);
-      handleCloseModal();
-      setLoading(false);
-      Swal.fire({
-        title: 'Success!',
-        text: 'Successfully added.',
-        icon: 'success',
-      });
-    },
-    onError: (error) => {
-      // Handle error, e.g., display a notification to the user
-      console.error('Error send form:', error);
-      Swal.fire({
-        title: 'Error!',
-        text: 'Failed to sending form. Please try again.',
-        icon: 'error',
-      });
-    },
-  });
-
-  useEffect(() => {
-    if (branchList && branchList.length > 0) {
-      setSelectedBranch(branchList[0].branchName);
-    }
-    if (serviceList && serviceList.length > 0) {
-      setSelectedService(serviceList[0].service_name);
-      setServiceDuration(serviceList[0].service_duration);
-    }
-  }, [branchList, serviceList]);
+  const { branchLoc, setBranchLoc, id, setId, branchList } = useContext(MyContext);
 
   //   *********************TIME LIST*****************************
   const [timeList] = useState([
@@ -134,15 +52,6 @@ export default function CalendarModalCreate({ showModalCreate, closeModal }) {
     { useTime: '17:00', displayTime: '05:00 pm' },
   ]);
 
-  //   *********************ERROR HANDLING*****************************
-  if (patientError) {
-    return <div>Error: {patientError.message}</div>;
-  }
-
-  if (serviceListError) {
-    return <div>Error: {serviceListError.message}</div>;
-  }
-
   const subtractTime = (time, duration) => {
     const parsedTime = parse(time, 'HH:mm', new Date());
     const [amount, unit] = duration.split(' ');
@@ -173,68 +82,131 @@ export default function CalendarModalCreate({ showModalCreate, closeModal }) {
     return format(updatedTime, 'HH:mm');
   };
 
-  const onSubmit = (data) => {
-    setLoading(true);
-    const firstName = selected[0].first_name;
-    const lastName = selected[0].last_name;
-    const emailAdd = selected[0].email_address;
-    const phoneNum = selected[0].phone_number;
-    mutation2.mutate({
-      firstName,
-      lastName,
-      emailAdd,
-      phoneNum,
-      selectedBranch,
-      service: data.service,
-      serviceDuration,
-      date: data.date,
-      time: data.time,
-      notes: data.notes,
-    });
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm();
+
+  const {
+    data: patientData,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ['patientBooking'],
+    queryFn: fetchPatientBooking,
+  });
+
+  const { data: serviceList, error: serviceListError } = useQuery({
+    queryKey: ['fetchServiceList'],
+    queryFn: fetchServiceList,
+  });
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: fetchTimeList,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries('disableTime');
+      setReceiveTimeList(data);
+    },
+    onError: (error) => {
+      // Handle error, e.g., display a notification to the user
+      console.error('Error retrieving disable time:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to view time disable. Please try again.',
+        icon: 'error',
+      });
+    },
+  });
+
+  const mutationResched = useMutation({
+    mutationFn: sendReschedForm,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries('sendReschedForm');
+      console.log('Success resched Form... :', data);
+      handleCloseModal();
+      Swal.fire({
+        title: 'Success!',
+        text: 'Successfully Reschedule.',
+        icon: 'success',
+      });
+    },
+    onError: (error) => {
+      // Handle error, e.g., display a notification to the user
+      console.error('Error send form:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to sending form. Please try again.',
+        icon: 'error',
+      });
+    },
+  });
+
+  const handleFetchTime = (dateSelected) => {
+    mutation.mutate({ dateSelected, selectedBranch });
   };
 
   const handleCloseModal = () => {
-    closeModal();
+    setShowModalResched(false);
     reset();
-    setSelected([]);
     setReceiveTimeList('');
   };
 
+  useEffect(() => {
+    if (branchList && branchList.length > 0) {
+      setSelectedBranch(branchList[0].branchName);
+    }
+    if (serviceList && serviceList.length > 0) {
+      setSelectedService(serviceList[0].service_name);
+      setServiceDuration(serviceList[0].service_duration);
+    }
+  }, [branchList, serviceList]);
+
+  useEffect(() => {
+    const filteredList = patientData?.find((booking) => booking[branchLoc]);
+    if (filteredList) {
+      const datas = filteredList[branchLoc];
+      const result = datas.find((data) => data.id == id);
+      setPatientDetals(result);
+    }
+  }, [branchLoc, patientData, id]);
+
+  const onSubmit = (data) => {
+    mutationResched.mutate({ id, selectedBranch, service: data.service, date: data.date, time: data.time, serviceDuration });
+    // console.log(data);
+    // console.log( selectedBranch, serviceDuration, id);
+    // console.log({ id, selectedBranch, service: data.service, date: data.date, time: data.time, serviceDuration });
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
     <>
-      <Modal show={showModalCreate} onHide={handleCloseModal} aria-labelledby="contained-modal-title-vcenter" centered>
+      <Modal show={shoModalReshed} onHide={handleCloseModal} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header closeButton>
           <Modal.Title style={{ fontSize: '20px' }}>
-            <p className="mb-0"> Add Appointment </p>
+            <p className="mb-0">Reschedule </p>
+
+            <CalendarResched />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form id="NewAppointmentForm" noValidate onSubmit={handleSubmit(onSubmit)}>
-            <Row>
-              <span className="mb-2">Please select patient.</span>
-              <Controller
-                name="fullName"
-                control={control}
-                rules={{ required: 'Select a patient.' }}
-                render={({ field }) => (
-                  <Typeahead
-                    {...field}
-                    id="autocomplete"
-                    labelKey="name"
-                    minLength={1}
-                    onChange={(selected) => {
-                      setSelected(selected);
-                      field.onChange(selected);
-                    }}
-                    options={patientList}
-                    placeholder="Type a name..."
-                    selected={field.value || selected}
-                    isInvalid={!!errors.fullName}
-                  />
-                )}
-              />
-              {errors.fullName && <div className="invalid-feedback d-block">{errors.fullName.message}</div>}
-            </Row>
+          {/* ************ BODY******************* */}
+          <div>
+            <h5 className="m-0">{patientDetails?.title}</h5>
+            <span style={{ fontSize: '12px', fontWeight: '500', color: '#939393' }}>{patientDetails?.email}</span> <br />
+            <span style={{ fontSize: '12px', fontWeight: '500', color: '#939393' }}>{patientDetails?.phoneNum}</span>
+          </div>
+
+          <Form id="RescheduleForm" noValidate onSubmit={handleSubmit(onSubmit)}>
             {/* **************************************************SELECT BRANCH FORM*************************************** */}
             <Row className="mt-3">
               <Form.Group as={Col} controlId="selectBranchValidation">
@@ -298,9 +270,11 @@ export default function CalendarModalCreate({ showModalCreate, closeModal }) {
                     timeList?.map((time, index) => {
                       const inRange = receiveTimeList?.some(
                         (receiveTime) =>
-                          (receiveTime.start <= time.useTime && addDuration(receiveTime.start, receiveTime.duration) >= time.useTime) ||
-                          (subtractTime(receiveTime.start, serviceDuration) < time.useTime && receiveTime.start > time.useTime)
+                          receiveTime.id != id &&
+                          ((receiveTime.start <= time.useTime && addDuration(receiveTime.start, receiveTime.duration) >= time.useTime) ||
+                            (subtractTime(receiveTime.start, serviceDuration) < time.useTime && receiveTime.start > time.useTime))
                       );
+
                       return inRange ? null : (
                         <option key={index} value={time.useTime}>
                           {time.displayTime}
@@ -313,23 +287,14 @@ export default function CalendarModalCreate({ showModalCreate, closeModal }) {
                 </Form.Select>
               </Form.Group>
             </Row>
-            {/* **************************************************NOTES FORM*************************************** */}
-            <Row>
-              <Form.Group className="mt-3" controlId="exampleForm.ControlTextarea1">
-                <Form.Label>
-                  Appointment Notes <span style={{ fontSize: '13px' }}>(optional)</span>
-                </Form.Label>
-                <Form.Control {...register('notes')} as="textarea" rows={2} />
-              </Form.Group>
-            </Row>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={handleCloseModal} variant="outline-secondary">
             Cancel
           </Button>
-          <Button type="submit" form="NewAppointmentForm" disabled={loading}>
-            {loading ? 'Adding...' : 'Add Patient'}
+          <Button type="submit" variant="primary" form="RescheduleForm">
+            Update
           </Button>
         </Modal.Footer>
       </Modal>

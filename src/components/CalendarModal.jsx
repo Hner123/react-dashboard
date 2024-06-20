@@ -4,22 +4,12 @@ import axios from 'axios';
 import { format, parse } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
+import CalendarResched from './CalendarResched';
+import { useState } from 'react';
 
-export default function CalendarModal({
-  showModal,
-  closeModal,
-  nameP,
-  emailP,
-  servicesP,
-  notesP,
-  statusP,
-  timeS,
-  durationP,
-  phoneNum,
-  endTime,
-  id,
-}) {
+export default function CalendarModal({ showModal, closeModal, nameP, emailP, servicesP, notesP, statusP, timeS, durationP, phoneNum, endTime, id }) {
   const queryClient = useQueryClient();
+  const [shoModalReshed, setShowModalResched] = useState(false);
 
   const deleteBooking = async ({ id }) => {
     const { data } = await axios.post(process.env.REACT_APP_DELETEBOOKING, { id });
@@ -108,10 +98,19 @@ export default function CalendarModal({
           >
             {mutation.isLoading ? 'Cancelling...' : 'Cancel Appointment'}
           </Button>
-          <Button variant="outline-secondary">Reschedule</Button>
+          <Button
+            onClick={() => {
+              setShowModalResched(true);
+              closeModal();
+            }}
+            variant="outline-secondary"
+          >
+            Reschedule
+          </Button>
           <Button variant="outline-primary">Checkout</Button>
         </Modal.Footer>
       </Modal>
+      <CalendarResched shoModalReshed={shoModalReshed} setShowModalResched={setShowModalResched} />
     </>
   );
 }

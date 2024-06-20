@@ -10,6 +10,8 @@ while ($row = $result->fetch_assoc()) {
         'name' => $row['Fname'] . ' ' . $row['Sname'],
         'first_name' => $row['Fname'],
         'last_name' => $row['Sname'],
+        'email_address' => $row['emailAdd'],
+        'phone_number' => $row['phoneNum'],
     ];
     $data[] = $response;
 }

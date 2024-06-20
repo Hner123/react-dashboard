@@ -29,6 +29,7 @@ try {
     $jsonResponse = [];
     while ($row = $result->fetch_assoc()) {
         $response = [
+            'id' => $row['id'],
             'start' => $row['book_Time'],
             'duration' => $row['duration'],
         ];

@@ -2,53 +2,65 @@
 
 header('Content-Type: application/json');
 
-$sqlQuery = 'SELECT * FROM booking_table WHERE location=?';
-$Marikina = 'Marikina';
-
 try {
-    $stmt = $connection->prepare($sqlQuery);
-    $stmt->bind_param('s', $Marikina);
-    $stmt->execute();
+    $sqlBranchList = 'SELECT * FROM branch_list';
+    $stmtBL = $connection->prepare($sqlBranchList);
+    $stmtBL->execute();
 
-    $result = $stmt->get_result();
-    $response = [];
-    while ($row = $result->fetch_assoc()) {
-        $dateFormat = $row['book_Year'] . '-' . $row['book_Month'] + 1 . '-' . $row['book_Day'];
+    $resultBL = $stmtBL->get_result();
+    $branchName = [];
+    while ($row = $resultBL->fetch_assoc()) {
+        $location = $row['branch_name'];
 
-        if (strpos($row['duration'], 'hr') !== false) {
-            $interval = new DateInterval('PT' . (int) $row['duration'] . 'H');
-        } elseif (strpos($row['duration'], 'mins') !== false) {
-            $interval = new DateInterval('PT' . (int) $row['duration'] . 'M');
+        $marikinaQuery = 'SELECT * FROM booking_table WHERE location=?';
+        $stmt = $connection->prepare($marikinaQuery);
+        $stmt->bind_param('s', $location);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        $branch_patient_list = [];
+
+        while ($rowList = $result->fetch_assoc()) {
+            $dateFormat = $rowList['book_Year'] . '-' . $rowList['book_Month'] + 1 . '-' . $rowList['book_Day'];
+
+            if (strpos($rowList['duration'], 'hr') !== false) {
+                $interval = new DateInterval('PT' . (int) $rowList['duration'] . 'H');
+            } elseif (strpos($rowList['duration'], 'mins') !== false) {
+                $interval = new DateInterval('PT' . (int) $rowList['duration'] . 'M');
+            }
+
+            $addTimeDuration = new DateTime($rowList['book_Time']);
+            $addTimeDuration->add($interval);
+
+            $data = [
+                'id' => $rowList['id'],
+                'title' => $rowList['First_Name'] . ' ' . $rowList['Last_Name'],
+                'start' => date('Y-m-d', strtotime($dateFormat)) . ' ' . $rowList['book_Time'],
+                'end' => date('Y-m-d', strtotime($dateFormat)) . ' ' . $addTimeDuration->format('H:i'),
+                'email' => $rowList['Email'],
+                'phoneNum' => $rowList['Phon_Num'],
+                'services' => $rowList['service'],
+                'notes' => $rowList['Patient_Note'],
+                'timeStart' => $rowList['book_Time'],
+                'durationP' => $rowList['duration'],
+                'status' => $rowList['Patient_Status'],
+                'backgroundColor' => $rowList['statsColor'],
+                'branch' => $rowList['location'],
+            ];
+            $branch_patient_list[] = $data;
         }
+        $stmt->close();
 
-        $addTimeDuration = new DateTime($row['book_Time']);
-        $addTimeDuration->add($interval);
-
-        $data = [
-            'id' => $row['id'],
-            'title' => $row['First_Name'] . ' ' . $row['Last_Name'],
-            'start' => date('Y-m-d', strtotime($dateFormat)) . ' ' . $row['book_Time'],
-            'end' => date('Y-m-d', strtotime($dateFormat)) . ' ' . $addTimeDuration->format('H:i'),
-            'email' => $row['Email'],
-            'phoneNum' => $row['Phon_Num'],
-            'services' => $row['service'],
-            'notes' => $row['Patient_Note'],
-            'timeStart' => $row['book_Time'],
-            'durationP' => $row['duration'],
-            'status' => $row['Patient_Status'],
-            'backgroundColor' => '#ffb64d',
+        $dataList = [
+            $row['branch_name'] => $branch_patient_list,
         ];
-        $response[] = $data;
+        $branchName[] = $dataList;
     }
 
-    $stmt->close();
+    $stmtBL->close();
+
+    echo json_encode($branchName);
     $connection->close();
-
-    $responseArray = [
-        'Marikina' => $response,
-    ];
-
-    echo json_encode($responseArray);
 } catch (Exception $e) {
     echo json_encode(['error' => $e->getMessage()]);
 }
