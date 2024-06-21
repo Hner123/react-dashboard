@@ -53,4 +53,18 @@ const fetchPatientBooking = async () => {
   return response.data;
 };
 
-export { fetchPatientList, fetchBranchList, fetchServiceList, fetchTimeList, sendNewBookingForm, fetchPatientBooking, sendReschedForm };
+const dragNdropResched = async ({ id, date, time, duration }) => {
+  const response = await axios.post(process.env.REACT_APP_DRAGNDROPRESCHED, { id, date, time, duration });
+  return response.data;
+};
+
+export {
+  dragNdropResched,
+  fetchPatientList,
+  fetchBranchList,
+  fetchServiceList,
+  fetchTimeList,
+  sendNewBookingForm,
+  fetchPatientBooking,
+  sendReschedForm,
+};

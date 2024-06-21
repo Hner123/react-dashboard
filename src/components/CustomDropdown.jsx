@@ -24,6 +24,13 @@ const CustomDropdown = () => {
   //   dispatch(dispatch(setSelectBranch(filteredList[param])));
   // };
 
+  useEffect(() => {
+    if (selectedBranchView == '') {
+      const defaultBranch = branchList[0].branchName;
+      dispatch(dispatch(setSelectBranch(defaultBranch)));
+    }
+  }, []);
+
   const handleChangeBranch = (selectedBranchParam) => {
     console.log(selectedBranchParam);
     dispatch(dispatch(setSelectBranch(selectedBranchParam)));

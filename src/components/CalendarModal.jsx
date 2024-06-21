@@ -19,7 +19,7 @@ export default function CalendarModal({ showModal, closeModal, nameP, emailP, se
   const mutation = useMutation({
     mutationFn: deleteBooking,
     onSuccess: () => {
-      queryClient.invalidateQueries('patientBooking');
+      queryClient.invalidateQueries('deleteBooking');
       closeModal();
     },
     onError: (error) => {

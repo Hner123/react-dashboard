@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useContext } from 'react';
 import '../style/calendarPage.css';
 import MyProvider from '../MyProvider';
 import MyContext from '../MyContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
 import store from '../r-store/store';
 import FullCalendar from '@fullcalendar/react';
@@ -12,13 +12,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
-import { parse, format, addMinutes } from 'date-fns';
-import { useQuery } from '@tanstack/react-query';
+import { parse, format, addMinutes, differenceInHours, differenceInMinutes } from 'date-fns';
 import CalendarModal from '../components/CalendarModal';
 import CalendarModalCreate from '../components/CalendarModalCreate';
 import CustomDropdown from '../components/CustomDropdown';
 import { createRoot } from 'react-dom/client';
-import { fetchPatientBooking } from '../reactQueryApi/api';
+import { fetchPatientBooking, dragNdropResched } from '../reactQueryApi/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBookingList, setSelectBranch } from '../r-actions/actions';
 import Swal from 'sweetalert2';
@@ -39,13 +38,14 @@ export default function CalendarPage() {
   const [statusP, setStatusP] = useState('');
   const [phoneNum, setPhoneNum] = useState(0);
 
-  const { setBranchLoc, id, setId } = useContext(MyContext);
+  const { setBranchLoc, id, setId, branchList } = useContext(MyContext);
 
   const bookingR = useSelector((state) => state.booking.bookingList);
   const dispatch = useDispatch();
   const selectBranchView = useSelector((state) => state.booking.selectedBranchR);
 
   const calendarRef = useRef(null);
+  const queryClient = new QueryClient();
 
   const togglePanel = () => {
     setSidePanelOpen(!sidePanelOpen);
@@ -54,20 +54,6 @@ export default function CalendarPage() {
   const closeModal = () => {
     setShowModal(false);
     setShowModalCreate(false);
-  };
-
-  const addDuration = (time, duration) => {
-    const parsedTime = parse(time, 'HH:mm', new Date());
-    const [amount, unit] = duration.split(' ');
-
-    let updatedTime;
-    if (unit.includes('hr')) {
-      updatedTime = addMinutes(parsedTime, parseInt(amount * 60));
-    } else if (unit.includes('min')) {
-      updatedTime = addMinutes(parsedTime, parseInt(amount));
-    }
-
-    return format(updatedTime, 'hh:mm a');
   };
 
   const currentDate = new Date();
@@ -137,7 +123,6 @@ export default function CalendarPage() {
     }
   }, [events, selectBranchView]);
 
-  const queryClient = new QueryClient();
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (calendarRef.current) {
@@ -186,6 +171,112 @@ export default function CalendarPage() {
   //   return () => clearInterval(interValid);
   // }, []);
 
+  const addDuration = (time, duration) => {
+    const parsedTime = parse(time, 'HH:mm', new Date());
+
+    // Split the duration into parts
+    const durationParts = duration.split(' ');
+    let totalMinutes = 0;
+
+    // Iterate over the parts and add the corresponding minutes
+    for (let i = 0; i < durationParts.length; i += 2) {
+      const amount = parseInt(durationParts[i]);
+      const unit = durationParts[i + 1];
+
+      if (unit.includes('hr')) {
+        totalMinutes += amount * 60;
+      } else if (unit.includes('min')) {
+        totalMinutes += amount - 1;
+      }
+    }
+    console.log(totalMinutes);
+    // Add the total minutes to the parsed time
+    const updatedTime = addMinutes(parsedTime, totalMinutes);
+
+    return format(updatedTime, 'hh:mm a');
+  };
+
+  const checkForOverlaps = (info) => {
+    const event = info.event;
+    if (!event) {
+      console.error('Event is undefined');
+      return;
+    }
+    const calendarApi = calendarRef.current.getApi();
+    const events = calendarApi.getEvents();
+    const overlappingEvents = events.filter((e) => {
+      if (!e) {
+        console.error('An event in the calendar is undefined');
+        return false;
+      }
+      return (
+        e.id !== event.id &&
+        ((event.start >= e.start && event.start < e.end) ||
+          (event.end > e.start && event.end <= e.end) ||
+          (event.start <= e.start && event.end >= e.end))
+      );
+    });
+
+    if (overlappingEvents.length > 0) {
+      Swal.fire({
+        title: 'Oopsy!',
+        text: 'The selected time conflicts; please choose another.',
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'OK',
+      });
+      console.log('Event overlap detected!');
+      info.revert();
+    } else {
+      const id = event.id;
+      const date = format(event.start, 'yyyy-MM-dd');
+      const time = format(event.start, 'HH:mm');
+      const duration = getDuration(event.end, event.start);
+      console.log('You can save the details', date);
+      mutationResched.mutate({ id, date, time, duration });
+    }
+  };
+
+  const getDuration = (end, start) => {
+    const totalMinutes = differenceInMinutes(end, start);
+    // Convert total minutes to hours and minutes
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    let totalDuration;
+    if (minutes === 0) {
+      totalDuration = `${hours} hr`;
+    } else if (hours === 0) {
+      totalDuration = `${minutes} mins`;
+    } else {
+      totalDuration = `${hours} hr ${minutes} mins`;
+    }
+    // console.log(`${hours} hr ${minutes} mins`);
+    return totalDuration;
+  };
+
+  const queryClientMutate = useQueryClient();
+  const mutationResched = useMutation({
+    mutationFn: dragNdropResched,
+    onSuccess: (data) => {
+      queryClientMutate.invalidateQueries({ queryKey: ['patientBooking'] });
+      Swal.fire({
+        title: 'Success!',
+        text: 'Successfully rescheduled!',
+        icon: 'success',
+      });
+      console.log(data);
+    },
+    onError: (error) => {
+      // Handle error, e.g., display a notification to the user
+      console.error('Error deleting booking:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to reschedule.',
+        icon: 'error',
+      });
+    },
+  });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -229,7 +320,30 @@ export default function CalendarPage() {
               eventContent={(eventInfo) => renderEventInfo(eventInfo)}
               editable={true}
               droppable={true}
+              eventResizableFromStart={true}
               eventDrop={(info) => {
+                Swal.fire({
+                  title: 'Are you sure?',
+                  text: 'You want to reschedule this appointment?',
+                  showCancelButton: true,
+                  reverseButtons: true, // Add this line to swap the buttons
+                  cancelButtonColor: '#C8C8C8',
+                  confirmButtonColor: '#d33',
+                  confirmButtonText: 'Yes',
+                }).then((result) => {
+                  // ReschedDragnDrop(info.event.start, info.event.end);
+                  if (result.isConfirmed) {
+                    checkForOverlaps(info);
+                  } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    console.log('Rescheduling canceled');
+                    info.revert();
+                  } else if (result.dismiss === Swal.DismissReason.close) {
+                    console.log('Modal closed');
+                    info.revert();
+                  }
+                });
+              }}
+              eventResize={(info) => {
                 Swal.fire({
                   title: 'Are you sure?',
                   text: 'You want to reschedule this appointment?',
@@ -241,21 +355,15 @@ export default function CalendarPage() {
                   confirmButtonText: 'Yes',
                 }).then((result) => {
                   if (result.isConfirmed) {
-                    Swal.fire({
-                      title: 'Rescheduled!',
-                      text: 'Rescheduled booking successfully.',
-                      icon: 'success',
-                    });
+                    checkForOverlaps(info);
+                  } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    console.log('Rescheduling canceled');
+                    info.revert();
+                  } else if (result.dismiss === Swal.DismissReason.close) {
+                    console.log('Modal closed');
+                    info.revert();
                   }
                 });
-                // Update the event with the new date
-                const updatedEvent = {
-                  id: info.event.id,
-                  start: info.event.start,
-                  end: info.event.end,
-                };
-                // Call a function to handle the update (e.g., send to server)
-                // handleEventUpdate(updatedEvent);
               }}
             />
           </div>
