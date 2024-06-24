@@ -142,34 +142,55 @@ export default function CalendarModalCreate({ showModalCreate, closeModal }) {
   if (serviceListError) {
     return <div>Error: {serviceListError.message}</div>;
   }
-
+  // addDuration;
+  // subtractTime;
   const subtractTime = (time, duration) => {
     const parsedTime = parse(time, 'HH:mm', new Date());
-    const [amount, unit] = duration.split(' ');
 
-    let updatedTime;
-    if (unit.includes('hr')) {
-      updatedTime = subMinutes(parsedTime, parseInt(amount * 60 - 1));
-    } else if (unit.includes('min')) {
-      updatedTime = subMinutes(parsedTime, parseInt(amount - 1));
+    // Split the duration into parts
+    const durationParts = duration.split(' ');
+    let totalMinutes = 0;
+
+    // Iterate over the parts and add the corresponding minutes
+    for (let i = 0; i < durationParts.length; i += 2) {
+      const amount = parseInt(durationParts[i]);
+      const unit = durationParts[i + 1];
+
+      if (unit.includes('hr')) {
+        totalMinutes += amount * 60 - 1;
+      } else if (unit.includes('min')) {
+        totalMinutes += amount - 1;
+      }
     }
+    console.log(totalMinutes);
+    // Add the total minutes to the parsed time
+    const updatedTime = subMinutes(parsedTime, totalMinutes);
 
     return format(updatedTime, 'HH:mm');
   };
 
   const addDuration = (time, duration) => {
-    // Parse the time string into a Date object
     const parsedTime = parse(time, 'HH:mm', new Date());
-    const [amount, unit] = duration.split(' ');
 
-    let updatedTime;
-    if (unit.includes('hr')) {
-      updatedTime = addMinutes(parsedTime, parseInt(amount * 60 - 1));
-    } else if (unit.includes('min')) {
-      updatedTime = addMinutes(parsedTime, parseInt(amount - 1));
+    // Split the duration into parts
+    const durationParts = duration.split(' ');
+    let totalMinutes = 0;
+
+    // Iterate over the parts and add the corresponding minutes
+    for (let i = 0; i < durationParts.length; i += 2) {
+      const amount = parseInt(durationParts[i]);
+      const unit = durationParts[i + 1];
+
+      if (unit.includes('hr')) {
+        totalMinutes += amount * 60 - 1;
+      } else if (unit.includes('min')) {
+        totalMinutes += amount - 1;
+      }
     }
+    console.log(totalMinutes);
+    // Add the total minutes to the parsed time
+    const updatedTime = addMinutes(parsedTime, totalMinutes);
 
-    // Format the updated time back to the desired format
     return format(updatedTime, 'HH:mm');
   };
 

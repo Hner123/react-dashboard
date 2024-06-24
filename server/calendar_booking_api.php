@@ -2,6 +2,33 @@
 
 header('Content-Type: application/json');
 
+function parseDuration($duration)
+{
+    // Initialize hours and minutes
+    $hours = 0;
+    $minutes = 0;
+
+    // Check for hours in the duration
+    if (strpos($duration, 'hr') !== false) {
+        preg_match('/(\d+)\s*hr/', $duration, $matches);
+        if (isset($matches[1])) {
+            $hours = (int) $matches[1];
+        }
+    }
+
+    // Check for minutes in the duration
+    if (strpos($duration, 'mins') !== false) {
+        preg_match('/(\d+)\s*mins/', $duration, $matches);
+        if (isset($matches[1])) {
+            $minutes = (int) $matches[1];
+        }
+    }
+
+    // Create DateInterval with both hours and minutes
+    $intervalSpec = 'PT' . $hours . 'H' . $minutes . 'M';
+    return new DateInterval($intervalSpec);
+}
+
 try {
     $sqlBranchList = 'SELECT * FROM branch_list';
     $stmtBL = $connection->prepare($sqlBranchList);
@@ -23,20 +50,20 @@ try {
         while ($rowList = $result->fetch_assoc()) {
             $dateFormat = $rowList['book_Year'] . '-' . $rowList['book_Month'] + 1 . '-' . $rowList['book_Day'];
 
-            if (strpos($rowList['duration'], 'hr') !== false) {
-                $interval = new DateInterval('PT' . (int) $rowList['duration'] . 'H');
-            } elseif (strpos($rowList['duration'], 'mins') !== false) {
-                $interval = new DateInterval('PT' . (int) $rowList['duration'] . 'M');
-            }
+            $startTime = new DateTime($rowList['book_Time']);
 
-            $addTimeDuration = new DateTime($rowList['book_Time']);
-            $addTimeDuration->add($interval);
+            $duration = $rowList['duration'];
+            $interval = parseDuration($duration);
+            $startTime->add($interval);
+            $timeAddedDuration = $startTime->format('H:i');
 
             $data = [
                 'id' => $rowList['id'],
                 'title' => $rowList['First_Name'] . ' ' . $rowList['Last_Name'],
+                'name' => $rowList['First_Name'],
+                'lastName' => $rowList['Last_Name'],
                 'start' => date('Y-m-d', strtotime($dateFormat)) . ' ' . $rowList['book_Time'],
-                'end' => date('Y-m-d', strtotime($dateFormat)) . ' ' . $addTimeDuration->format('H:i'),
+                'end' => date('Y-m-d', strtotime($dateFormat)) . ' ' . $timeAddedDuration,
                 'email' => $rowList['Email'],
                 'phoneNum' => $rowList['Phon_Num'],
                 'services' => $rowList['service'],

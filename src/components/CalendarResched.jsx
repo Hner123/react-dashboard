@@ -5,9 +5,10 @@ import { useEffect, useContext, useState } from 'react';
 import MyContext from '../MyContext';
 import { useForm, Controller } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchPatientBooking, fetchServiceList, fetchTimeList, sendReschedForm } from '../reactQueryApi/api';
+import { fetchPatientBooking, fetchServiceList, fetchTimeList, sendReschedForm, resEditPatientDetails } from '../reactQueryApi/api';
 import Swal from 'sweetalert2';
 import { parse, format, subMinutes, addMinutes } from 'date-fns';
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function CalendarResched({ shoModalReshed, setShowModalResched }) {
   const [patientDetails, setPatientDetals] = useState([]);
@@ -15,6 +16,8 @@ export default function CalendarResched({ shoModalReshed, setShowModalResched })
   const [selectedService, setSelectedService] = useState('');
   const [serviceDuration, setServiceDuration] = useState('');
   const [receiveTimeList, setReceiveTimeList] = useState('');
+
+  const [editForm, setEditForm] = useState('MainForm');
 
   const { branchLoc, setBranchLoc, id, setId, branchList } = useContext(MyContext);
 
@@ -54,31 +57,51 @@ export default function CalendarResched({ shoModalReshed, setShowModalResched })
 
   const subtractTime = (time, duration) => {
     const parsedTime = parse(time, 'HH:mm', new Date());
-    const [amount, unit] = duration.split(' ');
 
-    let updatedTime;
-    if (unit.includes('hr')) {
-      updatedTime = subMinutes(parsedTime, parseInt(amount * 60 - 1));
-    } else if (unit.includes('min')) {
-      updatedTime = subMinutes(parsedTime, parseInt(amount - 1));
+    // Split the duration into parts
+    const durationParts = duration.split(' ');
+    let totalMinutes = 0;
+
+    // Iterate over the parts and add the corresponding minutes
+    for (let i = 0; i < durationParts.length; i += 2) {
+      const amount = parseInt(durationParts[i]);
+      const unit = durationParts[i + 1];
+
+      if (unit.includes('hr')) {
+        totalMinutes += amount * 60 - 1;
+      } else if (unit.includes('min')) {
+        totalMinutes += amount - 1;
+      }
     }
+    console.log(totalMinutes);
+    // Add the total minutes to the parsed time
+    const updatedTime = subMinutes(parsedTime, totalMinutes);
 
     return format(updatedTime, 'HH:mm');
   };
 
   const addDuration = (time, duration) => {
-    // Parse the time string into a Date object
     const parsedTime = parse(time, 'HH:mm', new Date());
-    const [amount, unit] = duration.split(' ');
 
-    let updatedTime;
-    if (unit.includes('hr')) {
-      updatedTime = addMinutes(parsedTime, parseInt(amount * 60 - 1));
-    } else if (unit.includes('min')) {
-      updatedTime = addMinutes(parsedTime, parseInt(amount - 1));
+    // Split the duration into parts
+    const durationParts = duration.split(' ');
+    let totalMinutes = 0;
+
+    // Iterate over the parts and add the corresponding minutes
+    for (let i = 0; i < durationParts.length; i += 2) {
+      const amount = parseInt(durationParts[i]);
+      const unit = durationParts[i + 1];
+
+      if (unit.includes('hr')) {
+        totalMinutes += amount * 60 - 1;
+      } else if (unit.includes('min')) {
+        totalMinutes += amount - 1;
+      }
     }
+    console.log(totalMinutes);
+    // Add the total minutes to the parsed time
+    const updatedTime = addMinutes(parsedTime, totalMinutes);
 
-    // Format the updated time back to the desired format
     return format(updatedTime, 'HH:mm');
   };
 
@@ -145,6 +168,35 @@ export default function CalendarResched({ shoModalReshed, setShowModalResched })
     },
   });
 
+  const mutationEditDetails = useMutation({
+    mutationFn: resEditPatientDetails,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['patientBooking'] });
+      if (data === 'success') {
+        Swal.fire({
+          title: 'Success!',
+          text: 'Edit details success',
+          icon: 'success',
+        });
+      } else {
+        Swal.fire({
+          title: 'Error!',
+          text: JSON.stringify(data),
+          icon: 'error',
+        });
+      }
+    },
+    onError: (error) => {
+      // Handle error, e.g., display a notification to the user
+      console.error('Error send form:', error);
+      Swal.fire({
+        title: 'Error!',
+        text: error,
+        icon: 'error',
+      });
+    },
+  });
+
   const handleFetchTime = (dateSelected) => {
     mutation.mutate({ dateSelected, selectedBranch });
   };
@@ -153,6 +205,7 @@ export default function CalendarResched({ shoModalReshed, setShowModalResched })
     setShowModalResched(false);
     reset();
     setReceiveTimeList('');
+    setEditForm('MainForm');
   };
 
   useEffect(() => {
@@ -176,9 +229,11 @@ export default function CalendarResched({ shoModalReshed, setShowModalResched })
 
   const onSubmit = (data) => {
     mutationResched.mutate({ id, selectedBranch, service: data.service, date: data.date, time: data.time, serviceDuration });
-    // console.log(data);
-    // console.log( selectedBranch, serviceDuration, id);
-    // console.log({ id, selectedBranch, service: data.service, date: data.date, time: data.time, serviceDuration });
+  };
+
+  const onSubmitEditForm = (data) => {
+    // console.log('daya ', { id, name: data.name, lastname: data.lastname, email: data.email, phoneNumber: data.phoneNumber });
+    mutationEditDetails.mutate({ id, name: data.name, lastname: data.lastname, email: data.email, phoneNumber: data.phoneNumber });
   };
 
   if (isLoading) {
@@ -193,109 +248,166 @@ export default function CalendarResched({ shoModalReshed, setShowModalResched })
       <Modal show={shoModalReshed} onHide={handleCloseModal} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header closeButton>
           <Modal.Title style={{ fontSize: '20px' }}>
-            <p className="mb-0">Reschedule </p>
+            <p className="mb-0">{editForm === 'MainForm' ? 'Reschedule' : 'Edit'}</p>
 
             <CalendarResched />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {/* ************ BODY******************* */}
-          <div>
-            <h5 className="m-0">{patientDetails?.title}</h5>
-            <span style={{ fontSize: '12px', fontWeight: '500', color: '#939393' }}>{patientDetails?.email}</span> <br />
-            <span style={{ fontSize: '12px', fontWeight: '500', color: '#939393' }}>{patientDetails?.phoneNum}</span>
-          </div>
 
-          <Form id="RescheduleForm" noValidate onSubmit={handleSubmit(onSubmit)}>
-            {/* **************************************************SELECT BRANCH FORM*************************************** */}
-            <Row className="mt-3">
-              <Form.Group as={Col} controlId="selectBranchValidation">
-                <Form.Label>Location</Form.Label>
-                <Form.Select
-                  aria-label="Default select example"
-                  onChange={(event) => setSelectedBranch(event.target.value)}
-                  value={selectedBranch}
-                  required
-                >
-                  {branchList?.map((branch, index) => (
-                    <option key={index} value={branch.branchName}>
-                      {branch.branchName}
-                    </option>
-                  ))}
-                </Form.Select>
-                <Form.Control.Feedback type="invalid">Please select a location.</Form.Control.Feedback>
-              </Form.Group>
-              {/* **************************************************SELECT SERVICE FORM*************************************** */}
-              <Form.Group as={Col} controlId="serviceValidation">
-                <Form.Label>Service</Form.Label>
-                <Form.Select
-                  {...register('service', { required: 'Select a service.' })}
-                  isInvalid={!!errors.service}
-                  aria-label="Default select example"
-                  onChange={(event) => {
-                    const selectedIndex = event.target.selectedIndex;
-                    setSelectedService(event.target.value);
-                    setServiceDuration(event.target.options[selectedIndex].getAttribute('data-duration'));
-                  }}
-                  value={selectedService}
-                  required
-                >
-                  {serviceList?.map((list, index) => (
-                    <option key={index} value={list.service_name} data-duration={list.service_duration}>
-                      {list.service_name} - {list.service_duration}
-                    </option>
-                  ))}
-                </Form.Select>
-              </Form.Group>
-            </Row>
-            {/* **************************************************SELECT DATE FORM*************************************** */}
-            <Row className="mt-3">
-              <Form.Group as={Col} controlId="selectAdateValidation">
-                <Form.Label>Select a date</Form.Label>
-                <Form.Control
-                  {...register('date', { required: 'Select a date.' })}
-                  type="date"
-                  placeholder=""
-                  isInvalid={!!errors.date}
-                  onChange={(event) => {
-                    handleFetchTime(event.target.value);
-                  }}
-                />
-              </Form.Group>
-              {/* **************************************************SELECT TIME FORM*************************************** */}
-              <Form.Group as={Col} controlId="selectTimeValidation">
-                <Form.Label>Time</Form.Label>
-                <Form.Select {...register('time', { required: 'Select a time.' })} isInvalid={!!errors.time} aria-label="Default select example">
-                  {receiveTimeList !== '' ? (
-                    timeList?.map((time, index) => {
-                      const inRange = receiveTimeList?.some(
-                        (receiveTime) =>
-                          receiveTime.id != id &&
-                          ((receiveTime.start <= time.useTime && addDuration(receiveTime.start, receiveTime.duration) >= time.useTime) ||
-                            (subtractTime(receiveTime.start, serviceDuration) < time.useTime && receiveTime.start > time.useTime))
-                      );
+          {editForm === 'MainForm' ? (
+            <>
+              <div className="row">
+                <div className="col">
+                  <h5 className="m-0">
+                    {patientDetails?.title}
+                    <span className="ms-3">
+                      <EditIcon
+                        color="primary"
+                        fontSize="small"
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          setEditForm('EditPatient');
+                        }}
+                      />
+                    </span>
+                  </h5>
+                  <span style={{ fontSize: '12px', fontWeight: '500', color: '#939393' }}>{patientDetails?.email}</span> <br />
+                  <span style={{ fontSize: '12px', fontWeight: '500', color: '#939393' }}>{patientDetails?.phoneNum}</span>
+                </div>
+              </div>
 
-                      return inRange ? null : (
-                        <option key={index} value={time.useTime}>
-                          {time.displayTime}
+              <Form id="RescheduleForm" noValidate onSubmit={handleSubmit(onSubmit)}>
+                {/* **************************************************SELECT BRANCH FORM*************************************** */}
+                <Row className="mt-3">
+                  <Form.Group as={Col} controlId="selectBranchValidation">
+                    <Form.Label>Location</Form.Label>
+                    <Form.Select onChange={(event) => setSelectedBranch(event.target.value)} value={selectedBranch} required>
+                      {branchList?.map((branch, index) => (
+                        <option key={index} value={branch.branchName}>
+                          {branch.branchName}
                         </option>
-                      );
-                    })
-                  ) : (
-                    <option value="">Select a date first</option>
-                  )}
-                </Form.Select>
-              </Form.Group>
-            </Row>
-          </Form>
+                      ))}
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">Please select a location.</Form.Control.Feedback>
+                  </Form.Group>
+                  {/* **************************************************SELECT SERVICE FORM*************************************** */}
+                  <Form.Group as={Col} controlId="serviceValidation">
+                    <Form.Label>Service</Form.Label>
+                    <Form.Select
+                      {...register('service', { required: 'Select a service.' })}
+                      isInvalid={!!errors.service}
+                      onChange={(event) => {
+                        const selectedIndex = event.target.selectedIndex;
+                        setSelectedService(event.target.value);
+                        setServiceDuration(event.target.options[selectedIndex].getAttribute('data-duration'));
+                      }}
+                      value={selectedService}
+                      required
+                    >
+                      {serviceList?.map((list, index) => (
+                        <option key={index} value={list.service_name} data-duration={list.service_duration}>
+                          {list.service_name} - {list.service_duration}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Row>
+                {/* **************************************************SELECT DATE FORM*************************************** */}
+                <Row className="mt-3">
+                  <Form.Group as={Col} controlId="selectAdateValidation">
+                    <Form.Label>Select a date</Form.Label>
+                    <Form.Control
+                      {...register('date', { required: 'Select a date.' })}
+                      type="date"
+                      placeholder=""
+                      isInvalid={!!errors.date}
+                      onChange={(event) => {
+                        handleFetchTime(event.target.value);
+                      }}
+                    />
+                  </Form.Group>
+                  {/* **************************************************SELECT TIME FORM*************************************** */}
+                  <Form.Group as={Col} controlId="selectTimeValidation">
+                    <Form.Label>Time</Form.Label>
+                    <Form.Select {...register('time', { required: 'Select a time.' })} isInvalid={!!errors.time}>
+                      {receiveTimeList !== '' ? (
+                        timeList?.map((time, index) => {
+                          const inRange = receiveTimeList?.some(
+                            (receiveTime) =>
+                              receiveTime.id != id &&
+                              ((receiveTime.start <= time.useTime && addDuration(receiveTime.start, receiveTime.duration) >= time.useTime) ||
+                                (subtractTime(receiveTime.start, serviceDuration) < time.useTime && receiveTime.start > time.useTime))
+                          );
+
+                          return inRange ? null : (
+                            <option key={index} value={time.useTime}>
+                              {time.displayTime}
+                            </option>
+                          );
+                        })
+                      ) : (
+                        <option value="">Select a date first</option>
+                      )}
+                    </Form.Select>
+                  </Form.Group>
+                </Row>
+              </Form>
+            </>
+          ) : (
+            <Form id="EditRescheduleForm" noValidate onSubmit={handleSubmit(onSubmitEditForm)}>
+              <Row>
+                <Form.Group as={Col} className="mt-2">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control {...register('name')} size="sm" type="text" defaultValue={patientDetails?.name} />
+                </Form.Group>
+                <Form.Group as={Col} className="mt-2">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control {...register('lastname')} size="sm" type="text" defaultValue={patientDetails?.lastName} />
+                </Form.Group>
+              </Row>
+
+              <Row>
+                <Form.Group as={Col} className="mt-2">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control {...register('email')} size="sm" type="email" defaultValue={patientDetails?.email} />
+                </Form.Group>
+                <Form.Group as={Col} className="mt-2">
+                  <Form.Label>Phone Number</Form.Label>
+                  <Form.Control {...register('phoneNumber')} size="sm" type="number" defaultValue={patientDetails?.phoneNum} />
+                </Form.Group>
+              </Row>
+            </Form>
+          )}
         </Modal.Body>
+
         <Modal.Footer>
-          <Button onClick={handleCloseModal} variant="outline-secondary">
-            Cancel
-          </Button>
-          <Button type="submit" variant="primary" form="RescheduleForm">
-            Update
-          </Button>
+          {editForm === 'MainForm' ? (
+            <>
+              <Button onClick={handleCloseModal} variant="outline-secondary">
+                Cancel
+              </Button>
+              <Button type="submit" variant="primary" form="RescheduleForm">
+                Update
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                onClick={() => {
+                  setEditForm('MainForm');
+                  reset();
+                }}
+                variant="outline-secondary"
+              >
+                Back
+              </Button>
+              <Button type="submit" variant="primary" form="EditRescheduleForm">
+                Save
+              </Button>
+            </>
+          )}
         </Modal.Footer>
       </Modal>
     </>

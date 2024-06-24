@@ -1,0 +1,9 @@
+.calendarCheckout .modal-dialog {
+  max-width: 650px !important;
+}
+.tableRow th {
+  font-weight: normal;
+}
+.tableRowData td {
+  font-size: 14px;
+}

@@ -6,6 +6,8 @@ import { fetchBranchList } from './reactQueryApi/api.js';
 const MyProvider = ({ children }) => {
   const [branchLoc, setBranchLoc] = useState('');
   const [id, setId] = useState(0);
+  const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   const {
     data: branchList,
@@ -24,7 +26,11 @@ const MyProvider = ({ children }) => {
     return <div>Error: {branchError.message}</div>;
   }
 
-  return <MyContext.Provider value={{ branchList, branchLoc, setBranchLoc, id, setId }}>{children}</MyContext.Provider>;
+  return (
+    <MyContext.Provider value={{ branchList, branchLoc, setBranchLoc, id, setId, name, setName, lastName, setLastName }}>
+      {children}
+    </MyContext.Provider>
+  );
 };
 
 export default MyProvider;

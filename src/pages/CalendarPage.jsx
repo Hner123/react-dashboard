@@ -37,15 +37,15 @@ export default function CalendarPage() {
   const [durationP, setTimeDurationP] = useState('');
   const [statusP, setStatusP] = useState('');
   const [phoneNum, setPhoneNum] = useState(0);
+  const [bgColor, setBgColor] = useState('');
 
-  const { setBranchLoc, id, setId, branchList } = useContext(MyContext);
+  const { setBranchLoc, id, setId, branchList, name, setName, lastName, setLastName } = useContext(MyContext);
 
   const bookingR = useSelector((state) => state.booking.bookingList);
   const dispatch = useDispatch();
   const selectBranchView = useSelector((state) => state.booking.selectedBranchR);
 
   const calendarRef = useRef(null);
-  const queryClient = new QueryClient();
 
   const togglePanel = () => {
     setSidePanelOpen(!sidePanelOpen);
@@ -81,6 +81,9 @@ export default function CalendarPage() {
           console.log(id);
           setEndTime(addDuration(eventInfo.event.extendedProps.timeStart, eventInfo.event.extendedProps.durationP));
           setBranchLoc(eventInfo.event.extendedProps.branch);
+          setBgColor(eventInfo.backgroundColor);
+          setName(eventInfo.event.extendedProps.name);
+          setLastName(eventInfo.event.extendedProps.lastName);
         }}
       >
         <span style={{ fontSize: '12px', color: '#333', fontWeight: '500' }}>{eventInfo.timeText} : </span>
@@ -132,6 +135,7 @@ export default function CalendarPage() {
           dropdownContainer.className = 'custom-dropdown-container';
           toolbarLeft.appendChild(dropdownContainer);
 
+          const queryClient = new QueryClient();
           createRoot(dropdownContainer).render(
             <Provider store={store}>
               <QueryClientProvider client={queryClient}>
@@ -186,7 +190,7 @@ export default function CalendarPage() {
       if (unit.includes('hr')) {
         totalMinutes += amount * 60;
       } else if (unit.includes('min')) {
-        totalMinutes += amount - 1;
+        totalMinutes += amount;
       }
     }
     console.log(totalMinutes);
@@ -257,13 +261,9 @@ export default function CalendarPage() {
   const queryClientMutate = useQueryClient();
   const mutationResched = useMutation({
     mutationFn: dragNdropResched,
+
     onSuccess: (data) => {
       queryClientMutate.invalidateQueries({ queryKey: ['patientBooking'] });
-      Swal.fire({
-        title: 'Success!',
-        text: 'Successfully rescheduled!',
-        icon: 'success',
-      });
       console.log(data);
     },
     onError: (error) => {
@@ -276,6 +276,11 @@ export default function CalendarPage() {
       });
     },
   });
+
+  const handleViewChange = (view) => {
+    let calendarApi = calendarRef.current.getApi();
+    calendarApi.changeView(view);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -293,6 +298,12 @@ export default function CalendarPage() {
       <div className="calendarView">
         <div className="calendarContent">
           <div className="fullCalendarView">
+            <select onChange={(e) => handleViewChange(e.target.value)}>
+              <option value="dayGridMonth">Month</option>
+              <option value="timeGridWeek">Week</option>
+              <option value="timeGridDay">Day</option>
+              <option value="listWeek">List</option>
+            </select>
             <FullCalendar
               ref={calendarRef}
               initialDate={formattedDate}
@@ -383,6 +394,9 @@ export default function CalendarPage() {
         phoneNum={phoneNum}
         endTime={endTime}
         id={id}
+        bgColor={bgColor}
+        name={name}
+        lastName={lastName}
       />
       <CalendarModalCreate showModalCreate={showModalCreate} closeModal={closeModal} />
     </>

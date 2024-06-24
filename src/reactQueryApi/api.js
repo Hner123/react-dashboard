@@ -58,7 +58,23 @@ const dragNdropResched = async ({ id, date, time, duration }) => {
   return response.data;
 };
 
+const rQuerySetstatus = async ({ id, status }) => {
+  const response = await axios.post(process.env.REACT_APP_CHANGESTATUS, { id, status });
+  return response.data;
+};
+
+const processPayment = async ({ name, lastName, servicesP, price, assisted, notes, id }) => {
+  const response = await axios.post(process.env.REACT_APP_PROCESSPAYMENT, { name, lastName, servicesP, price, assisted, notes, id });
+  return response.data;
+};
+
+const resEditPatientDetails = async ({ id, name, lastname, email, phoneNumber }) => {
+  const response = await axios.post(process.env.REACT_APP_RESEDITPATIENTDETAILS, { id, name, lastname, email, phoneNumber });
+  return response.data;
+};
+
 export {
+  rQuerySetstatus,
   dragNdropResched,
   fetchPatientList,
   fetchBranchList,
@@ -67,4 +83,6 @@ export {
   sendNewBookingForm,
   fetchPatientBooking,
   sendReschedForm,
+  processPayment,
+  resEditPatientDetails,
 };

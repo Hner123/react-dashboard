@@ -21,7 +21,7 @@ $day = $dateParts[2];
 
 $time = $data->time;
 $notes = $data->notes;
-$statsColor = '#ffb64d';
+$statsColor = '#FFB64D';
 
 try {
     $sqlQuery = "INSERT INTO booking_table (book_Year, book_Month, book_Day, book_Time, First_Name, 

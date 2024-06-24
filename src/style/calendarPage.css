@@ -117,12 +117,15 @@
 
 @media (max-width: 768px) {
   .calendarView {
-    padding: 115px 25px 30px 25px;
+    padding: 65px 0 30px 0;
   }
   .fc-header-toolbar {
     overflow: auto;
   }
   .fc-view-harness {
     height: 650px !important;
+  }
+  .calendarContent {
+    padding: 20px 0;
   }
 }
