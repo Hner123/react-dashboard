@@ -8,7 +8,7 @@ import { processPayment } from '../reactQueryApi/api';
 import Swal from 'sweetalert2';
 
 export default function CalendarCheckout({ setShowModalCheckout, showModalCheckout, nameP, emailP, servicesP, id }) {
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState(null);
   const [assisted, setAssisted] = useState('');
   const [notes, setNotes] = useState('');
 
@@ -16,6 +16,9 @@ export default function CalendarCheckout({ setShowModalCheckout, showModalChecko
 
   const handleCloseModal = () => {
     setShowModalCheckout(false);
+    setPrice('');
+    setAssisted('');
+    setNotes('');
   };
 
   const handleSubmit = () => {
@@ -99,7 +102,9 @@ export default function CalendarCheckout({ setShowModalCheckout, showModalChecko
           </table>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-secondary">Cancel</Button>
+          <Button onClick={handleCloseModal} variant="outline-secondary">
+            Cancel
+          </Button>
           <Button
             onClick={() => {
               handleSubmit();

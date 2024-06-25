@@ -79,7 +79,7 @@ export default function CalendarModal({
   useEffect(() => {
     setChangeStats(bgColor);
     console.log('YAWA');
-  }, [showModal, bgColor]);
+  }, [showModal]);
 
   const handleStatus = (event) => {
     const status = event.target.value;
@@ -87,7 +87,7 @@ export default function CalendarModal({
     mutationChangeStatus.mutate({ id, status });
   };
 
-  const patientStatus = (colorStats) => {
+  const patientStatusIcon = (colorStats) => {
     if (colorStats === '#2ED8B6') {
       return (
         <div className="approvedIcon d-flex justify-content-center">
@@ -110,7 +110,7 @@ export default function CalendarModal({
       <Modal show={showModal} onHide={closeModal} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header closeButton>
           <Modal.Title style={{ fontSize: '20px' }}>
-            <p className="mb-0">Booking Details {bgColor}</p>
+            <p className="mb-0">Booking Details</p>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -122,7 +122,7 @@ export default function CalendarModal({
               <span>{phoneNum}</span>
             </div>
             <div className="iconStatus">
-              {patientStatus(changeStats)}
+              {patientStatusIcon(changeStats)}
 
               {bgColor === '#B0B0B0' ? null : (
                 <Form.Select aria-label="Default select example" defaultValue={bgColor} onChange={handleStatus}>

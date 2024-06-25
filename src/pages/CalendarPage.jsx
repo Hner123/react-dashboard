@@ -21,6 +21,7 @@ import { fetchPatientBooking, dragNdropResched } from '../reactQueryApi/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBookingList, setSelectBranch } from '../r-actions/actions';
 import Swal from 'sweetalert2';
+import CalendarInitialView from '../components/CalendarInitialView';
 
 export default function CalendarPage() {
   const [sidePanelOpen, setSidePanelOpen] = useState(true);
@@ -126,6 +127,7 @@ export default function CalendarPage() {
     }
   }, [events, selectBranchView]);
 
+  //insert component to a calendar toolbar
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (calendarRef.current) {
@@ -145,6 +147,26 @@ export default function CalendarPage() {
               </QueryClientProvider>
             </Provider>
           );
+          clearInterval(intervalId);
+        }
+      }
+    }, 100);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  //insert component to a calendar toolbar
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (calendarRef.current) {
+        const toolbarRight = calendarRef.current.getApi().el.querySelector('.fc-toolbar-chunk:last-child');
+        if (toolbarRight && !toolbarRight.querySelector('.custom-calendarListView')) {
+          const listViewCalendar = document.createElement('div');
+          listViewCalendar.className = 'custom-calendarListView';
+          toolbarRight.appendChild(listViewCalendar);
+
+          const queryClient = new QueryClient();
+          createRoot(listViewCalendar).render(<CalendarInitialView handleViewChange={handleViewChange} />);
           clearInterval(intervalId);
         }
       }
@@ -298,12 +320,6 @@ export default function CalendarPage() {
       <div className="calendarView">
         <div className="calendarContent">
           <div className="fullCalendarView">
-            <select onChange={(e) => handleViewChange(e.target.value)}>
-              <option value="dayGridMonth">Month</option>
-              <option value="timeGridWeek">Week</option>
-              <option value="timeGridDay">Day</option>
-              <option value="listWeek">List</option>
-            </select>
             <FullCalendar
               ref={calendarRef}
               initialDate={formattedDate}
@@ -314,11 +330,11 @@ export default function CalendarPage() {
               headerToolbar={{
                 left: 'today',
                 center: 'prev title next',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth customButton',
+                right: 'customButton',
               }}
               customButtons={{
                 customButton: {
-                  text: ' + New Appointment',
+                  text: ' + ',
                   click: () => {
                     setShowModalCreate(true);
                   },

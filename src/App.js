@@ -13,6 +13,7 @@ import Profile from './pages/Profile';
 import Calendar from './components/Calendar';
 import MuiCalendar from './components/MuiCalendar';
 import CalendarPage from './pages/CalendarPage';
+import ForTest from './ForTest';
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
         {/* <Route path="/pages/calendar" element={<Calendar />} /> */}
         <Route path="/pages/muicalendar" element={<MuiCalendar />} />
         <Route path="/pages/calendar" element={<CalendarPage />} />
+        <Route path="/pages/fortesting" element={<ForTest />} />
       </Routes>
     </Router>
   );

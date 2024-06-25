@@ -115,17 +115,27 @@
   font-size: 12px !important;
 }
 
+.calendarView .fc-toolbar-chunk:last-child {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
 @media (max-width: 768px) {
   .calendarView {
     padding: 65px 0 30px 0;
   }
-  .fc-header-toolbar {
+  /* .fc-header-toolbar {
     overflow: auto;
-  }
+  } */
   .fc-view-harness {
     height: 650px !important;
   }
   .calendarContent {
     padding: 20px 0;
+  }
+  .calendarView .fc-toolbar-chunk h2 {
+    min-width: initial;
+    font-size: 12px;
+    white-space: nowrap;
   }
 }

@@ -29,17 +29,17 @@ div {
 .pendingIcon svg {
   color: #ffb64d;
   font-size: 1.5rem;
-  width: 6rem;
-  height: 6rem;
+  width: 5rem;
+  height: 5rem;
 }
 .approvedIcon svg {
   color: #2ed8b6;
   font-size: 1.5rem;
-  width: 6rem;
-  height: 6rem;
+  width: 5rem;
+  height: 5rem;
 }
 .colorStatus {
-  max-width: 5px;
+  max-width: 3px;
   padding: 0;
   margin-left: 10px;
 }
