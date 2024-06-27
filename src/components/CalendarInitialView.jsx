@@ -12,7 +12,7 @@ export default function CalendarInitialView({ handleViewChange }) {
 
   return (
     <>
-      <div className="me-3">
+      <div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}></div>
 
         <Dropdown className="dropDownView" size="sm">
@@ -52,11 +52,10 @@ export default function CalendarInitialView({ handleViewChange }) {
               Day
             </Dropdown.Item>
             <Dropdown.Item
-              className={selectedValue === 'listWeek' ? 'selected' : ''}
+              className={selectedValue === 'listMonth' ? 'selected' : ''}
               onClick={() => {
-                setSelectedValue('listWeek');
-
-                handleViewChange('listWeek');
+                setSelectedValue('listMonth');
+                handleViewChange('listMonth');
               }}
             >
               List View
@@ -104,12 +103,12 @@ export default function CalendarInitialView({ handleViewChange }) {
             />
             Day
           </label>
-          <label className={selectedValue === 'listWeek' ? 'selected' : ''}>
+          <label className={selectedValue === 'listMonth' ? 'selected' : ''}>
             <input
               type="radio"
               name="initialView"
-              value="listWeek"
-              checked={selectedValue === 'listWeek'}
+              value="listMonth"
+              checked={selectedValue === 'listMonth'}
               onChange={(e) => {
                 handleViewChange(e.target.value);
                 handleRadioChange(e.target.value);

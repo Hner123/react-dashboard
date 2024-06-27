@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setBookingList, setSelectBranch } from '../r-actions/actions';
 import Swal from 'sweetalert2';
 import CalendarInitialView from '../components/CalendarInitialView';
+import CalendarPicker from '../components/CalendarPicker';
 
 export default function CalendarPage() {
   const [sidePanelOpen, setSidePanelOpen] = useState(true);
@@ -105,6 +106,30 @@ export default function CalendarPage() {
     queryKey: ['patientBooking'],
     queryFn: fetchPatientBooking,
   });
+
+  //insert component to a calendar toolbar
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (calendarRef.current) {
+        const toolbarMiddle = calendarRef.current.getApi().el.querySelector('.fc-toolbar-chunk:nth-child(2)');
+        if (toolbarMiddle && !toolbarMiddle.querySelector('.custom-calendarDisplayView')) {
+          const buttons = toolbarMiddle.querySelectorAll('button');
+
+          if (buttons.length >= 2) {
+            const displayCalendar = document.createElement('div');
+            displayCalendar.className = 'custom-calendarDisplayView';
+
+            buttons[0].insertAdjacentElement('afterend', displayCalendar);
+            createRoot(displayCalendar).render(<CalendarPicker calendarRef={calendarRef} />);
+          }
+
+          clearInterval(intervalId);
+        }
+      }
+    }, 100);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     // Access the first object in the array
@@ -326,15 +351,22 @@ export default function CalendarPage() {
               plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
               initialView="timeGridWeek"
               navLinks={true}
+              // dayMaxEvents={true}
               contentHeight="575px"
               headerToolbar={{
-                left: 'today',
-                center: 'prev title next',
-                right: 'customButton',
+                left: '',
+                center: 'prev next',
+                right: 'customButton customButtonShortText',
               }}
               customButtons={{
                 customButton: {
-                  text: ' + ',
+                  text: ' + New Appointment',
+                  click: () => {
+                    setShowModalCreate(true);
+                  },
+                },
+                customButtonShortText: {
+                  text: '  +  ',
                   click: () => {
                     setShowModalCreate(true);
                   },
@@ -346,6 +378,7 @@ export default function CalendarPage() {
               events={bookingR}
               eventContent={(eventInfo) => renderEventInfo(eventInfo)}
               editable={true}
+              selectable={true}
               droppable={true}
               eventResizableFromStart={true}
               eventDrop={(info) => {
