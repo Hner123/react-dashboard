@@ -70,6 +70,13 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
             </li>
 
             <li>
+              <Link to="/pages/service-setup" className={activeNav === 'ServiceSetup' ? 'activeON' : 'activeOFF'}>
+                <EventBusyOutlinedIcon fontSize="small" />
+                <span className="ms-2">Service Setup</span>
+              </Link>
+            </li>
+
+            <li>
               <Link to="/pages/cancelled" className={activeNav === 'Cancelled' ? 'activeON' : 'activeOFF'}>
                 <EventBusyOutlinedIcon fontSize="small" />
                 <span className="ms-2">Cancelled</span>

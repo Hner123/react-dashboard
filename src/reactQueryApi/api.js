@@ -73,6 +73,16 @@ const resEditPatientDetails = async ({ id, name, lastname, email, phoneNumber })
   return response.data;
 };
 
+const fetchCategoryService = async () => {
+  const response = await axios.post(process.env.REACT_APP_FETCHSERVICELIST);
+  return response.data;
+};
+
+const addservicefunction = async ({ service, duration, categoryID }) => {
+  const response = await axios.post(process.env.REACT_APP_ADDSERVICE, { service, duration, categoryID });
+  return response.data;
+};
+
 export {
   rQuerySetstatus,
   dragNdropResched,
@@ -85,4 +95,6 @@ export {
   sendReschedForm,
   processPayment,
   resEditPatientDetails,
+  fetchCategoryService,
+  addservicefunction,
 };

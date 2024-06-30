@@ -87,10 +87,7 @@ export default function Header({ togglePanel, hamburgerClose, preload }) {
         </label>
         <div className="col-md-6 d-flex align-items-center ms-5">
           <a href="/dashboard">
-            <img
-              src="https://res.cloudinary.com/djyf3qi4d/image/upload/v1709660941/Avenue-Dental-Logo_pkztgi.png"
-              alt="avenue-dental-logo"
-            />
+            <img src="https://res.cloudinary.com/djyf3qi4d/image/upload/v1709660941/Avenue-Dental-Logo_pkztgi.png" alt="avenue-dental-logo" />
           </a>
         </div>
         <div className="col-md-5 d-flex justify-content-end me-5">

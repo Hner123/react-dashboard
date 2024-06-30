@@ -1,0 +1,65 @@
+.seviceSetup {
+  background-color: #6770d22e;
+  min-height: 100vh;
+  padding: 85px 25px 30px 225px;
+  font-family: 'Euclid Circular B', sans-serif;
+}
+.setupContent {
+  border-radius: 5px;
+  /* box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1); */
+  min-height: 75dvh;
+  height: 100%;
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #fff;
+}
+.category {
+  border: 1px solid #0000001a;
+  padding: 15px 30px;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+}
+.categoryName {
+  border-bottom: 1px solid #0000001a;
+  position: relative;
+  padding: 8px 0;
+}
+.serviceList {
+  padding: 10px 50px;
+}
+
+.serviceList p {
+  font-family: 'Euclid Circular B', sans-serif !important;
+  font-weight: 300 !important;
+}
+.MuiTypography-root {
+  font-family: 'Euclid Circular B', sans-serif !important;
+  font-weight: 500 !important;
+}
+
+.addCategory {
+  color: #4099ff;
+  /* color: #fff; */
+  font-size: 14px;
+  /* border-radius: 50%; */
+  /* width: 30px;
+  height: 30px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* position: absolute;
+  top: 40%;
+  right: 40px;
+  transform: translateY(-50%); */
+  cursor: pointer;
+  margin-top: 10px;
+}
+.css-jjmhs9-MuiButtonBase-root-MuiMenuItem-root {
+  font-family: 'Euclid Circular B', sans-serif !important;
+}
+@media (max-width: 768px) {
+  .seviceSetup {
+    padding: 115px 25px 30px 25px;
+  }
+}

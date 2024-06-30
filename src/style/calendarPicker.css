@@ -35,7 +35,8 @@
   min-width: 220px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 555;
-  left: -35%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .react-datepicker__header {
   border: initial;
@@ -82,8 +83,5 @@
   .datePickerButton {
     width: 140px;
     font-size: 12px;
-  }
-  .dropdown-content {
-    left: -30%;
   }
 }

@@ -1,10 +1,8 @@
 import { Typeahead } from 'react-bootstrap-typeahead';
-
-import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Row, Col, Button, Form, Modal } from 'react-bootstrap';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { parse, format, subMinutes, addMinutes } from 'date-fns';
 import Swal from 'sweetalert2';
 import { fetchPatientList, fetchBranchList, fetchServiceList, fetchTimeList, sendNewBookingForm } from '../reactQueryApi/api.js';
