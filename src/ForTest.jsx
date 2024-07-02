@@ -111,6 +111,40 @@ const ServiceList = () => {
     },
   ];
 
+  useEffect(() => {
+    if (searchQuery === '') {
+      setOpenCategories({});
+    } else {
+      const expandedCategories = {};
+      data.forEach((category) => {
+        expandedCategories[category.id] = true;
+      });
+      setOpenCategories(expandedCategories);
+    }
+  }, [searchQuery, data]);
+
+  const escapeRegExp = (string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  };
+
+  const highlightText = (text, query) => {
+    if (!query) {
+      return text;
+    }
+    const escapedQuery = escapeRegExp(query);
+    const parts = text.split(new RegExp(`(${escapedQuery})`, 'gi'));
+    console.log('parts', parts);
+    return parts.map((part, index) =>
+      part.toLowerCase() === query.toLowerCase() ? (
+        <span key={index} style={{ backgroundColor: 'yellow' }}>
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
   const filteredData = data
     .map((category) => ({
       ...category,
@@ -132,7 +166,8 @@ const ServiceList = () => {
         {filteredData.map((category) => (
           <div key={category.id}>
             <ListItem button onClick={() => handleToggleCategory(category.id)}>
-              <ListItemText primary={category.category_name} />
+              <ListItemText primary={highlightText(category.category_name, searchQuery)} />
+
               {openCategories[category.id] ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={openCategories[category.id]} timeout="auto" unmountOnExit>
@@ -141,7 +176,7 @@ const ServiceList = () => {
                   <ListItem key={service.id} sx={{ pl: 4 }}>
                     <ColorFlare color={categoryColors[category.id]} />
 
-                    <ListItemText primary={service.service_name} secondary={`Duration: ${service.service_duration}`} />
+                    <ListItemText primary={highlightText(service.service_name, searchQuery)} secondary={`Duration: ${service.service_duration}`} />
                     <ListItemSecondaryAction>
                       <IconButton edge="end" onClick={(e) => handleClick(e, service)}>
                         <MoreVertIcon />

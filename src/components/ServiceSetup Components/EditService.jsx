@@ -1,30 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Button, Modal, Row, Form, Col } from 'react-bootstrap';
 import { useForm, Controller } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
-import { addservicefunction } from '../../reactQueryApi/api';
+import { editService } from '../../reactQueryApi/api';
+import MyContext from '../../MyContext';
 
-export default function AddService({ showAddServiceModal, handleCloseModal, categoryData }) {
+export default function EditService({ showEditServiceModal, handleCloseModal }) {
+  const { editServiceData } = useContext(MyContext);
+
   const {
     register,
     handleSubmit,
     reset,
-    control,
     formState: { errors },
   } = useForm();
 
+  const onSubmit = (data) => {
+    const id = editServiceData.id;
+    const service = data.service;
+    const duration = data.duration;
+    console.log({ id, service, duration });
+    editMutation.mutate({ id, service, duration });
+  };
+
   const queryClient = useQueryClient();
-  const addServiceMutaton = useMutation({
-    mutationFn: addservicefunction,
+  const editMutation = useMutation({
+    mutationFn: editService,
     onSuccess: (data) => {
       console.log(data);
-      if (data === 'success') {
+      if (data.message === 'success') {
         queryClient.invalidateQueries({ queryKey: ['CategoryServiceList'] });
-        closeModal();
+        handleCloseModal();
         Swal.fire({
           title: 'Success!',
-          text: 'Successfully added service',
+          text: 'Successfully edited service',
           icon: 'success',
         });
       } else {
@@ -47,15 +57,14 @@ export default function AddService({ showAddServiceModal, handleCloseModal, cate
     },
   });
 
-  const onSubmit = (data) => {
-    const categoryID = categoryData[1];
-    addServiceMutaton.mutate({ service: data.service, duration: data.duration, categoryID });
-  };
-
-  const closeModal = () => {
-    handleCloseModal();
-    reset();
-  };
+  useEffect(() => {
+    if (editServiceData) {
+      reset({
+        service: editServiceData.service_name,
+        duration: editServiceData.service_duration,
+      });
+    }
+  }, [editServiceData, reset]);
 
   const [durationList] = useState([
     { name: '5 mins', value: '5 mins' },
@@ -121,39 +130,41 @@ export default function AddService({ showAddServiceModal, handleCloseModal, cate
   ]);
 
   return (
-    <Modal show={showAddServiceModal} onHide={closeModal} aria-labelledby="contained-modal-title-vcenter" centered>
-      <Modal.Header closeButton>
-        <Modal.Title style={{ fontSize: '20px' }}>
-          <p className="mb-0">
-            Add Service <span style={{ fontSize: '16px', color: '#9E9E9E' }}>({categoryData[0]})</span>
-          </p>
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form id="addService" noValidate onSubmit={handleSubmit(onSubmit)}>
-          <Row>
-            <Form.Group as={Col}>
-              <Form.Label>Service Name</Form.Label>
-              <Form.Control {...register('service', { required: 'Select' })} control={control} isInvalid={!!errors.service} size="sm" type="text" />
-            </Form.Group>
-            <Form.Group as={Col}>
-              <Form.Label>Duration</Form.Label>
-              <Form.Select {...register('duration', { required: '...' })} isInvalid={!!errors.duration} size="sm">
-                {durationList?.map((duration, index) => (
-                  <option key={index} value={duration.value}>
-                    {duration.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-          </Row>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button type="submit" variant="outline-primary" form="addService">
-          Save
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <>
+      <Modal show={showEditServiceModal} onHide={handleCloseModal} aria-labelledby="contained-modal-title-vcenter" centered>
+        <Modal.Header closeButton>
+          <Modal.Title style={{ fontSize: '20px' }}>
+            <p className="mb-0">
+              Edit Service <span style={{ fontSize: '16px', color: '#9E9E9E' }}></span>
+            </p>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form id="EditServiceForm" noValidate onSubmit={handleSubmit(onSubmit)}>
+            <Row>
+              <Form.Group as={Col}>
+                <Form.Label>Edit Name</Form.Label>
+                <Form.Control {...register('service', { required: 'Select' })} isInvalid={!!errors.service} size="sm" type="text" />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>Duration</Form.Label>
+                <Form.Select {...register('duration', { required: 'asd' })} isInvalid={!!errors.duration} size="sm">
+                  {durationList?.map((duration, index) => (
+                    <option key={index} value={duration.value}>
+                      {duration.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Row>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button type="submit" variant="outline-primary" form="EditServiceForm">
+            Save
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }

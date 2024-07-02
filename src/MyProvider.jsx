@@ -8,6 +8,7 @@ const MyProvider = ({ children }) => {
   const [id, setId] = useState(0);
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [editServiceData, setEditServiceData] = useState({});
 
   const {
     data: branchList,
@@ -27,7 +28,9 @@ const MyProvider = ({ children }) => {
   }
 
   return (
-    <MyContext.Provider value={{ branchList, branchLoc, setBranchLoc, id, setId, name, setName, lastName, setLastName }}>
+    <MyContext.Provider
+      value={{ branchList, branchLoc, setBranchLoc, id, setId, name, setName, lastName, setLastName, editServiceData, setEditServiceData }}
+    >
       {children}
     </MyContext.Provider>
   );

@@ -22,7 +22,7 @@
   list-style: none;
   font-size: 0.9rem;
   cursor: pointer;
-  padding: 10px;
+  padding: 15px 10px 15px 30px;
 }
 
 .sidePanel li a {
@@ -34,15 +34,15 @@
 }
 
 .sidePanel li:hover {
-  transform: translateX(10px);
   transition: ease 400ms;
   color: #fff;
+  background-color: #1e293b;
 }
 .sidePanel ul {
   margin-top: 120px;
   display: flex;
   flex-direction: column;
-  padding-left: 20px;
+  padding-left: 0;
 }
 .sidePanel li svg {
   font-size: 1rem;
@@ -77,8 +77,12 @@
   visibility: hidden;
 }
 .activeON {
-  color: #4096fa !important;
-  font-weight: bold;
+  color: #fff !important;
+  /* font-weight: bold; */
+  background-color: #1e293b;
+}
+.activeON a {
+  color: #fff !important;
 }
 
 .activeOFF {
@@ -99,6 +103,14 @@
   color: #fff;
   /* font-weight: 700; */
   animation: not-blink 2.1s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
+}
+.serviceCollapse {
+  padding: 0;
+  margin: 0 !important;
+}
+.serviceCollapse li {
+  padding: 10px 10px 10px 65px;
+  font-size: 12px;
 }
 
 @keyframes not-blink {

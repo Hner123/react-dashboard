@@ -82,8 +82,33 @@ const addservicefunction = async ({ service, duration, categoryID }) => {
   const response = await axios.post(process.env.REACT_APP_ADDSERVICE, { service, duration, categoryID });
   return response.data;
 };
+const deleteServiceId = async ({ deleteID }) => {
+  const response = await axios.post(process.env.REACT_APP_DELETESERVICE, { deleteID });
+  return response.data;
+};
+
+const editService = async ({ id, service, duration }) => {
+  const response = await axios.post(process.env.REACT_APP_EDITSERVICE, { id, service, duration });
+  return response.data;
+};
+
+const addCategoryfunction = async ({ category }) => {
+  const response = await axios.post(process.env.REACT_APP_ADDCATEGORY, { category });
+  return response.data;
+};
+const deleteCategory = async ({ id }) => {
+  const response = await axios.post(process.env.REACT_APP_DELETECATEGORY, { id });
+  return response.data;
+};
+
+const editCategoryName = async ({ categoryID, categoryN }) => {
+  const response = await axios.post(process.env.REACT_APP_EDITCATEGORYNAME, { categoryID, categoryN });
+  return response.data;
+};
 
 export {
+  editCategoryName,
+  deleteCategory,
   rQuerySetstatus,
   dragNdropResched,
   fetchPatientList,
@@ -97,4 +122,7 @@ export {
   resEditPatientDetails,
   fetchCategoryService,
   addservicefunction,
+  deleteServiceId,
+  editService,
+  addCategoryfunction,
 };
