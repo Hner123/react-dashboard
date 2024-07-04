@@ -106,7 +106,19 @@ const editCategoryName = async ({ categoryID, categoryN }) => {
   return response.data;
 };
 
+const addNewLocation = async ({ branch, location }) => {
+  const response = await axios.post(process.env.REACT_APP_ADDNEWBRANCH, { branch, location });
+  return response.data;
+};
+
+const deleteLocation = async ({ id }) => {
+  const response = await axios.post(process.env.REACT_APP_DELETEBRANCH, { id });
+  return response.data;
+};
+
 export {
+  deleteLocation,
+  addNewLocation,
   editCategoryName,
   deleteCategory,
   rQuerySetstatus,

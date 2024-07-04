@@ -12,6 +12,7 @@ try {
         $data = [
             'id' => $row['id'],
             'branchName' => $row['branch_name'],
+            'location' => $row['branch_address'],
         ];
         $response[] = $data;
     }

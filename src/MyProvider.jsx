@@ -9,6 +9,8 @@ const MyProvider = ({ children }) => {
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');
   const [editServiceData, setEditServiceData] = useState({});
+  const [dropDown, setDropDown] = useState(false);
+  const [activePanel, setActivePanel] = useState('Dashboard');
 
   const {
     data: branchList,
@@ -29,7 +31,23 @@ const MyProvider = ({ children }) => {
 
   return (
     <MyContext.Provider
-      value={{ branchList, branchLoc, setBranchLoc, id, setId, name, setName, lastName, setLastName, editServiceData, setEditServiceData }}
+      value={{
+        activePanel,
+        setActivePanel,
+        dropDown,
+        setDropDown,
+        branchList,
+        branchLoc,
+        setBranchLoc,
+        id,
+        setId,
+        name,
+        setName,
+        lastName,
+        setLastName,
+        editServiceData,
+        setEditServiceData,
+      }}
     >
       {children}
     </MyContext.Provider>

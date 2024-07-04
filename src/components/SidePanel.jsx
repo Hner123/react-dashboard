@@ -6,11 +6,13 @@ import EventBusyOutlinedIcon from '@mui/icons-material/EventBusyOutlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import UpdateOutlinedIcon from '@mui/icons-material/UpdateOutlined';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { styled } from '@mui/system';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import MyContext from '../MyContext';
+import { useLocation } from 'react-router-dom';
 import {
   Button,
   Box,
@@ -31,7 +33,10 @@ import { color } from 'framer-motion';
 export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBooking }) {
   const [notif, setNotif] = useState(0);
   const [userRole, setUserRole] = useState('');
-  const [dropDown, setDropDown] = useState(false);
+
+  const location = useLocation();
+
+  const { dropDown, setDropDown, activePanel, setActivePanel } = useContext(MyContext);
 
   const fetchDataNotif = async () => {
     try {
@@ -51,6 +56,23 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
     setUserRole(localStorage.getItem('role'));
   }, []);
 
+  useEffect(() => {
+    const currentPath = location.pathname;
+    if (currentPath === '/pages/calendar') {
+      setActivePanel('Calendar');
+    } else if (currentPath === '/dashboard') {
+      setActivePanel('Dashboard');
+    } else if (currentPath === '/pages/service-setup') {
+      setActivePanel('ServiceSetup');
+    } else if (currentPath === '/pages/patients') {
+      setActivePanel('Patients');
+    } else if (currentPath === '/pages/location-setup') {
+      setActivePanel('LocationSetup');
+    } else if (currentPath === '/pages/services') {
+      setActivePanel('Services');
+    }
+  }, [location]);
+
   return (
     <div>
       <div className={isOpen ? 'overlay hide' : 'overlay show'} onClick={togglePanel}></div>
@@ -58,38 +80,27 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
       <div className={isOpen ? 'sidePanel hide' : 'sidePanel show'}>
         <div className="sidePanelList">
           <ul>
-            <li className={activeNav === 'Dashboard' ? 'activeON' : 'activeOFF'}>
+            <li className={activePanel === 'Dashboard' ? 'activeON' : ''}>
               <Link to="/dashboard">
                 <DashboardOutlinedIcon fontSize="small" />
                 <span className="ms-2">Dashboard</span>
               </Link>
             </li>
 
-            {/* <li className={activeNav === 'Booking' ? 'activeON' : 'activeOFF'}>
-              <Link to="/pages/booking" >
-                <DateRangeOutlinedIcon fontSize="small" />
-                <span className="ms-2" style={{ position: 'relative' }}>
-                  Booking
-                  {notif === 0 ? null : <span className="bookingNotif">{notif}</span>}
-                </span>
-              </Link>
-            </li> */}
-            {/* <li className={activeNav === 'Confirm' ? 'activeON' : 'activeOFF'}>
-              <Link to="/pages/confirm" >
-                <PlaylistAddCheckCircleOutlinedIcon fontSize="small" />
-                <span className="ms-2">Confirm</span>
-              </Link>
-            </li> */}
-
-            <li className={activeNav === 'Calendar' ? 'activeON' : 'activeOFF'}>
+            <li className={activePanel === 'Calendar' ? 'activeON' : ''}>
               <Link to="/pages/calendar">
                 <EventBusyOutlinedIcon fontSize="small" />
                 <span className="ms-2">Calendar</span>
               </Link>
             </li>
 
-            <li className={activeNav === 'ServiceSetup' ? 'activeON' : 'activeOFF'} onClick={() => setDropDown(!dropDown)}>
-              <Link to="/pages/service-setup">
+            <li className={activePanel === 'ServiceSetup' ? 'activeON' : ''}>
+              <Link
+                to="/pages/service-setup"
+                onClick={() => {
+                  setDropDown(!dropDown);
+                }}
+              >
                 <EventBusyOutlinedIcon fontSize="small" />
                 <span className="ms-2">
                   Service Setup <ExpandMore sx={{ fontSize: '20px !important', position: 'absolute', right: '15px' }} />
@@ -98,32 +109,21 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
             </li>
             <Collapse in={dropDown} timeout="auto" unmountOnExit>
               <ul className="serviceCollapse">
-                <li className={activeNav === 'ServiceSetup' ? 'activeON' : 'activeOFF'}>Services</li>
-                <li>Location</li>
+                <li className={activePanel === 'Services' ? 'activeON' : ''}>
+                  <Link to="/pages/services">Services</Link>
+                </li>
+                <li className={activePanel === 'LocationSetup' ? 'activeON' : ''}>
+                  <Link to="/pages/location-setup">Location</Link>
+                </li>
               </ul>
             </Collapse>
 
-            {/* <li className={activeNav === 'Cancelled' ? 'activeON' : 'activeOFF'}>
-              <Link to="/pages/cancelled" >
-                <EventBusyOutlinedIcon fontSize="small" />
-                <span className="ms-2">Cancelled</span>
-              </Link>
-            </li> */}
-
-            <li className={activeNav === 'Patients' ? 'activeON' : 'activeOFF'}>
+            <li className={activePanel === 'Patients' ? 'activeON' : ''}>
               <Link to="/pages/patients">
                 <PeopleOutlinedIcon fontSize="small" />
                 <span className="ms-2">My Patients</span>
               </Link>
             </li>
-            {/* {userRole === 'admin' && (
-              <li className={activeNav === 'History' ? 'activeON' : 'activeOFF'}>
-                <Link to="/pages/history" >
-                  <UpdateOutlinedIcon fontSize="small" />
-                  <span className="ms-2">History</span>
-                </Link>
-              </li>
-            )} */}
           </ul>
         </div>
       </div>

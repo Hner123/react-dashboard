@@ -15,6 +15,8 @@ import MuiCalendar from './components/MuiCalendar';
 import CalendarPage from './pages/CalendarPage';
 import ForTest from './ForTest';
 import ServiceSetup from './pages/ServiceSetup';
+import LocationSetup from './pages/LocationSetup/LocationSetup';
+import Services from './pages/Services/Services';
 
 const App = () => {
   return (
@@ -36,6 +38,8 @@ const App = () => {
         <Route path="/pages/calendar" element={<CalendarPage />} />
         <Route path="/pages/fortesting" element={<ForTest />} />
         <Route path="/pages/service-setup" element={<ServiceSetup />} />
+        <Route path="/pages/location-setup" element={<LocationSetup />} />
+        <Route path="/pages/services" element={<Services />} />
       </Routes>
     </Router>
   );

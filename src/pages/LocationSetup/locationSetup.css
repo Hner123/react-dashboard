@@ -1,0 +1,46 @@
+.locationMain {
+  background-color: #6770d22e;
+  min-height: 100dvh;
+  padding: 115px 25px 30px 225px;
+}
+
+.locationContent {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  gap: 2rem;
+  margin-top: 20px;
+  padding: 20px;
+}
+.trStyling th {
+  font-weight: initial !important;
+  font-size: 14px;
+}
+.dataStyle tr td {
+  padding: 15px 10px;
+}
+.locationBranch {
+  font-size: 14px !important;
+  color: #b0b0b0 !important;
+}
+
+@media (max-width: 768px) {
+  .locationMain {
+    padding: 100px 10px 30px 10px;
+  }
+  .trStyling th:nth-last-child() {
+    width: 150px !important;
+  }
+  .dataStyle .css-xdbs7e-MuiSvgIcon-root {
+    margin: 5px;
+  }
+  .dataStyle tr td:last-child {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 567px) {
+  .locationMain {
+    padding: 100px 10px 30px 10px;
+  }
+}

@@ -325,10 +325,7 @@ export default function Dashboard() {
                   <h4>{totalSales}</h4>
                 </div>
                 <div className="col-md d-flex justify-content-end">
-                  <span
-                    className="d-flex justify-content-center align-items-center mb-3 statsRed"
-                    style={{ fontSize: '26px', fontWeight: '500' }}
-                  >
+                  <span className="d-flex justify-content-center align-items-center mb-3 statsRed" style={{ fontSize: '26px', fontWeight: '500' }}>
                     ₱
                   </span>
                 </div>
@@ -377,7 +374,7 @@ export default function Dashboard() {
             </div>
           </div>
           {/* **************************FULL CALENDAR********************** */}
-          <div className="fullCalendar">
+          {/* <div className="fullCalendar">
             <div className="d-flex justify-content-center">
               <div className="col-md-6 d-flex justify-content-center">
                 <button
@@ -430,7 +427,7 @@ export default function Dashboard() {
                 eventContent={(eventInfo) => renderEventContent(eventInfo, handleShowModal)}
               />
             </div>
-          </div>
+          </div> */}
 
           <div className="amChart">
             <h5>Sales for the last 30 days till now</h5>
@@ -438,13 +435,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <Modal
-        size="md"
-        show={showModal}
-        onHide={handleCloseModal}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
+      <Modal size="md" show={showModal} onHide={handleCloseModal} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header>
           <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">{titleEvent} </p>
