@@ -311,14 +311,10 @@ export default function PatientDetails() {
       <div className="patientDetailsPage">
         <div className="d-flex justify-content-between">
           <h1>
-            <Link to="/pages/patients">My Patients </Link>
+            <Link to="/pages/my-patients">My Patients </Link>
             <KeyboardArrowRightIcon /> <span>{name + ' ' + lastName} </span>
           </h1>
-          <button
-            style={{ fontSize: '11px' }}
-            className="editPatientBtn px-3"
-            onClick={() => setEditPatient(true)}
-          >
+          <button style={{ fontSize: '11px' }} className="editPatientBtn px-3" onClick={() => setEditPatient(true)}>
             <BorderColorIcon fontSize="small" />
             Edit Patient
           </button>
@@ -329,19 +325,11 @@ export default function PatientDetails() {
             {/* **********************************PROFILE PIC and NAME************************************** */}
             <div className="col-md-3">
               <div className="row d-flex justify-content-center">
-                <div
-                  className="patientImage"
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                >
+                <div className="patientImage" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
                   {pic == '' || pic == null ? (
                     <img src={process.env.REACT_APP_BLANKPROFILE} />
                   ) : (
-                    <img
-                      src={process.env.REACT_APP_LINKPROFILE + pic}
-                      alt=""
-                      style={{ opacity: isHovered ? 0.5 : 1 }}
-                    />
+                    <img src={process.env.REACT_APP_LINKPROFILE + pic} alt="" style={{ opacity: isHovered ? 0.5 : 1 }} />
                   )}
 
                   <div className="cameraIcon" style={{ visibility: isHovered ? 'visible' : 'hidden' }}>
@@ -398,22 +386,12 @@ export default function PatientDetails() {
               <p className="mb-2">Notes</p>
               <div className="notesfield">
                 <Form.Group className="mb-2" controlId="exampleForm.ControlTextarea1">
-                  <Form.Control
-                    className="txtArea"
-                    as="textarea"
-                    rows={8}
-                    value={clientNotes}
-                    onChange={addNotes}
-                  />
+                  <Form.Control className="txtArea" as="textarea" rows={8} value={clientNotes} onChange={addNotes} />
                 </Form.Group>
               </div>
               <div className="d-flex justify-content-end">
                 <Button size="sm" variant="primary" disabled={isLoading} onClick={saveNotes}>
-                  <Spinner
-                    style={{ display: isLoading ? 'inline-block' : 'none', height: '12px', width: '12px' }}
-                    animation="border"
-                    size="sm"
-                  />
+                  <Spinner style={{ display: isLoading ? 'inline-block' : 'none', height: '12px', width: '12px' }} animation="border" size="sm" />
                   &nbsp;
                   {isLoading ? 'Adding...' : 'Add Note'}
                 </Button>
@@ -493,12 +471,7 @@ export default function PatientDetails() {
                 {documents?.length > 0 ? (
                   <div>
                     {documents.map((document, index) => (
-                      <div
-                        className="documents"
-                        key={index}
-                        onMouseEnter={() => setIsHovered2(index)}
-                        onMouseLeave={() => setIsHovered2(null)}
-                      >
+                      <div className="documents" key={index} onMouseEnter={() => setIsHovered2(index)} onMouseLeave={() => setIsHovered2(null)}>
                         <span>
                           <div className="row">
                             <div className="col-md-9" key={index}>
@@ -531,11 +504,7 @@ export default function PatientDetails() {
                                 />
 
                                 <a href={process.env.REACT_APP_LINKPROFILE + document[2]} target="_blank">
-                                  <GetAppIcon
-                                    style={{ cursor: 'pointer' }}
-                                    className="mt-1"
-                                    sx={{ fontSize: 12 }}
-                                  />
+                                  <GetAppIcon style={{ cursor: 'pointer' }} className="mt-1" sx={{ fontSize: 12 }} />
                                 </a>
                               </div>
                             </div>
@@ -557,13 +526,7 @@ export default function PatientDetails() {
         </div>
       </div>
       {/* **********************************Modal for Uploading of profile pic************************************** */}
-      <Modal
-        size="sm"
-        show={showModal}
-        onHide={handleClose}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
+      <Modal size="sm" show={showModal} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header>
           <Modal.Title>
             <p className="mb-0">Change photo</p>
@@ -579,8 +542,7 @@ export default function PatientDetails() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" disabled={isLoading} onClick={saveProfilePic}>
-            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" />{' '}
-            &nbsp;
+            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" /> &nbsp;
             {isLoading ? 'Uploading...' : 'Upload'}
           </Button>
 
@@ -590,13 +552,7 @@ export default function PatientDetails() {
         </Modal.Footer>
       </Modal>
       {/* **********************************Modal for Uploading Documents************************************** */}
-      <Modal
-        size="sm"
-        show={showModaladdFiles}
-        onHide={handleClose}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
+      <Modal size="sm" show={showModaladdFiles} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header>
           <Modal.Title>
             <p className="mb-0">Add a file </p>
@@ -612,8 +568,7 @@ export default function PatientDetails() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" disabled={isLoading} onClick={saveDocument}>
-            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" />{' '}
-            &nbsp;
+            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" /> &nbsp;
             {isLoading ? 'Saving...' : 'Save'}
           </Button>
 
@@ -623,13 +578,7 @@ export default function PatientDetails() {
         </Modal.Footer>
       </Modal>
       {/* **********************************Modal for Deleting Documents************************************** */}
-      <Modal
-        size="sm"
-        show={showModalDelete}
-        onHide={handleClose}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
+      <Modal size="sm" show={showModalDelete} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header>
           <Modal.Title>
             <p className="mb-0">Delete a file </p>
@@ -644,8 +593,7 @@ export default function PatientDetails() {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="primary" disabled={isLoading} onClick={deleteDocu}>
-            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" />{' '}
-            &nbsp;
+            <Spinner style={{ display: isLoading ? 'inline-block' : 'none' }} animation="border" size="sm" /> &nbsp;
             {isLoading ? 'Deleting...' : 'Delete'}
           </Button>
 
@@ -655,13 +603,7 @@ export default function PatientDetails() {
         </Modal.Footer>
       </Modal>
       {/* **********************************Modal for Viewing notes each history treatment************************************** */}
-      <Modal
-        size="sm"
-        show={notesHistoryModal}
-        onHide={handleClose}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
+      <Modal size="sm" show={notesHistoryModal} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header>
           <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">Note </p>
@@ -681,13 +623,7 @@ export default function PatientDetails() {
         </Modal.Footer>
       </Modal>
       {/* **********************************Modal for EDIT PATIENT DETAILS************************************** */}
-      <Modal
-        size="lg"
-        show={editPatient}
-        onHide={handleClose}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-      >
+      <Modal size="lg" show={editPatient} onHide={handleClose} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header>
           <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">Edit Patient </p>
@@ -700,13 +636,7 @@ export default function PatientDetails() {
             <Row className="mb-3">
               <Form.Group as={Col} controlId="validationCustom01">
                 <Form.Label>First name</Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  placeholder="First name"
-                  value={patientName}
-                  onChange={(e) => setPatientName(e.target.value)}
-                />
+                <Form.Control required type="text" placeholder="First name" value={patientName} onChange={(e) => setPatientName(e.target.value)} />
                 <Form.Control.Feedback type="invalid">Please enter a name.</Form.Control.Feedback>
               </Form.Group>
 
@@ -726,25 +656,13 @@ export default function PatientDetails() {
             <Row className="mb-3">
               <Form.Group as={Col} controlId="validationCustom03">
                 <Form.Label>Address</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Address"
-                  required
-                  value={patientAddress}
-                  onChange={(e) => setPatientAddress(e.target.value)}
-                />
+                <Form.Control type="text" placeholder="Address" required value={patientAddress} onChange={(e) => setPatientAddress(e.target.value)} />
                 <Form.Control.Feedback type="invalid">Please provide a valid address.</Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group as={Col} controlId="validationCustom04">
                 <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Email"
-                  required
-                  value={patientEmail}
-                  onChange={(e) => setPatientEmail(e.target.value)}
-                />
+                <Form.Control type="email" placeholder="Email" required value={patientEmail} onChange={(e) => setPatientEmail(e.target.value)} />
                 <Form.Control.Feedback type="invalid">Please provide an email.</Form.Control.Feedback>
               </Form.Group>
             </Row>
@@ -752,12 +670,7 @@ export default function PatientDetails() {
             <Row className="mb-3">
               <Form.Group as={Col} md="3" controlId="validationCustom05">
                 <Form.Label>Gender</Form.Label>
-                <Form.Select
-                  aria-label="Default select example"
-                  required
-                  value={patientGender}
-                  onChange={(e) => setPatientGender(e.target.value)}
-                >
+                <Form.Select aria-label="Default select example" required value={patientGender} onChange={(e) => setPatientGender(e.target.value)}>
                   <option disabled>Select ---</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -781,13 +694,7 @@ export default function PatientDetails() {
 
               <Form.Group as={Col} controlId="validationCustom07">
                 <Form.Label>Date of Birth</Form.Label>
-                <Form.Control
-                  type="date"
-                  placeholder=""
-                  required
-                  value={patientDOB}
-                  onChange={(e) => setPatientDOB(e.target.value)}
-                />
+                <Form.Control type="date" placeholder="" required value={patientDOB} onChange={(e) => setPatientDOB(e.target.value)} />
                 <Form.Control.Feedback type="invalid">Please select your birth date.</Form.Control.Feedback>
               </Form.Group>
             </Row>
@@ -805,12 +712,7 @@ export default function PatientDetails() {
       </Modal>
 
       {/* **********************************SnackBAR notif************************************** */}
-      <Snackbar
-        open={openS}
-        autoHideDuration={2000}
-        onClose={handleCloseSnack}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
+      <Snackbar open={openS} autoHideDuration={2000} onClose={handleCloseSnack} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
         <Alert onClose={handleCloseSnack} severity={snackSeverity} variant="filled" sx={{ width: '100%' }}>
           {snackMessage}
         </Alert>

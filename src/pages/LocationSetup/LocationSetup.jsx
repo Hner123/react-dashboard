@@ -13,6 +13,12 @@ import EditBranch from './EditBranch';
 import Swal from 'sweetalert2';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { deleteLocation } from '../../reactQueryApi/api';
+import BuildIcon from '@mui/icons-material/Build';
+import ConstructionIcon from '@mui/icons-material/Construction';
+import EngineeringIcon from '@mui/icons-material/Engineering';
+import HandymanIcon from '@mui/icons-material/Handyman';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Box } from '@mui/material';
 
 export default function LocationSetup() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);

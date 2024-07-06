@@ -116,7 +116,13 @@ const deleteLocation = async ({ id }) => {
   return response.data;
 };
 
+const deletePatientArray = async ({ selected }) => {
+  const response = await axios.post(process.env.REACT_APP_DELETEPATIENTARRAY, { selected });
+  return response.data;
+};
+
 export {
+  deletePatientArray,
   deleteLocation,
   addNewLocation,
   editCategoryName,

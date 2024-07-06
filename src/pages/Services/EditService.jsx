@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import { editService } from '../../reactQueryApi/api';
 import MyContext from '../../MyContext';
 
-export default function EditService({ showEditServiceModal, handleCloseModal }) {
+export default function EditService({ showEditServiceModal, setShowEditServiceModal }) {
   const { editServiceData } = useContext(MyContext);
 
   const {
@@ -24,6 +24,10 @@ export default function EditService({ showEditServiceModal, handleCloseModal }) 
     editMutation.mutate({ id, service, duration });
   };
 
+  const closeModal = () => {
+    setShowEditServiceModal(false);
+  };
+
   const queryClient = useQueryClient();
   const editMutation = useMutation({
     mutationFn: editService,
@@ -31,7 +35,7 @@ export default function EditService({ showEditServiceModal, handleCloseModal }) 
       console.log(data);
       if (data.message === 'success') {
         queryClient.invalidateQueries({ queryKey: ['CategoryServiceList'] });
-        handleCloseModal();
+        closeModal();
         Swal.fire({
           title: 'Success!',
           text: 'Successfully edited service',
@@ -57,14 +61,19 @@ export default function EditService({ showEditServiceModal, handleCloseModal }) 
     },
   });
 
+  // useEffect(() => {
+  //   if (editServiceData) {
+  //     reset({
+  //       service: editServiceData.service_name,
+  //       duration: editServiceData.service_duration,
+  //     });
+  //   }
+  // }, [editServiceData, reset]);
+
   useEffect(() => {
-    if (editServiceData) {
-      reset({
-        service: editServiceData.service_name,
-        duration: editServiceData.service_duration,
-      });
-    }
-  }, [editServiceData, reset]);
+    console.log(editServiceData);
+    reset();
+  }, [reset, editServiceData]);
 
   const [durationList] = useState([
     { name: '5 mins', value: '5 mins' },
@@ -90,7 +99,7 @@ export default function EditService({ showEditServiceModal, handleCloseModal }) 
     { name: '1 hr 45 mins', value: '1 hr 45 mins' },
     { name: '1 hr 50 mins', value: '1 hr 50 mins' },
     { name: '1 hr 55 mins', value: '1 hr 55 mins' },
-    { name: '2 hrs', value: '2 hrs' },
+    { name: '2 hr', value: '2 hr' },
     { name: '2 hrs 5 mins', value: '2 hrs 5 mins' },
     { name: '2 hrs 10 mins', value: '2 hrs 10 mins' },
     { name: '2 hrs 15 mins', value: '2 hrs 15 mins' },
@@ -131,7 +140,7 @@ export default function EditService({ showEditServiceModal, handleCloseModal }) 
 
   return (
     <>
-      <Modal show={showEditServiceModal} onHide={handleCloseModal} aria-labelledby="contained-modal-title-vcenter" centered>
+      <Modal show={showEditServiceModal} onHide={closeModal} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header closeButton>
           <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">
@@ -144,11 +153,22 @@ export default function EditService({ showEditServiceModal, handleCloseModal }) 
             <Row>
               <Form.Group as={Col}>
                 <Form.Label>Edit Name</Form.Label>
-                <Form.Control {...register('service', { required: 'Select' })} isInvalid={!!errors.service} size="sm" type="text" />
+                <Form.Control
+                  defaultValue={editServiceData.service_name}
+                  {...register('service', { required: 'Select' })}
+                  isInvalid={!!errors.service}
+                  size="sm"
+                  type="text"
+                />
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>Duration</Form.Label>
-                <Form.Select {...register('duration', { required: 'asd' })} isInvalid={!!errors.duration} size="sm">
+                <Form.Select
+                  defaultValue={editServiceData.service_duration}
+                  {...register('duration', { required: 'asd' })}
+                  isInvalid={!!errors.duration}
+                  size="sm"
+                >
                   {durationList?.map((duration, index) => (
                     <option key={index} value={duration.value}>
                       {duration.name}

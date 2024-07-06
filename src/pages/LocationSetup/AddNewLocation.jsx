@@ -18,6 +18,11 @@ export default function AddNewCategory({ showAddNewModal, closeModal }) {
     addNew.mutate({ branch, location });
   };
 
+  const handCloseModal = () => {
+    closeModal();
+    reset();
+  };
+
   const queryClient = useQueryClient();
   const addNew = useMutation({
     mutationFn: addNewLocation,
@@ -52,7 +57,7 @@ export default function AddNewCategory({ showAddNewModal, closeModal }) {
 
   return (
     <>
-      <Modal show={showAddNewModal} onHide={closeModal} aria-labelledby="contained-modal-title-vcenter" centered>
+      <Modal show={showAddNewModal} onHide={handCloseModal} aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header closeButton>
           <Modal.Title style={{ fontSize: '20px' }}>
             <p className="mb-0">Add Location </p>
@@ -63,11 +68,11 @@ export default function AddNewCategory({ showAddNewModal, closeModal }) {
             <Row>
               <Form.Group as={Col}>
                 <Form.Label>Branch Name</Form.Label>
-                <Form.Control {...register('branchName', { required: '...' })} isInvalid={!!errors.service} size="sm" type="text" />
+                <Form.Control {...register('branchName', { required: '...' })} isInvalid={!!errors.branchName} size="sm" type="text" />
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>Location</Form.Label>
-                <Form.Control {...register('location', { required: '...' })} isInvalid={!!errors.service} size="sm" type="text" />
+                <Form.Control {...register('location', { required: '...' })} isInvalid={!!errors.location} size="sm" type="text" />
               </Form.Group>
             </Row>
           </Form>

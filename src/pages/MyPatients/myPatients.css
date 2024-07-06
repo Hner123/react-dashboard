@@ -1,0 +1,57 @@
+.myPatientsMain {
+  background-color: #6770d22e;
+  min-height: 100vh;
+  padding: 115px 25px 30px 225px;
+  font-family: 'Euclid Circular B', sans-serif;
+}
+
+.myPatientContent {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  gap: 2rem;
+  margin-top: 20px;
+  padding: 20px;
+}
+.myPatientContent .MuiTableCell-root {
+  font-size: 14px;
+  font-family: 'Euclid Circular B', sans-serif;
+  color: #333;
+}
+.managePatient {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.managePatient .MuiButtonBase-root {
+  font-family: 'Euclid Circular B', sans-serif;
+  text-transform: initial;
+}
+.css-1q2w0wa-MuiButtonBase-root-MuiButton-root:hover {
+  background-color: #fd4564 !important;
+}
+.addDelete {
+  white-space: nowrap;
+}
+
+.iconDeleteMobile,
+.iconAddMobile {
+  display: none !important;
+}
+
+@media (max-width: 567px) {
+  .searchField {
+    width: 100% !important;
+  }
+  .myPatientsMain {
+    padding: 100px 10px 30px 10px;
+  }
+  .iconDelete,
+  .iconAdd {
+    display: none !important;
+  }
+  .iconDeleteMobile,
+  .iconAddMobile {
+    display: flex !important;
+  }
+}

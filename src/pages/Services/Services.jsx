@@ -61,7 +61,7 @@ export default function Services() {
 
   const handleCloseModal = () => {
     setShowAddServiceModal(false);
-    setShowEditServiceModal(false);
+    // setShowEditServiceModal(false);
     setShowAddCategory(false);
     setShowEditCategoryModal(false);
   };
@@ -325,7 +325,7 @@ export default function Services() {
       <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} />
       <SidePanel isOpen={sidePanelOPen} togglePanel={togglePanel} activeNav={active} />
       <AddService showAddServiceModal={showAddServiceModal} handleCloseModal={handleCloseModal} categoryData={categoryData} />
-      <EditService showEditServiceModal={showEditServiceModal} handleCloseModal={handleCloseModal} />
+      <EditService showEditServiceModal={showEditServiceModal} setShowEditServiceModal={setShowEditServiceModal} />
       <AddCategory showAddCategory={showAddCategory} handleCloseModal={handleCloseModal} />
       <EditCategoryName showEditCategoryModal={showEditCategoryModal} handleCloseModal={handleCloseModal} categoryName={categoryName} />
 
@@ -380,9 +380,9 @@ export default function Services() {
         <MenuItem
           onClick={() => {
             handleClose();
-            if (anchorEl !== true) {
-              setShowEditServiceModal(true);
-            }
+            setShowEditServiceModal(true);
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
           }}
           sx={{ fontSize: '14px', fontWeight: '300 !important' }}
         >

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../style/patients.css';
 import axios from 'axios';
-import AddPatient from '../components/AddPatient';
+import AddPatients from '../components/AddPatients';
 
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import Button from '@mui/material/Button';
@@ -142,20 +142,12 @@ export default function Patients() {
           <div className="row" style={{ maxWidth: '1100px', margin: 'auto' }}>
             <div className="col">
               <div>
-                <span style={{ fontSize: '32px', fontWeight: '500', marginRight: '10px', color: '#2266D7' }}>
-                  {totalPatient}
-                </span>
+                <span style={{ fontSize: '32px', fontWeight: '500', marginRight: '10px', color: '#2266D7' }}>{totalPatient}</span>
                 <span style={{ color: '#6C757D' }}>Total Patients</span>
               </div>
             </div>
             <div className="col d-flex justify-content-end mb-3">
-              <Button
-                onClick={() => setAddPatientModal(true)}
-                size="small"
-                variant="contained"
-                color="primary"
-                startIcon={<PersonAddIcon />}
-              >
+              <Button onClick={() => setAddPatientModal(true)} size="small" variant="contained" color="primary" startIcon={<PersonAddIcon />}>
                 Add Patient
               </Button>
             </div>
@@ -169,18 +161,9 @@ export default function Patients() {
       </div>
 
       {/* ***************************ADD PATIENT MODAL*********************** */}
-      <AddPatient
-        patientModalOpen={addPatientModal}
-        patientModalClose={handleClose}
-        refetchData={fetchPatientsData}
-      />
+      <AddPatients patientModalOpen={addPatientModal} patientModalClose={handleClose} refetchData={fetchPatientsData} />
       {/* ***************************Delete PATIENT MODAL*********************** */}
-      <DeletePatient
-        refetchData={fetchPatientsData}
-        deleteModalOpen={deletePatientModal}
-        deleteModalClose={handleClose}
-        id={deleteId}
-      />
+      <DeletePatient refetchData={fetchPatientsData} deleteModalOpen={deletePatientModal} deleteModalClose={handleClose} id={deleteId} />
     </>
   );
 }

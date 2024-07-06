@@ -62,9 +62,7 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
       setActivePanel('Calendar');
     } else if (currentPath === '/dashboard') {
       setActivePanel('Dashboard');
-    } else if (currentPath === '/pages/service-setup') {
-      setActivePanel('ServiceSetup');
-    } else if (currentPath === '/pages/patients') {
+    } else if (currentPath === '/pages/my-patients') {
       setActivePanel('Patients');
     } else if (currentPath === '/pages/location-setup') {
       setActivePanel('LocationSetup');
@@ -96,7 +94,6 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
 
             <li className={activePanel === 'ServiceSetup' ? 'activeON' : ''}>
               <Link
-                to="/pages/service-setup"
                 onClick={() => {
                   setDropDown(!dropDown);
                 }}
@@ -118,10 +115,17 @@ export default function SidePanel({ isOpen, togglePanel, activeNav, acceptBookin
               </ul>
             </Collapse>
 
-            <li className={activePanel === 'Patients' ? 'activeON' : ''}>
+            {/* <li className={activePanel === 'Patients' ? 'activeON' : ''}>
               <Link to="/pages/patients">
                 <PeopleOutlinedIcon fontSize="small" />
                 <span className="ms-2">My Patients</span>
+              </Link>
+            </li> */}
+
+            <li className={activePanel === 'Patients' ? 'activeON' : ''}>
+              <Link to="/pages/my-patients">
+                <PeopleOutlinedIcon fontSize="small" />
+                <span className="ms-2">My Patients 2</span>
               </Link>
             </li>
           </ul>
