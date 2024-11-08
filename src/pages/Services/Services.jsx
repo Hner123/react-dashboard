@@ -56,6 +56,7 @@ export default function Services() {
   const [openCategories, setOpenCategories] = useState({});
   const [categoryColors, setCategoryColors] = useState({});
   const [deleteID, setDeleteID] = useState(null);
+  const [serviceName, setServiceName] = useState('');
 
   const { setEditServiceData } = useContext(MyContext);
 
@@ -98,12 +99,13 @@ export default function Services() {
   const handleClick = (event, selectedService) => {
     setAnchorEl(event.currentTarget);
     setDeleteID(selectedService.id);
+    setServiceName(selectedService.service_name);
     console.log('daya na click', selectedService);
     setEditServiceData(selectedService);
   };
 
   const handleDeleteService = () => {
-    mutationDeleteService.mutate({ deleteID });
+    mutationDeleteService.mutate({ deleteID, serviceName });
   };
   const queryClient = useQueryClient();
 

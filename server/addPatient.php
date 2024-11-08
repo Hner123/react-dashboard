@@ -1,6 +1,6 @@
 <?php include 'connection.php';
 
-$jsonData = file_get_contents("php://input");
+$jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData);
 
 $name = $data->name;
@@ -12,20 +12,30 @@ $number = $data->number;
 $birth = $data->birth;
 
 date_default_timezone_set('Asia/Manila');
-$TimeStamp = date('Y-m-d h:i:s');
-
+$TimeStamp = date('Y-m-d H:i:s');
 
 $sql = "INSERT INTO customer_details (Fname, Sname, DateOfBirth, Address, emailAdd, phoneNum, Gender, TimeStamp)
 VALUES (?,?,?,?,?,?,?,?)";
 $stmt = $connection->prepare($sql);
-$stmt->bind_param("sssssiss", $name, $lastName, $birth, $address, $email, $number, $gender, $TimeStamp);
+$stmt->bind_param('sssssiss', $name, $lastName, $birth, $address, $email, $number, $gender, $TimeStamp);
 $result = $stmt->execute();
 
-if(!$result){
-    die("Invalid query :" . $stmt->error);
+if (!$result) {
+    die('Invalid query :' . $stmt->error);
+} else {
+    echo 'Success';
 }
-else{
-    echo "Success";
+
+$sql_feed = "INSERT INTO activity_feed (feed_title, feed_info)
+VALUES (?,?)";
+$stmt = $connection->prepare($sql);
+$stmt->bind_param('sssssiss', $name, $lastName, $birth, $address, $email, $number, $gender, $TimeStamp);
+$result = $stmt->execute();
+
+if (!$result) {
+    die('Invalid query :' . $stmt->error);
+} else {
+    echo 'Success';
 }
 
 $stmt->close();

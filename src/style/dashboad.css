@@ -87,15 +87,18 @@
 }
 
 .upcomingPatient .col-md,
-.upcomingPatient .weeklyChart {
+.upcomingPatient .activityFeedInfo {
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1);
-
   margin-top: 20px;
   padding: 20px;
 }
-
+.feedList {
+  height: 400px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
 #myTable {
   /* width: 100%; */
   line-height: 30px;
@@ -205,6 +208,43 @@
   display: block;
 }
 
+.feed_view .col-md-2,
+.feed_view .col-md-10 {
+  /* border: 1px solid blue; */
+}
+.feed_view {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.feedTitle {
+  font-family: 'Euclid Circular B', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+.feedInfo {
+  font-size: 11px;
+  font-weight: lighter;
+}
+.activity-tstamp {
+  float: right;
+  color: #ccc;
+  font-size: 11px;
+  font-weight: 300;
+}
+.feed_view .col-md-2 {
+  /* border: 1px solid black; */
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.feed_view {
+  width: 95%;
+  margin: auto;
+}
+
 @media (max-width: 1330px) {
   .stats .col-md-3 {
     width: 45%;
@@ -227,7 +267,7 @@
     flex-wrap: wrap;
   }
   .upcomingPatient .col-md,
-  .weeklyChart {
+  .activityFeedInfo {
     width: 100%;
   }
 }
@@ -242,7 +282,7 @@
   .stats .col-md {
     width: 50%;
   }
-  .weeklyChart {
+  .activityFeedInfo {
     width: 100%;
   }
 

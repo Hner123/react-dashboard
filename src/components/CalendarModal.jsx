@@ -26,13 +26,14 @@ export default function CalendarModal({
   phoneNum,
   endTime,
   id,
+  dateStart,
 }) {
   const queryClient = useQueryClient();
   const [shoModalReshed, setShowModalResched] = useState(false);
   const [showModalCheckout, setShowModalCheckout] = useState(false);
 
   const deleteBooking = async ({ id }) => {
-    const { data } = await axios.post(process.env.REACT_APP_DELETEBOOKING, { id });
+    const { data } = await axios.post(process.env.REACT_APP_DELETEBOOKING, { id, nameP, dateStart, timeS });
     return data;
   };
 
@@ -78,7 +79,7 @@ export default function CalendarModal({
 
   useEffect(() => {
     setChangeStats(bgColor);
-    console.log('YAWA');
+    console.log('YAWA ', dateStart);
   }, [showModal]);
 
   const handleStatus = (event) => {

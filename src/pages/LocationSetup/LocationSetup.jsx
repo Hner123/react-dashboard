@@ -13,12 +13,8 @@ import EditBranch from './EditBranch';
 import Swal from 'sweetalert2';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { deleteLocation } from '../../reactQueryApi/api';
-import BuildIcon from '@mui/icons-material/Build';
-import ConstructionIcon from '@mui/icons-material/Construction';
-import EngineeringIcon from '@mui/icons-material/Engineering';
-import HandymanIcon from '@mui/icons-material/Handyman';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { Box } from '@mui/material';
+
+import React from 'react';
 
 export default function LocationSetup() {
   const [sidePanelOPen, setSidePanelOPen] = useState(true);
@@ -61,7 +57,7 @@ export default function LocationSetup() {
     },
   });
 
-  const deleteBranch = (id) => {
+  const deleteBranch = (id, branchLoc) => {
     Swal.fire({
       title: 'Are you sure?',
       text: 'You want to delete this branch?',
@@ -73,7 +69,7 @@ export default function LocationSetup() {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteID.mutate({ id });
+        deleteID.mutate({ id, branchLoc });
       }
     });
   };
@@ -121,7 +117,10 @@ export default function LocationSetup() {
                       />
                     </Tooltip>
                     <Tooltip title="Delete">
-                      <DeleteIcon onClick={() => deleteBranch(branch.id)} sx={{ cursor: 'pointer', fontSize: '18px', color: '#FF5370' }} />
+                      <DeleteIcon
+                        onClick={() => deleteBranch(branch.id, branch.branchName)}
+                        sx={{ cursor: 'pointer', fontSize: '18px', color: '#FF5370' }}
+                      />
                     </Tooltip>
                   </td>
                 </tr>

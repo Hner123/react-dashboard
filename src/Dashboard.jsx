@@ -8,7 +8,6 @@ import axios from 'axios';
 import DataTable from 'datatables.net-bs5';
 // import "datatables.net-bs5/css/dataTables.bootstrap5.min.css";
 import 'datatables.net-dt/css/jquery.dataTables.min.css';
-
 import { formatDate } from '@fullcalendar/core';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -18,6 +17,15 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import CircleIcon from '@mui/icons-material/Circle';
 import Spinner from 'react-bootstrap/Spinner';
+import EventIcon from '@mui/icons-material/Event';
+import EventBusyIcon from '@mui/icons-material/EventBusy';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import EditLocationIcon from '@mui/icons-material/EditLocation';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
+import LocationOffIcon from '@mui/icons-material/LocationOff';
+import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 // import interactionPlugin from "@fullcalendar/interaction";
 import AmChart from './components/AmChart';
@@ -28,6 +36,7 @@ import { Bar } from 'react-chartjs-2';
 import { Person } from '@mui/icons-material';
 import { EventNote } from '@mui/icons-material';
 import { GroupAdd } from '@mui/icons-material';
+import { useQuery } from '@tanstack/react-query';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -84,7 +93,7 @@ export default function Dashboard() {
       const table = new DataTable('#myTable', {
         data: response.data.upComingPatient,
         columns: [{ title: 'Schedule' }, { title: 'Name' }],
-
+        autoWidth: false,
         destroy: true, // I think some clean up is happening here
         paging: false,
         info: false,
@@ -181,6 +190,21 @@ export default function Dashboard() {
     setShowModal(true);
   };
 
+  const fetchFeedList = async () => {
+    const response = await axios.post(process.env.REACT_APP_FETCHFEEDLIST);
+    console.log('CASDQWE ', response.data);
+    return response.data;
+  };
+
+  const {
+    data: feedList,
+    error: error,
+    isLoading: loading,
+  } = useQuery({
+    queryKey: ['feedList'],
+    queryFn: fetchFeedList,
+  });
+
   function renderEventContent(eventInfo, handleShowModal) {
     return (
       <>
@@ -206,6 +230,33 @@ export default function Dashboard() {
   const currentDate = new Date();
   const formattedDate = currentDate.toISOString().split('T')[0];
 
+  const testRA = [
+    {
+      id: 20,
+      feed_title: 'Appointment Created',
+      feed_info: 'Appointment with Dokie Doks  on Oct 06, 10:45 AM',
+      feed_timeStamp: 'Nov 5, 2024 1:48 am',
+    },
+    {
+      id: 21,
+      feed_title: 'Appointment Created',
+      feed_info: 'Appointment with Heiner Aborka  on Oct 06, 10:00 AM',
+      feed_timeStamp: 'Nov 5, 2024 1:50 am',
+    },
+  ];
+
+  const iconMap = {
+    'Appointment Created': <EventIcon fontSize="large" titleAccess="Add Event" style={{ color: '#2ED8B6' }} />,
+    'Appointment Cancelled': <EventBusyIcon fontSize="large" titleAccess="Appointment Unavailable" style={{ color: '#FF5370' }} />,
+    'Appointment Updated': <EventAvailableIcon fontSize="large" titleAccess="Appointment Available" style={{ color: '#4099FF' }} />,
+    'Created New Customer': <GroupAddIcon fontSize="large" titleAccess="Add to Customer List" style={{ color: '#2ED8B6' }} />,
+    'Location Updated': <EditLocationIcon fontSize="large" titleAccess="Edit Location" style={{ color: '#4099FF' }} />,
+    'Location Created': <AddLocationAltIcon fontSize="large" titleAccess="Add Alternate Location" style={{ color: '#2ED8B6' }} />,
+    'Location Deleted': <LocationOffIcon fontSize="large" titleAccess="Location Disabled" style={{ color: '#FF5370' }} />,
+    'Service Created': <AddBusinessIcon fontSize="large" titleAccess="Add Business Service" style={{ color: '#2ED8B6' }} />,
+    'Service Deleted': <RemoveCircleIcon fontSize="large" titleAccess="Remove Service" style={{ color: '#FF5370' }} />,
+  };
+
   return (
     <div className="dash">
       <Header togglePanel={togglePanel} hamburgerClose={sidePanelOPen} preload={preload} />
@@ -214,6 +265,7 @@ export default function Dashboard() {
         <div className="dashboard">
           <h5>Dashboard</h5>
           {/* ****************************4 BOX STATS************************ */}
+
           <div className="row stats d-flex justify-content-center">
             <div className="col-md-3 blue">
               <div className="row">
@@ -363,16 +415,37 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
+
           {/* **************************upcoming Table********************** */}
           <div className="upcomingPatient d-flex justify-content-center">
             <div className="col-md">
               <p>Upcoming Appointments</p>
-              <table id="myTable" className="row-border"></table>
+              <table id="myTable" className="row-border" style={{ width: '100%' }}></table>
             </div>
-            <div className="col-md-7 weeklyChart">
-              <Bar options={options} data={weeklySalesData} />
+            <div className="col-md activityFeedInfo">
+              <p>Activity Feed</p>
+
+              <div className="feedList">
+                {feedList
+                  ?.sort((a, b) => b.id - a.id) // Sort in descending order
+                  .map((FList, index) => (
+                    <div className="feed_view" key={index}>
+                      <div className="row">
+                        <div className="col-md-2">{iconMap[FList.feed_title] || null}</div>
+                        <div className="col-md-10">
+                          <div className="col-sm feedTitle">{FList.feed_title}</div>
+                          <div className="col-sm feedInfo">
+                            {FList.feed_info}
+                            <label className="activity-tstamp">{FList.feed_timeStamp}</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
+
           {/* **************************FULL CALENDAR********************** */}
           {/* <div className="fullCalendar">
             <div className="d-flex justify-content-center">

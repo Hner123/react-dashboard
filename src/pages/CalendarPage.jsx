@@ -40,6 +40,7 @@ export default function CalendarPage() {
   const [statusP, setStatusP] = useState('');
   const [phoneNum, setPhoneNum] = useState(0);
   const [bgColor, setBgColor] = useState('');
+  const [dateStart, setDateStart] = useState('');
 
   const { setBranchLoc, id, setId, branchList, name, setName, lastName, setLastName } = useContext(MyContext);
 
@@ -86,6 +87,7 @@ export default function CalendarPage() {
           setBgColor(eventInfo.backgroundColor);
           setName(eventInfo.event.extendedProps.name);
           setLastName(eventInfo.event.extendedProps.lastName);
+          setDateStart(eventInfo.event.start);
         }}
       >
         <span style={{ fontSize: '12px', color: '#333', fontWeight: '500' }}>{eventInfo.timeText} : </span>
@@ -281,9 +283,10 @@ export default function CalendarPage() {
       const id = event.id;
       const date = format(event.start, 'yyyy-MM-dd');
       const time = format(event.start, 'HH:mm');
+      const name = event.title;
       const duration = getDuration(event.end, event.start);
       console.log('You can save the details', date);
-      mutationResched.mutate({ id, date, time, duration });
+      mutationResched.mutate({ id, date, time, duration, name });
     }
   };
 
@@ -446,6 +449,7 @@ export default function CalendarPage() {
         bgColor={bgColor}
         name={name}
         lastName={lastName}
+        dateStart={dateStart}
       />
       <CalendarModalCreate showModalCreate={showModalCreate} closeModal={closeModal} />
     </>

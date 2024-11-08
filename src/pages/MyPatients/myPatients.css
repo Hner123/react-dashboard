@@ -39,6 +39,11 @@
   display: none !important;
 }
 
+/* .trigError {
+  font-size: 40px;
+  color: red;
+} */
+
 @media (max-width: 567px) {
   .searchField {
     width: 100% !important;

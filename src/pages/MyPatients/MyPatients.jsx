@@ -222,7 +222,7 @@ export default function MyPatients() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="trigError">YAWA...</div>;
   }
 
   if (error) {

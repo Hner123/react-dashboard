@@ -228,7 +228,15 @@ export default function CalendarResched({ shoModalReshed, setShowModalResched })
   }, [branchLoc, patientData, id]);
 
   const onSubmit = (data) => {
-    mutationResched.mutate({ id, selectedBranch, service: data.service, date: data.date, time: data.time, serviceDuration });
+    mutationResched.mutate({
+      id,
+      selectedBranch,
+      service: data.service,
+      date: data.date,
+      time: data.time,
+      serviceDuration,
+      title: patientDetails.title,
+    });
   };
 
   const onSubmitEditForm = (data) => {

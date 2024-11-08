@@ -57,19 +57,6 @@ $Last30DaysFormatted = $Last30Days->format('Y-m-d');
 // ********************count Yesterday patient*************************
 $lastMonth = date('m', strtotime('first day of -2 month'));
 
-// if($day == 1){
-//     $yesterday_SQL = "SELECT * FROM confirmed_booking WHERE book_Year = '$year' && book_Month = '$lastMonth' && book_Day = '$yesterday'";
-// }
-// else{
-//     $yesterday_SQL = "SELECT * FROM confirmed_booking WHERE book_Year = '$year' && book_Month = '$month' && book_Day = '$yesterday'";
-// }
-
-// $yesterdayResult = $connection->query($yesterday_SQL);
-// $countYesterdayResult = 0;
-// while($yesterdayResult->fetch_assoc()){
-//     $countYesterdayResult += 1;
-// }
-
 $yesterday = date('Y-m-d', strtotime('-1 day'));
 $yesterday_SQL = 'SELECT * FROM historyforcustomerdetails';
 $yesterday_SQL_result = $connection->query($yesterday_SQL);
@@ -96,29 +83,13 @@ while ($row = $yesterdayResult->fetch_assoc()) {
 }
 
 // ******************count todays patient*************************
-$todaysPatient = "SELECT * FROM confirmed_booking WHERE book_Year = '$year' && book_Month = '$month' && book_Day ='$day'";
+$todaysPatient = "SELECT * FROM booking_table WHERE book_Year = '$year' && book_Month = '$month' && book_Day ='$day'";
 $result = $connection->query($todaysPatient);
 $count = 0;
+$todaysPatientDisplay = 0;
 while ($result->fetch_assoc()) {
     $count += 1;
-}
-
-$transactedToday = 'SELECT * FROM historyforcustomerdetails';
-$transactedTodayResult = $connection->query($transactedToday);
-// $todayTransaction = array();
-while ($row = $transactedTodayResult->fetch_assoc()) {
-    $formatted_date = date('Y-m-d', strtotime($row['timestamp']));
-    $todayTransaction[] = $formatted_date;
-
-    if ($formatted_date == $today) {
-        $count += 1;
-    }
-}
-
-$todaysPatient2 = "SELECT * FROM cancelled_booking WHERE book_Year = '$year' && book_Month = '$month' && book_Day = '$day'";
-$todaysPatient2result = $connection->query($todaysPatient2);
-while ($row = $todaysPatient2result->fetch_assoc()) {
-    $count += 1;
+    $todaysPatientDisplay += 1;
 }
 
 $percentage_Patients_vs_yesterday = 0; // default value if $yesterdayCount is zero
@@ -126,8 +97,9 @@ if ($yesterdayCount != 0) {
     $percentage_Patients_vs_yesterday = intval((($count - $yesterdayCount) / $yesterdayCount) * 100);
 }
 
-// ******************count confirmed appointment*******************
-$appointments = 'SELECT * FROM confirmed_booking';
+// ******************STATS COLOR*************************
+$appointments = 'SELECT * FROM booking_table WHERE statsColor = "#2ED8B6" OR statsColor = "#FFB64D"';
+
 $result2 = $connection->query($appointments);
 $countAppoint = 0;
 while ($result2->fetch_assoc()) {
@@ -173,9 +145,7 @@ while ($row = $result9->fetch_assoc()) {
 
 $percentageSales_today_vs_yesterday = 0;
 if ($totalSalesYesterday != 0) {
-    $percentageSales_today_vs_yesterday = intval(
-        (($todaySalesTotal - $totalSalesYesterday) / $totalSalesYesterday) * 100
-    );
+    $percentageSales_today_vs_yesterday = intval((($todaySalesTotal - $totalSalesYesterday) / $totalSalesYesterday) * 100);
 }
 
 // ******************Sales week*******************
@@ -307,10 +277,7 @@ while ($row = $result8->fetch_assoc()) {
     $confirmTime = $row['book_Time'];
 
     $twelveHourTime = date('h:i A', strtotime($confirmTime));
-    $data = [
-        date('Y-m-d', strtotime($confirmDate)) . ' ' . "($twelveHourTime)",
-        $row['First_Name'] . ' ' . $row['Last_Name'],
-    ];
+    $data = [date('Y-m-d', strtotime($confirmDate)) . ' ' . "($twelveHourTime)", $row['First_Name'] . ' ' . $row['Last_Name']];
     $upComingPatient[] = $data;
 }
 
@@ -386,7 +353,7 @@ while ($row = $result_holiday_antipolo->fetch_assoc()) {
 }
 
 $responseData = [
-    'todayPatient' => $count,
+    'todayPatient' => $todaysPatientDisplay,
     'PatientYesterday' => $yesterdayCount,
     'percentage_Patients_vs_yesterday' => $percentage_Patients_vs_yesterday,
     'totalAppointment' => $countAppoint,
@@ -394,7 +361,6 @@ $responseData = [
     'todaySalesTotal' => $todaySalesTotal,
     'totalSalesYesterday' => $totalSalesYesterday,
     'percentageSales_today_vs_yesterday' => $percentageSales_today_vs_yesterday,
-    'SuccessProcessYesterday' => $yesterdayCount,
     'totalPatientLastMonth' => $totalPatientLastMonth,
     'responseWeekSales' => $responseWeekSales,
     'responseLastWeekSales' => $responseLastWeekSales,

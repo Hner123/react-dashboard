@@ -36,7 +36,7 @@ const sendNewBookingForm = async ({ firstName, lastName, emailAdd, phoneNum, sel
   return response.data;
 };
 
-const sendReschedForm = async ({ id, selectedBranch, service, date, time, serviceDuration }) => {
+const sendReschedForm = async ({ id, selectedBranch, service, date, time, serviceDuration, title }) => {
   const response = await axios.post(process.env.REACT_APP_CALENDARRESCHED, {
     id,
     selectedBranch,
@@ -44,6 +44,7 @@ const sendReschedForm = async ({ id, selectedBranch, service, date, time, servic
     date,
     time,
     serviceDuration,
+    title,
   });
   return response.data;
 };
@@ -53,8 +54,8 @@ const fetchPatientBooking = async () => {
   return response.data;
 };
 
-const dragNdropResched = async ({ id, date, time, duration }) => {
-  const response = await axios.post(process.env.REACT_APP_DRAGNDROPRESCHED, { id, date, time, duration });
+const dragNdropResched = async ({ id, date, time, duration, name }) => {
+  const response = await axios.post(process.env.REACT_APP_DRAGNDROPRESCHED, { id, date, time, duration, name });
   return response.data;
 };
 
@@ -82,8 +83,8 @@ const addservicefunction = async ({ service, duration, categoryID }) => {
   const response = await axios.post(process.env.REACT_APP_ADDSERVICE, { service, duration, categoryID });
   return response.data;
 };
-const deleteServiceId = async ({ deleteID }) => {
-  const response = await axios.post(process.env.REACT_APP_DELETESERVICE, { deleteID });
+const deleteServiceId = async ({ deleteID, serviceName }) => {
+  const response = await axios.post(process.env.REACT_APP_DELETESERVICE, { deleteID, serviceName });
   return response.data;
 };
 
@@ -111,13 +112,18 @@ const addNewLocation = async ({ branch, location }) => {
   return response.data;
 };
 
-const deleteLocation = async ({ id }) => {
-  const response = await axios.post(process.env.REACT_APP_DELETEBRANCH, { id });
+const deleteLocation = async ({ id, branchLoc }) => {
+  const response = await axios.post(process.env.REACT_APP_DELETEBRANCH, { id, branchLoc });
   return response.data;
 };
 
 const deletePatientArray = async ({ selected }) => {
   const response = await axios.post(process.env.REACT_APP_DELETEPATIENTARRAY, { selected });
+  return response.data;
+};
+
+const deleteBooking = async ({ id }) => {
+  const response = await axios.post(process.env.REACT_APP_DELETEBOOKING, { id });
   return response.data;
 };
 
@@ -143,4 +149,5 @@ export {
   deleteServiceId,
   editService,
   addCategoryfunction,
+  deleteBooking,
 };
